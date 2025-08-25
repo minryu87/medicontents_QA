@@ -251,6 +251,27 @@ const PostCreationForm: React.FC = () => {
             
             setSuccess(true);
             
+            // 4. Agent 처리 시작
+            console.log('Agent 처리 시작:', postId);
+            try {
+                const agentResponse = await fetch('http://localhost:8000/api/process-post', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ post_id: postId })
+                });
+                
+                if (agentResponse.ok) {
+                    const agentResult = await agentResponse.json();
+                    console.log('Agent 처리 결과:', agentResult);
+                } else {
+                    console.error('Agent 처리 실패:', agentResponse.status);
+                }
+            } catch (error) {
+                console.error('Agent 처리 중 오류:', error);
+            }
+            
             // 폼 초기화
             setFormData({
                 treatmentType: '',
@@ -648,15 +669,152 @@ const PostCreationForm: React.FC = () => {
 
 // 포스팅 검토 영역 컴포넌트
 const PostReviewSection: React.FC = () => {
+    const [posts, setPosts] = useState<any[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [isClient, setIsClient] = useState<boolean>(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    const fetchPosts = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Post%20Data%20Requests`, {
+                headers: {
+                    'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                setPosts(data.records || []);
+            }
+        } catch (error) {
+            console.error('포스팅 조회 실패:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (isClient) {
+            fetchPosts();
+        }
+    }, [isClient]);
+
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case '대기': return 'bg-yellow-100 text-yellow-800';
+            case '처리 중': return 'bg-blue-100 text-blue-800';
+            case '완료': return 'bg-green-100 text-green-800';
+            default: return 'bg-gray-100 text-gray-800';
+        }
+    };
+
+    if (!isClient) {
+        return (
+            <div className="bg-white p-6 rounded-xl shadow-sm">
+                <div className="animate-pulse">
+                    <div className="h-8 bg-gray-200 rounded mb-4"></div>
+                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="bg-white p-6 rounded-xl shadow-sm">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">포스팅 검토하기</h2>
-            <div className="text-center py-12 text-gray-500">
-                <FileText size={48} className="mx-auto mb-4" />
-                <p className="text-xl font-semibold">포스팅 검토 기능</p>
-                <p className="mt-2">생성된 포스팅을 검토하고 관리할 수 있는 영역입니다.</p>
-                <p className="text-sm mt-4">(구현 예정)</p>
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">포스팅 검토하기</h2>
+                <button
+                    onClick={fetchPosts}
+                    disabled={loading}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+                >
+                    {loading ? '새로고침 중...' : '새로고침'}
+                </button>
             </div>
+            
+            {posts.length === 0 ? (
+                <div className="text-center py-12 text-gray-500">
+                    <FileText size={48} className="mx-auto mb-4" />
+                    <p className="text-xl font-semibold">생성된 포스팅이 없습니다</p>
+                    <p className="mt-2">상단에서 포스팅을 생성해보세요.</p>
+                </div>
+            ) : (
+                <div className="space-y-4">
+                    {posts.map((post) => {
+                        const fields = post.fields;
+                        const status = fields['Status'] || '대기';
+                        const postId = fields['Post ID'] || '';
+                        const title = fields['Title'] || '';
+                        const content = fields['Content'] || '';
+                        
+                        return (
+                            <div key={post.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                                <div className="flex justify-between items-start mb-3">
+                                    <div>
+                                        <h3 className="font-semibold text-lg text-gray-800">
+                                            {title || `Post ID: ${postId}`}
+                                        </h3>
+                                        <p className="text-sm text-gray-600">ID: {postId}</p>
+                                    </div>
+                                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(status)}`}>
+                                        {status}
+                                    </span>
+                                </div>
+                                
+                                {content && (
+                                    <div className="mb-3">
+                                        <p className="text-sm text-gray-700 line-clamp-3">
+                                            {content.substring(0, 200)}...
+                                        </p>
+                                    </div>
+                                )}
+                                
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => {
+                                            // 상세 보기 기능 (구현 예정)
+                                            console.log('상세 보기:', postId);
+                                        }}
+                                        className="px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200"
+                                    >
+                                        상세 보기
+                                    </button>
+                                    {status === '대기' && (
+                                        <button
+                                            onClick={async () => {
+                                                try {
+                                                    const response = await fetch('http://localhost:8000/api/process-post', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json',
+                                                        },
+                                                        body: JSON.stringify({ post_id: postId })
+                                                    });
+                                                    
+                                                    if (response.ok) {
+                                                        fetchPosts(); // 목록 새로고침
+                                                    }
+                                                } catch (error) {
+                                                    console.error('Agent 처리 실패:', error);
+                                                }
+                                            }}
+                                            className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
+                                        >
+                                            Agent 실행
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
         </div>
     );
 };
