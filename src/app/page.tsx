@@ -235,8 +235,7 @@ export default function Home() {
     const handleTabChange = (newTab: TabType) => {
         setActiveTab(newTab);
         
-        // 우측 패널 상태 초기화
-        setSelectedPost(null);
+        // 우측 패널 상태 초기화 (selectedPost는 유지)
         setLogs([]);
         setCurrentPostId('');
         setIsProcessing(false);
@@ -1307,12 +1306,14 @@ export default function Home() {
                 const agentData = await agentResponse.json();
                 addLog('AI Agent 실행 완료');
                 
-                // n8n-completion API 호출 감지
-                if (agentResponse.url && agentResponse.url.includes('/api/n8n-completion')) {
-                    addLog('✅ n8n-completion API 호출 감지 - 전체 완료로 판단');
+                // Agent 응답에서 완료 상태 확인
+                if (agentData.status === 'success') {
+                    addLog('✅ Agent 완료 상태 감지 - 전체 완료로 판단');
+                    addLog(`📊 Agent 응답: status=${agentData.status}, post_id=${agentData.post_id}`);
                     
                     // 완료된 포스팅을 자동으로 선택하여 HTML 렌더링
                     try {
+                        addLog('🔍 Airtable에서 완료된 포스팅 조회 중...');
                         const medicontentResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts?filterByFormula={Post%20Id}='${postId}'`, {
                             headers: {
                                 'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
@@ -1322,13 +1323,27 @@ export default function Home() {
                         
                         if (medicontentResponse.ok) {
                             const medicontentData = await medicontentResponse.json();
+                            addLog(`📊 Airtable 응답: ${medicontentData.records?.length || 0}개 레코드 발견`);
+                            
                             if (medicontentData.records && medicontentData.records.length > 0) {
-                                setSelectedPost(medicontentData.records[0]);
+                                const postRecord = medicontentData.records[0];
+                                addLog(`✅ 포스팅 레코드 선택: ${postRecord.id}`);
+                                
+                                // selectedPost 상태 업데이트
+                                setSelectedPost(postRecord);
+                                addLog('✅ selectedPost 상태 업데이트 완료');
                                 addLog('완료된 포스팅을 우측 패널에 표시합니다.');
+                                
+                                // 디버깅: selectedPost 상태 확인
+                                console.log('selectedPost 업데이트:', postRecord);
+                            } else {
+                                addLog('⚠️ Airtable에서 포스팅 레코드를 찾을 수 없습니다.');
                             }
+                        } else {
+                            addLog(`❌ Airtable 조회 실패: ${medicontentResponse.status}`);
                         }
                     } catch (error) {
-                        addLog(`포스팅 선택 중 오류: ${error}`);
+                        addLog(`❌ 포스팅 선택 중 오류: ${error}`);
                     }
                     
                     return;
