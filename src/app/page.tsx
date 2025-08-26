@@ -1297,14 +1297,14 @@ export default function Home() {
                     }
                 }
                 
-                // 5. Airtable Status 확인 (폴링) - 자동 생성과 동일한 로직
+                // 5. Airtable 모니터링 방식으로 변경 (자동 생성과 동일)
                 addLog('AI Agent 작업 완료 대기 중...');
+                const monitoringStartTime = new Date();
                 let isCompleted = false;
                 let attempts = 0;
                 const maxAttempts = 24; // 2분 대기 (24회 × 5초)
                 
-                while (!isCompleted && attempts < maxAttempts) {
-                    await new Promise(resolve => setTimeout(resolve, 5000)); // 5초 대기
+                const statusPollInterval = setInterval(async () => {
                     attempts++;
                     
                     try {
@@ -1345,6 +1345,7 @@ export default function Home() {
                                     addLog('완료된 포스팅을 우측 패널에 표시합니다.');
                                     
                                     isCompleted = true;
+                                    clearInterval(statusPollInterval);
                                 } else {
                                     addLog(`⏳ 작업 진행 중... (${attempts}/${maxAttempts})`);
                                     addLog(`🔍 상태 비교: Post Data="${postDataStatus}" === "완료" && Medicontent="${medicontentStatus}" === "작업 완료"`);
@@ -1363,15 +1364,24 @@ export default function Home() {
                         } else {
                             addLog(`❌ Post Data Requests 조회 실패: ${postDataResponse.status}`);
                         }
+                        
+                        // 타임아웃 체크
+                        if (attempts >= maxAttempts) {
+                            addLog('❌ 작업 완료 시간 초과');
+                            addLog('💡 수동으로 포스팅을 선택하여 HTML을 확인할 수 있습니다.');
+                            clearInterval(statusPollInterval);
+                        }
+                        
                     } catch (error) {
                         addLog(`완료 확인 중 오류: ${error}`);
+                        attempts++;
+                        
+                        if (attempts >= maxAttempts) {
+                            addLog('❌ 작업 완료 시간 초과');
+                            clearInterval(statusPollInterval);
+                        }
                     }
-                }
-                
-                if (!isCompleted) {
-                    addLog('❌ 작업 완료 시간 초과');
-                    addLog('💡 수동으로 포스팅을 선택하여 HTML을 확인할 수 있습니다.');
-                }
+                }, 5000); // 5초마다 확인
             } else {
                 // 폴링 중지
                 clearInterval(pollInterval);
