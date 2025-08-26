@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, ChangeEvent, useEffect } from 'react';
-import { Upload, Send, FileText, CheckCircle, XCircle, X, RefreshCw, Play } from 'lucide-react';
+import { Upload, Send, FileText, CheckCircle, XCircle, X, RefreshCw, Play, Info } from 'lucide-react';
 
 // Airtable 설정
 const AIRTABLE_API_KEY = 'pat6S8lzX8deRFTKC.0e92c4403cdc7878f8e61f815260852d4518a0b46fa3de2350e5e91f4f0f6af9';
@@ -184,15 +184,7 @@ export default function Home() {
     });
     const [isSavingQA, setIsSavingQA] = useState(false);
     const [savedFields, setSavedFields] = useState<Set<string>>(new Set());
-    const [reviewerOptions, setReviewerOptions] = useState<string[]>(() => {
-        // localStorage에서 저장된 검토자 목록 불러오기
-        const saved = localStorage.getItem('reviewerOptions');
-        if (saved) {
-            return JSON.parse(saved);
-        }
-        // 기본 검토자 목록
-        return ['YB', 'Min', 'Hani', 'Hyuni', 'Naten'];
-    });
+    const [reviewerOptions, setReviewerOptions] = useState<string[]>(['YB', 'Min', 'Hani', 'Hyuni', 'Naten']);
     const [showNewReviewerInput, setShowNewReviewerInput] = useState(false);
     const [newReviewerName, setNewReviewerName] = useState('');
     
@@ -218,6 +210,19 @@ export default function Home() {
             loadCompletedPosts();
         }
     }, [activeTab]);
+
+    // localStorage에서 검토자 목록 로드 (클라이언트 사이드에서만)
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem('reviewerOptions');
+            if (saved) {
+                const parsedOptions = JSON.parse(saved);
+                setReviewerOptions(parsedOptions);
+            }
+        } catch (error) {
+            console.error('localStorage 로드 실패:', error);
+        }
+    }, []);
 
     // 신규 검토자 추가
     const addNewReviewer = () => {
@@ -499,7 +504,9 @@ export default function Home() {
             });
 
             if (agentResponse.ok) {
+                const agentData = await agentResponse.json();
                 addLog('AI Agent 실행 완료');
+                addLog(`Agent 응답: ${JSON.stringify(agentData, null, 2)}`);
                 
                 // 5. n8n 완료 확인 (폴링)
                 addLog('n8n 워크플로우 완료 대기 중...');
@@ -512,6 +519,7 @@ export default function Home() {
                     attempts++;
                     
                     try {
+                        addLog(`n8n 완료 확인 시도 ${attempts}/${maxAttempts}...`);
                         const completionResponse = await fetch(`http://localhost:8000/api/n8n-completion`, {
                             method: 'POST',
                             headers: {
@@ -520,19 +528,46 @@ export default function Home() {
                             body: JSON.stringify({
                                 post_id: postId,
                                 workflow_id: 'medicontent_autoblog_QA_manual',
-                                timestamp: new Date().toISOString()
+                                timestamp: new Date().toISOString(),
+                                n8n_result: 'success'
                             })
                         });
                         
                         if (completionResponse.ok) {
                             const completionData = await completionResponse.json();
+                            addLog(`n8n 응답: ${JSON.stringify(completionData, null, 2)}`);
+                            
                             if (completionData.is_completed) {
                                 addLog('n8n 워크플로우 완료 확인됨');
                                 addLog('후속 작업 완료');
+                                
+                                // 완료된 포스팅을 자동으로 선택하여 HTML 렌더링
+                                try {
+                                    const completedPostsResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts?filterByFormula={Post Id}="${postId}"`, {
+                                        headers: {
+                                            'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+                                            'Content-Type': 'application/json'
+                                        }
+                                    });
+                                    
+                                    if (completedPostsResponse.ok) {
+                                        const data = await completedPostsResponse.json();
+                                        if (data.records && data.records.length > 0) {
+                                            setSelectedPost(data.records[0]);
+                                            addLog('완료된 포스팅을 우측 패널에 표시합니다.');
+                                        }
+                                    }
+                                } catch (error) {
+                                    addLog(`포스팅 선택 중 오류: ${error}`);
+                                }
+                                
                                 isCompleted = true;
                             } else {
                                 addLog(`n8n 워크플로우 진행 중... (${attempts}/${maxAttempts})`);
+                                addLog(`상태: Post Data=${completionData.post_data_status}, Medicontent=${completionData.medicontent_status}`);
                             }
+                        } else {
+                            addLog(`n8n 완료 확인 실패: ${completionResponse.status}`);
                         }
                     } catch (error) {
                         addLog(`완료 확인 중 오류: ${error}`);
@@ -543,7 +578,8 @@ export default function Home() {
                     addLog('n8n 워크플로우 완료 시간 초과');
                 }
             } else {
-                addLog('AI Agent 실행 실패');
+                const errorText = await agentResponse.text();
+                addLog(`AI Agent 실행 실패: ${agentResponse.status} - ${errorText}`);
             }
 
         } catch (error) {
@@ -947,7 +983,14 @@ export default function Home() {
                 return (
                     <div className="flex-1 overflow-auto">
                         <div className="p-4">
-                            <h3 className="text-lg font-semibold mb-4">수동 생성하기</h3>
+                            <div className="flex items-center gap-2 mb-4">
+                                <h3 className="text-lg font-semibold">수동 생성하기</h3>
+                                {currentPostId && (
+                                    <span className="text-xs font-mono bg-blue-100 px-2 py-1 rounded text-blue-600">
+                                        {currentPostId}
+                                    </span>
+                                )}
+                            </div>
                             
                             {/* 진료 유형 선택 */}
                             <div className="mb-4">
@@ -967,109 +1010,274 @@ export default function Home() {
                                 </select>
                             </div>
 
+                            {/* 안내 메시지 */}
+                            <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg mb-6">
+                                <div className="flex">
+                                    <div className="py-1">
+                                        <Info className="h-6 w-6 text-blue-500 mr-3" />
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-blue-800">
+                                            자료를 제공해주세요
+                                        </p>
+                                        <p className="text-sm text-blue-700 mt-1">
+                                            아래 각 항목에 들어갈 내용과 사진을 제공해주시면, 저희가 멋진 콘텐츠로 제작해드리겠습니다.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
                             {/* 질문 입력 */}
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    질문 및 답변
-                                </label>
-                                {formData.questions.map((question, index) => (
-                                    <div key={index} className="mb-3">
-                                        <textarea
-                                            value={question}
-                                            onChange={(e) => {
-                                                const newQuestions = [...formData.questions];
-                                                newQuestions[index] = e.target.value;
-                                                setFormData(prev => ({ ...prev, questions: newQuestions }));
-                                            }}
-                                            placeholder={`질문 ${index + 1}`}
-                                            className="w-full p-2 border border-gray-300 rounded-md"
-                                            rows={3}
-                                        />
+                            <div className="space-y-6">
+                                <div>
+                                    <label className="block font-bold mb-2 text-gray-800">
+                                        1. 질환에 대한 개념 설명에서 강조되어야 할 메시지가 있나요?
+                                    </label>
+                                    <textarea
+                                        value={formData.questions[0]}
+                                        onChange={(e) => {
+                                            const newQuestions = [...formData.questions];
+                                            newQuestions[0] = e.target.value;
+                                            setFormData(prev => ({ ...prev, questions: newQuestions }));
+                                        }}
+                                        rows={3}
+                                        placeholder="예: 신경치료가 자연치를 보존하는 마지막 기회라는 점을 강조하고 싶습니다."
+                                        className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block font-bold mb-2 text-gray-800">
+                                        2. 환자는 처음 내원 시 어떤 상태였나요?
+                                    </label>
+                                    <textarea
+                                        value={formData.questions[1]}
+                                        onChange={(e) => {
+                                            const newQuestions = [...formData.questions];
+                                            newQuestions[1] = e.target.value;
+                                            setFormData(prev => ({ ...prev, questions: newQuestions }));
+                                        }}
+                                        rows={3}
+                                        placeholder="예: 5년 전 치료받은 어금니에 극심한 통증과 함께 잇몸이 부어오른 상태로 내원하셨습니다."
+                                        className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block font-bold mb-2 text-gray-800">
+                                        3. 내원 시 찍은 사진을 업로드 후 간단한 설명을 작성해주세요
+                                    </label>
+                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                        <div 
+                                            className="md:col-span-1 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors flex flex-col justify-center items-center"
+                                            onClick={() => document.getElementById('beforeImages')?.click()}
+                                        >
+                                            <Upload className="mx-auto text-gray-400" size={28} />
+                                            <input 
+                                                id="beforeImages"
+                                                type="file" 
+                                                className="hidden" 
+                                                multiple 
+                                                accept="image/*"
+                                                onChange={(e) => handleImageUpload(e.target.files, 'before')}
+                                            />
+                                        </div>
+                                        <div className="md:col-span-3">
+                                            <textarea
+                                                value={formData.questions[5]}
+                                                onChange={(e) => {
+                                                    const newQuestions = [...formData.questions];
+                                                    newQuestions[5] = e.target.value;
+                                                    setFormData(prev => ({ ...prev, questions: newQuestions }));
+                                                }}
+                                                rows={4}
+                                                placeholder="파노라마, X-ray, 구강 내 사진 등과 함께 어떤 상태였는지 간략하게 작성해주세요. 예: 초진 시 촬영한 파노라마 사진. 16번 치아 주변으로 광범위한 염증 소견이 관찰됨."
+                                                className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none h-full"
+                                            />
+                                        </div>
                                     </div>
-                                ))}
+                                    {formData.beforeImages.length > 0 && (
+                                        <div className="mt-2 flex flex-wrap gap-2">
+                                            {formData.beforeImages.map((file, index) => (
+                                                <div key={index} className="relative">
+                                                    <img 
+                                                        src={URL.createObjectURL(file)} 
+                                                        alt={`Before ${index + 1}`}
+                                                        className="w-16 h-16 object-cover rounded border"
+                                                    />
+                                                    <button
+                                                        onClick={() => removeImage(index, 'before')}
+                                                        className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                                                    >
+                                                        ×
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="block font-bold mb-2 text-gray-800">
+                                        4. 치료 과정에서 강조되어야 할 메시지가 있나요?
+                                    </label>
+                                    <textarea
+                                        value={formData.questions[2]}
+                                        onChange={(e) => {
+                                            const newQuestions = [...formData.questions];
+                                            newQuestions[2] = e.target.value;
+                                            setFormData(prev => ({ ...prev, questions: newQuestions }));
+                                        }}
+                                        rows={3}
+                                        placeholder="예: 미세 현미경을 사용하여 염증의 원인을 정확히 찾아내고, MTA 재료를 이용해 성공률을 높였습니다."
+                                        className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block font-bold mb-2 text-gray-800">
+                                        5. 치료 과정 사진을 업로드 후 간단한 설명을 작성해주세요
+                                    </label>
+                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                        <div 
+                                            className="md:col-span-1 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors flex flex-col justify-center items-center"
+                                            onClick={() => document.getElementById('processImages')?.click()}
+                                        >
+                                            <Upload className="mx-auto text-gray-400" size={28} />
+                                            <input 
+                                                id="processImages"
+                                                type="file" 
+                                                className="hidden" 
+                                                multiple 
+                                                accept="image/*"
+                                                onChange={(e) => handleImageUpload(e.target.files, 'process')}
+                                            />
+                                        </div>
+                                        <div className="md:col-span-3">
+                                            <textarea
+                                                value={formData.questions[6]}
+                                                onChange={(e) => {
+                                                    const newQuestions = [...formData.questions];
+                                                    newQuestions[6] = e.target.value;
+                                                    setFormData(prev => ({ ...prev, questions: newQuestions }));
+                                                }}
+                                                rows={4}
+                                                placeholder="미세 현미경 사용 모습, MTA 충전 과정 등 치료 과정 사진과 함께 설명을 작성해주세요. 예: 미세현미경을 사용하여 근관 내부를 탐색하는 모습."
+                                                className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none h-full"
+                                            />
+                                        </div>
+                                    </div>
+                                    {formData.processImages.length > 0 && (
+                                        <div className="mt-2 flex flex-wrap gap-2">
+                                            {formData.processImages.map((file, index) => (
+                                                <div key={index} className="relative">
+                                                    <img 
+                                                        src={URL.createObjectURL(file)} 
+                                                        alt={`Process ${index + 1}`}
+                                                        className="w-16 h-16 object-cover rounded border"
+                                                    />
+                                                    <button
+                                                        onClick={() => removeImage(index, 'process')}
+                                                        className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                                                    >
+                                                        ×
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="block font-bold mb-2 text-gray-800">
+                                        6. 치료 결과에 대해 강조되어야 할 메시지가 있나요?
+                                    </label>
+                                    <textarea
+                                        value={formData.questions[3]}
+                                        onChange={(e) => {
+                                            const newQuestions = [...formData.questions];
+                                            newQuestions[3] = e.target.value;
+                                            setFormData(prev => ({ ...prev, questions: newQuestions }));
+                                        }}
+                                        rows={3}
+                                        placeholder="예: 치료 후 통증이 완전히 사라졌으며, 1년 후 검진에서도 재발 없이 안정적으로 유지되고 있습니다."
+                                        className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block font-bold mb-2 text-gray-800">
+                                        7. 치료 결과 사진을 업로드 후 간단한 설명을 작성해주세요
+                                    </label>
+                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                        <div 
+                                            className="md:col-span-1 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors flex flex-col justify-center items-center"
+                                            onClick={() => document.getElementById('afterImages')?.click()}
+                                        >
+                                            <Upload className="mx-auto text-gray-400" size={28} />
+                                            <input 
+                                                id="afterImages"
+                                                type="file" 
+                                                className="hidden" 
+                                                multiple 
+                                                accept="image/*"
+                                                onChange={(e) => handleImageUpload(e.target.files, 'after')}
+                                            />
+                                        </div>
+                                        <div className="md:col-span-3">
+                                            <textarea
+                                                value={formData.questions[7]}
+                                                onChange={(e) => {
+                                                    const newQuestions = [...formData.questions];
+                                                    newQuestions[7] = e.target.value;
+                                                    setFormData(prev => ({ ...prev, questions: newQuestions }));
+                                                }}
+                                                rows={4}
+                                                placeholder="치료 전/후 비교 X-ray, 구강 내 사진 등 치료 결과 사진과 함께 설명을 작성해주세요. 예: 신경치료 완료 후 촬영한 파노라마 사진. 염증이 모두 제거되고 근관이 완벽하게 충전된 것을 확인할 수 있음."
+                                                className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none h-full"
+                                            />
+                                        </div>
+                                    </div>
+                                    {formData.afterImages.length > 0 && (
+                                        <div className="mt-2 flex flex-wrap gap-2">
+                                            {formData.afterImages.map((file, index) => (
+                                                <div key={index} className="relative">
+                                                    <img 
+                                                        src={URL.createObjectURL(file)} 
+                                                        alt={`After ${index + 1}`}
+                                                        className="w-16 h-16 object-cover rounded border"
+                                                    />
+                                                    <button
+                                                        onClick={() => removeImage(index, 'after')}
+                                                        className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                                                    >
+                                                        ×
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="block font-bold mb-2 text-gray-800">
+                                        8. 추가적으로 더하고 싶은 메시지가 있나요?
+                                    </label>
+                                    <textarea
+                                        value={formData.questions[4]}
+                                        onChange={(e) => {
+                                            const newQuestions = [...formData.questions];
+                                            newQuestions[4] = e.target.value;
+                                            setFormData(prev => ({ ...prev, questions: newQuestions }));
+                                        }}
+                                        rows={3}
+                                        placeholder="환자 당부사항, 병원 철학 등 자유롭게 작성해주세요."
+                                        className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    />
+                                </div>
                             </div>
 
-                            {/* 이미지 업로드 */}
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    이미지 업로드
-                                </label>
-                                
-                                {/* Before Images */}
-                                <div className="mb-3">
-                                    <h4 className="text-sm font-medium mb-2">Before Images</h4>
-                                    <input
-                                        type="file"
-                                        multiple
-                                        accept="image/*"
-                                        onChange={(e) => handleImageUpload(e.target.files, 'before')}
-                                        className="w-full p-2 border border-gray-300 rounded-md"
-                                    />
-                                    <div className="mt-2 flex flex-wrap gap-2">
-                                        {formData.beforeImages.map((file, index) => (
-                                            <div key={index} className="flex items-center gap-2 bg-gray-100 p-2 rounded">
-                                                <span className="text-sm truncate">{file.name}</span>
-                                                <button
-                                                    onClick={() => removeImage(index, 'before')}
-                                                    className="text-red-500 hover:text-red-700"
-                                                >
-                                                    <X size={16} />
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
 
-                                {/* Process Images */}
-                                <div className="mb-3">
-                                    <h4 className="text-sm font-medium mb-2">Process Images</h4>
-                                    <input
-                                        type="file"
-                                        multiple
-                                        accept="image/*"
-                                        onChange={(e) => handleImageUpload(e.target.files, 'process')}
-                                        className="w-full p-2 border border-gray-300 rounded-md"
-                                    />
-                                    <div className="mt-2 flex flex-wrap gap-2">
-                                        {formData.processImages.map((file, index) => (
-                                            <div key={index} className="flex items-center gap-2 bg-gray-100 p-2 rounded">
-                                                <span className="text-sm truncate">{file.name}</span>
-                                                <button
-                                                    onClick={() => removeImage(index, 'process')}
-                                                    className="text-red-500 hover:text-red-700"
-                                                >
-                                                    <X size={16} />
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* After Images */}
-                                <div className="mb-3">
-                                    <h4 className="text-sm font-medium mb-2">After Images</h4>
-                                    <input
-                                        type="file"
-                                        multiple
-                                        accept="image/*"
-                                        onChange={(e) => handleImageUpload(e.target.files, 'after')}
-                                        className="w-full p-2 border border-gray-300 rounded-md"
-                                    />
-                                    <div className="mt-2 flex flex-wrap gap-2">
-                                        {formData.afterImages.map((file, index) => (
-                                            <div key={index} className="flex items-center gap-2 bg-gray-100 p-2 rounded">
-                                                <span className="text-sm truncate">{file.name}</span>
-                                                <button
-                                                    onClick={() => removeImage(index, 'after')}
-                                                    className="text-red-500 hover:text-red-700"
-                                                >
-                                                    <X size={16} />
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
 
                             {/* 생성하기 버튼 */}
                             <button
@@ -1173,9 +1381,14 @@ export default function Home() {
                         // 완료된 포스팅 HTML 렌더링
                         <div className="flex-1 overflow-auto">
                             <div className="p-4">
-                                <h3 className="text-lg font-semibold mb-4">
-                                    {selectedPost.fields.Title || selectedPost.fields['Post Id']}
-                                </h3>
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="text-lg font-semibold">
+                                        {selectedPost.fields.Title || selectedPost.fields['Post Id']}
+                                    </h3>
+                                    <span className="text-xs font-mono bg-green-100 px-2 py-1 rounded text-green-600">
+                                        {selectedPost.fields['Post Id']}
+                                    </span>
+                                </div>
                                 {selectedPost.fields.Content ? (
                                     <div 
                                         className="prose max-w-none"
@@ -1184,7 +1397,18 @@ export default function Home() {
                                             overflowX: 'hidden',
                                             wordWrap: 'break-word'
                                         }}
-                                        dangerouslySetInnerHTML={{ __html: selectedPost.fields.Content }}
+                                        dangerouslySetInnerHTML={{ 
+                                            __html: selectedPost.fields.Content.replace(
+                                                /<img[^>]+src="([^"]*)"[^>]*>/gi,
+                                                (match: string, src: string) => {
+                                                    // 상대 경로나 로컬 경로인 경우 기본 이미지로 대체
+                                                    if (src.startsWith('/') || src.startsWith('./') || src.startsWith('../') || !src.startsWith('http')) {
+                                                        return match.replace(src, 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5YWFhYSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlPC90ZXh0Pjwvc3ZnPg==');
+                                                    }
+                                                    return match;
+                                                }
+                                            )
+                                        }}
                                     />
                                 ) : (
                                     <div className="text-center py-8 text-gray-500">

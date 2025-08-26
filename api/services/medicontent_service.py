@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import logging
+import asyncio
 import aiohttp
 from datetime import datetime
 from typing import Dict, Any, Optional
@@ -63,24 +64,42 @@ async def call_webhook(post_id: str, results: Dict[str, Any]):
             "workflow_id": "medicontent_autoblog_QA_manual"  # 워크플로우 식별자
         }
         
+        logger.info(f"웹훅 호출 시작: {post_id}")
+        logger.info(f"웹훅 URL: {webhook_url}")
+        logger.info(f"웹훅 페이로드: {json.dumps(payload, indent=2, ensure_ascii=False)}")
+        
         async with aiohttp.ClientSession() as session:
-            async with session.post(webhook_url, json=payload) as response:
+            async with session.post(webhook_url, json=payload, timeout=aiohttp.ClientTimeout(total=30)) as response:
+                response_text = await response.text()
+                logger.info(f"웹훅 응답 상태: {response.status}")
+                logger.info(f"웹훅 응답 헤더: {dict(response.headers)}")
+                logger.info(f"웹훅 응답 내용: {response_text}")
+                
                 if response.status == 200:
-                    response_data = await response.json()
-                    logger.info(f"웹훅 호출 성공: {post_id}, 응답: {response_data}")
-                    
-                    # n8n 응답에서 완료 상태 확인
-                    if response_data.get('status') == 'completed':
-                        logger.info(f"n8n 워크플로우 완료 확인: {post_id}")
-                        await handle_workflow_completion(post_id, response_data)
-                    
-                    return response_data
+                    try:
+                        response_data = json.loads(response_text) if response_text else {}
+                        logger.info(f"웹훅 호출 성공: {post_id}, 응답: {response_data}")
+                        
+                        # n8n 응답에서 완료 상태 확인
+                        if response_data.get('status') == 'completed':
+                            logger.info(f"n8n 워크플로우 완료 확인: {post_id}")
+                            await handle_workflow_completion(post_id, response_data)
+                        
+                        return response_data
+                    except json.JSONDecodeError as e:
+                        logger.warning(f"웹훅 응답 JSON 파싱 실패: {e}, 응답 텍스트: {response_text}")
+                        return {"status": "success", "message": "웹훅 호출됨 (JSON 파싱 실패)"}
                 else:
                     logger.warning(f"웹훅 호출 실패 (상태 코드: {response.status}): {post_id}")
+                    logger.warning(f"실패 응답: {response_text}")
                     return None
                     
+    except asyncio.TimeoutError:
+        logger.error(f"웹훅 호출 타임아웃: {post_id}")
+        return None
     except Exception as e:
         logger.error(f"웹훅 호출 중 오류 발생: {str(e)}")
+        logger.error(f"오류 상세: {type(e).__name__}")
         # 웹훅 호출 실패는 전체 프로세스를 중단시키지 않음
         return None
 

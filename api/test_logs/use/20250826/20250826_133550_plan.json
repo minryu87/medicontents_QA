@@ -1,0 +1,146 @@
+{
+  "title_plan": {
+    "guidance": "경기/화성/경기 화성 + 카테고리 + 핵심 키워드",
+    "must_include_one_of": [
+      "경기",
+      "화성",
+      "경기 화성"
+    ],
+    "must_include": [],
+    "must_not_include": [
+      "내이튼치과의원",
+      "가격",
+      "이벤트",
+      "전화번호",
+      "1등",
+      "최고",
+      "완치",
+      "보장"
+    ],
+    "tone": "전문적·친절한 의사 설명",
+    "hints": {
+      "category": "일반진료",
+      "region_examples": [
+        "화성시",
+        "병점",
+        "동탄"
+      ]
+    }
+  },
+  "content_plan": {
+    "sections_order": [
+      "1_intro",
+      "2_visit",
+      "3_inspection",
+      "4_doctor_tip",
+      "5_treatment",
+      "6_check_point",
+      "7_conclusion"
+    ],
+    "sections": {
+      "1_intro": {
+        "subtitle": "일반진료 안내",
+        "summary": "본 글에서는 일반적인 치과 진료 과정에 대해 설명합니다. 환자분의 구강 건강을 위한 정보 제공을 목적으로 하며, 특정 질환이나 치료법에 대한 자세한 내용은 직접 내원하셔서 상담받으시기 바랍니다.",
+        "write_instruction": "일반진료에 대한 포괄적인 설명. 톤은 전문적이고 친절해야 하며, 300~500자 분량으로 작성합니다. 과장이나 비교, 보장 표현은 금지합니다.",
+        "must_include": [],
+        "may_include": [
+          "",
+          "일반진료"
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "2_visit": {
+        "subtitle": "내원 및 상담",
+        "summary": "환자분이 내원하시면 우선 상담을 통해 현재 구강 상태와 불편사항 등을 자세히 파악합니다. 이를 바탕으로 필요한 검사 및 진료 계획을 수립합니다.",
+        "write_instruction": "내원 절차 및 상담 과정 설명. 300~500자 분량으로 작성하며, 과장, 비교, 보장 표현은 금지합니다.",
+        "must_include": [],
+        "may_include": [
+          "",
+          "경기 화성"
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "3_inspection": {
+        "subtitle": "정밀 검사 및 진단",
+        "summary": "필요에 따라 구강 내 사진 촬영, 파노라마 엑스레이 촬영 등의 정밀 검사를 시행하여 정확한 진단을 내립니다.",
+        "write_instruction": "다양한 검사 방법과 그 필요성 설명. 300~500자 분량으로 작성하며, 과장, 비교, 보장 표현은 금지합니다.",
+        "must_include": [],
+        "may_include": [
+          ""
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "4_doctor_tip": {
+        "subtitle": "의사의 조언",
+        "summary": "의사는 환자의 구강 상태에 대한 정확한 정보를 제공하고, 최선의 치료 계획을 제시합니다.  환자의 질문에 성실히 답변하고, 치료에 대한 궁금증을 해소해드립니다.",
+        "write_instruction": "의사의 전문적인 조언 및 환자와의 소통 강조. 300~500자 분량으로 작성하며, 가격 및 이벤트 언급은 금지합니다.",
+        "must_include": [],
+        "may_include": [],
+        "must_not_include": [
+          "가격",
+          "이벤트"
+        ],
+        "image_binding": []
+      },
+      "5_treatment": {
+        "subtitle": "치료 과정",
+        "summary": "진단 결과에 따라 적절한 치료 계획을 수립하고, 환자에게 자세히 설명합니다.  치료 과정 중 발생할 수 있는 불편함을 최소화하기 위해 노력합니다.",
+        "write_instruction": "다양한 치료 과정에 대한 설명. 300~500자 분량으로 작성하며, 가격 및 무통증을 단정 짓는 표현은 금지합니다.",
+        "must_include": [],
+        "may_include": [
+          "",
+          "일반진료"
+        ],
+        "must_not_include": [
+          "가격",
+          "무통증 단정"
+        ],
+        "image_binding": []
+      },
+      "6_check_point": {
+        "subtitle": "주의사항 및 관리",
+        "summary": "치료 후 주의사항과 구강 관리 방법에 대해 자세히 설명합니다. 정기적인 검진을 통해 구강 건강을 유지하는 것이 중요합니다.",
+        "write_instruction": "치료 후 주의사항 및 구강 관리 방법에 대한 설명. 300~500자 분량으로 작성하며, 과장 표현은 금지합니다.",
+        "must_include": [],
+        "may_include": [
+          "경기 화성"
+        ],
+        "must_not_include": [
+          "과장표현"
+        ],
+        "image_binding": []
+      },
+      "7_conclusion": {
+        "subtitle": "마무리",
+        "summary": "환자의 구강 건강을 최우선으로 생각하며, 최선을 다해 진료에 임하겠습니다. 정기적인 검진을 통해 건강한 치아를 유지하시길 바랍니다.",
+        "write_instruction": "마무리 및 정기 검진 권유. 300~500자 분량으로 작성하며, 가격, 이벤트, 전화번호 직접 기재는 금지합니다.",
+        "must_include": [],
+        "may_include": [],
+        "must_not_include": [
+          "가격",
+          "이벤트",
+          "전화번호 직기재"
+        ],
+        "image_binding": []
+      }
+    }
+  },
+  "context_vars": {
+    "hospital_name": "내이튼치과의원",
+    "save_name": "내이튼치과의원",
+    "city": "경기",
+    "district": "화성",
+    "region_phrase": "경기 화성",
+    "category": "일반진료",
+    "map_link": ""
+  },
+  "meta": {
+    "mode": "use",
+    "timestamp": "20250826_133550",
+    "case_id": "case_내이튼치과의원_20250826_133540",
+    "source_log": "(provided dict)"
+  }
+}

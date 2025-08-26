@@ -1,0 +1,59 @@
+{
+  "meta": {
+    "mode": "use",
+    "timestamp": "20250826_132429",
+    "model": "models/gemini-1.5-flash",
+    "temperature": 0.7,
+    "max_output_tokens": 8192,
+    "success": true,
+    "error": ""
+  },
+  "input": {
+    "source_log_path": "(provided dict)",
+    "case_id": "case_내이튼치과의원_20250826_132419"
+  },
+  "prompt": "당신은 의료 콘텐츠 마케팅을 기획하는 SEO, GEO, AIO 전문 에디터이자, 해당 분야 의사의 시각으로 블로그 글을 기획합니다.\n아래 병원/환자 정보를 바탕으로 제목·본문 작성용 \"기획 틀\"을 JSON으로 만드세요.\n의료광고법을 준수하며, 병원 홍보성·과장성·비교·보장 표현은 배제하고 정보 제공 중심으로 작성합니다.\n\n[입력 데이터]\n병원명: 내이튼치과의원\n저장명: 내이튼치과의원\n지역(시): 경기\n지역(구): 화성\n지역문구: 경기 화성\n카테고리: 일반진료\n선택 증상: \n선택 진료: \n선택 치료: \n치식번호: \nQ1. 1\nQ2. 2\nQ4. 3\nQ6. 4\nQ8. 5\n대표 페르소나: \n\n[임상 컨텍스트(JSON)]\n{\"normalized\": {\"symptoms\": [], \"procedures\": [], \"treatments\": [], \"tooth_numbers\": []}, \"category_scores\": {\"신경치료\": 0.0, \"임플란트\": 0.0, \"심미수복\": 0.0, \"충치치료\": 0.0, \"크라운보철\": 0.0, \"브릿지\": 0.0, \"소아치과\": 0.0, \"발치\": 0.0, \"보철\": 0.0, \"미백\": 0.0}, \"primary_category\": \"신경치료\", \"secondary_categories\": [\"임플란트\", \"심미수복\"], \"flow\": [\"주호소: (무)\", \"치료계획: (미정)\", \"예후/관리: 정기 검진 및 위생관리 안내\"], \"top_matches\": [{\"score\": 0.0, \"symptom_text\": \"특별한 증상 없이 1년 만의 정기 검진을 위해 내원하였으나, 엑스레이 촬영 결과 왼쪽 두 번째 작은 어금니에 2차 우식(충치)이 발견되었다.\", \"procedure_text\": \"전체적인 구강 검진과 스케일링을 진행하였고, 의심스러운 부위에 대한 엑스레이 촬영 및 충치 제거를 위한 치질 삭제를 진행하여 충치의 깊이와 범위를 확인하였다. 신경까지 감염이 진행된 것을 확인하였다.\", \"treatment_text\": \"감염된 치수까지 제거하고 신경치료를 진행하였으며, 근관을 깨끗하게 소독하고 충전 후 최종적으로 크라운(보철)을 씌우는 치료를 계획하였다.\"}, {\"score\": 0.0, \"symptom_text\": \"11세 어린이 환자의 어금니 뿌리 끝에 염증이 발생하여 뿌리 주변 잇몸뼈가 많이 녹고 신경이 죽은 상태였으며, 심한 통증이 있었을 것으로 추정된다.\", \"procedure_text\": \"교정치과에서 뿌리 끝 염증이 심하다는 이유로 의뢰된 환자에게 파노라마 촬영을 통해 46번 치아의 병변 상태를 확인하고, 보존과 전문의가 신경치료의 필요성을 판단했다.\", \"treatment_text\": \"감염된 치수를 제거하고 소독한 후 뿌리 끝까지 수복재로 충전하여 밀폐시키는 신경치료를 진행하였고, 3개월 후 정기검진을 통해 잇몸뼈 재생을 확인하고 지속적인 사후 관리를 진행했다.\"}, {\"score\": 0.0, \"symptom_text\": \"37번과 47번 치아가 사랑니 때문에 심하게 썩어 통증이 있었고, 타 치과에서 발치 진단을 받았음.\", \"procedure_text\": \"사랑니 인접면 충치로 인한 심각한 치아 손상 진단, 신경치료 후 크라운 장착으로 자연치아 보존 가능성 여부 판단.\", \"treatment_text\": \"신경치료를 통해 근관 내부를 깨끗하게 제거, 소독하고, 신경치료 후 크라운을 씌워 치아를 보존함.\"}, {\"score\": 0.0, \"symptom_text\": \"왼쪽 아랫니(37번 치아)의 극심한 치통으로 하루 사이에 갑자기 발생.\", \"procedure_text\": \"37번 치아에 대한 정밀 검진 결과, 인레이 하방의 이차 우식과 급성 치수염 의심.\", \"treatment_text\": \"엔도(신경치료)를 통해 이차우식 병소 제거 및 급성 치수염 치료. 치수강의 압력을 줄이고, 근관을 충전재로 꽉 채운 후 최종 보철물 제작 및 장착.\"}, {\"score\": 0.0, \"symptom_text\": \"신경치료를 받았던 앞니가 검게 변색되었다.\", \"procedure_text\": \"엑스레이 촬영을 통해 신경치료 부위의 내부 오염(검게 오염된 GP cone)을 확인했다.\", \"treatment_text\": \"감염된 부위를 제거하는 재신경치료(리엔도)를 시행하고 레진 코어를 재시술했다.\"}], \"recommended_treatments\": [{\"name\": \"감염된 치수까지 제거하고 신경치료를 진행하였으며, 근관을 깨끗하게 소독하고 충전 후 최종적으로 크라운(보철)을 씌우는 치료를 계획하였다.\", \"score\": 0.0}, {\"name\": \"감염된 치수를 제거하고 소독한 후 뿌리 끝까지 수복재로 충전하여 밀폐시키는 신경치료를 진행하였고, 3개월 후 정기검진을 통해 잇몸뼈 재생을 확인하고 지속적인 사후 관리를 진행했다.\", \"score\": 0.0}, {\"name\": \"신경치료를 통해 근관 내부를 깨끗하게 제거, 소독하고, 신경치료 후 크라운을 씌워 치아를 보존함.\", \"score\": 0.0}, {\"name\": \"엔도(신경치료)를 통해 이차우식 병소 제거 및 급성 치수염 치료. 치수강의 압력을 줄이고, 근관을 충전재로 꽉 채운 후 최종 보철물 제작 및 장착.\", \"score\": 0.0}, {\"name\": \"감염된 부위를 제거하는 재신경치료(리엔도)를 시행하고 레진 코어를 재시술했다.\", \"score\": 0.0}]}\n\n[생성 지침]\n1) title_plan:\n  - guidance: \"경기/화성/경기 화성 + 카테고리 + 핵심 키워드\" 중 하나 이상 반드시 포함, 24~36자\n  - SEO: 지역명·카테고리 각 1회 이상, 불필요 반복·과장·가격 문구 금지\n  - must_include_one_of: [\"경기\", \"화성\", \"경기 화성\"]\n  - must_include: []\n  - must_not_include: [\"내이튼치과의원\", \"가격\", \"이벤트\", \"전화번호\", \"1등\", \"최고\", \"완치\", \"보장\"]\n  - tone: 전문적·친절한 의사 설명\n  - hints: category, 지역 관련 키워드 2~3개\n\n2) content_plan:\n  - sections_order: [\"1_intro\",\"2_visit\",\"3_inspection\",\"4_doctor_tip\",\"5_treatment\",\"6_check_point\",\"7_conclusion\"]\n  - 각 sections:\n    subtitle: 간결·명확한 제목\n    summary: 입력 데이터 기반 핵심 요약(2~3문장, 의사 시각)\n    write_instruction: 톤=전문·친절, 길이=300~500자, 금지어=과장/비교/보장\n    must_include/may_include/must_not_include: {변수} 형태로 표기(예: \"경기 화성\")\n    image_binding: 비워둠(코드에서 주입)\n\n    - 소프트 앵커 권장:\n    • 1_intro → may_include: [\"\", \"일반진료\"]\n    • 2_visit → may_include: [\"\", \"경기 화성\"]\n    • 3_inspection → may_include: [\"\"]\n    • 5_treatment → may_include: [\"\", \"일반진료\"]; must_not_include: [\"가격\",\"무통증 단정\"]\n    • 4_doctor_tip → must_not_include: [\"가격\",\"이벤트\"]\n    • 6_check_point → may_include: [\"경기 화성\"]; must_not_include: [\"과장표현\"]\n    • 7_conclusion → must_not_include: [\"가격\",\"이벤트\",\"전화번호 직기재\"]\n\n[출력 형식 — 반드시 이 JSON 스키마만 출력]\n{\n  \"title_plan\": {\n    \"guidance\": \"...\",\n    \"must_include_one_of\": [],\n    \"must_include\": [],\n    \"must_not_include\": [],\n    \"tone\": \"...\",\n    \"hints\": { \"category\": \"\", \"region_examples\": [] }\n  },\n  \"content_plan\": {\n    \"sections_order\": [\"1_intro\",\"2_visit\",\"3_inspection\",\"4_doctor_tip\",\"5_treatment\",\"6_check_point\",\"7_conclusion\"],\n    \"sections\": {\n      \"1_intro\": {\"subtitle\":\"\", \"summary\":\"\", \"write_instruction\":\"\", \"must_include\":[], \"may_include\":[], \"must_not_include\":[]},\n      \"2_visit\": {\"subtitle\":\"\", \"summary\":\"\", \"write_instruction\":\"\", \"must_include\":[], \"may_include\":[], \"must_not_include\":[]},\n      \"3_inspection\": {\"subtitle\":\"\", \"summary\":\"\", \"write_instruction\":\"\", \"must_include\":[], \"may_include\":[], \"must_not_include\":[]},\n      \"4_doctor_tip\": {\"subtitle\":\"\", \"summary\":\"\", \"write_instruction\":\"\", \"must_include\":[], \"may_include\":[], \"must_not_include\":[]},\n      \"5_treatment\": {\"subtitle\":\"\", \"summary\":\"\", \"write_instruction\":\"\", \"must_include\":[], \"may_include\":[], \"must_not_include\":[]},\n      \"6_check_point\": {\"subtitle\":\"\", \"summary\":\"\", \"write_instruction\":\"\", \"must_include\":[], \"may_include\":[], \"must_not_include\":[]},\n      \"7_conclusion\": {\"subtitle\":\"\", \"summary\":\"\", \"write_instruction\":\"\", \"must_include\":[], \"may_include\":[], \"must_not_include\":[]}\n    }\n  }\n}\n주의:\n- 결과로 오직 하나의 JSON만 출력하세요.\n- 이외의 어떤 문장도 출력하지 않습니다.\n- 병원명은 제목에 넣지 않습니다. 지역명은 필요 시 자연스럽게 배치하나, 추천하지는 않습니다.",
+  "llm_raw": "```json\n{\n  \"title_plan\": {\n    \"guidance\": \"경기/화성/경기 화성 + 카테고리 + 핵심 키워드\",\n    \"must_include_one_of\": [\n      \"경기\",\n      \"화성\",\n      \"경기 화성\"\n    ],\n    \"must_include\": [],\n    \"must_not_include\": [\n      \"내이튼치과의원\",\n      \"가격\",\n      \"이벤트\",\n      \"전화번호\",\n      \"1등\",\n      \"최고\",\n      \"완치\",\n      \"보장\"\n    ],\n    \"tone\": \"전문적·친절한 의사 설명\",\n    \"hints\": {\n      \"category\": \"일반진료\",\n      \"region_examples\": [\n        \"화성시\",\n        \"병점\",\n        \"동탄\"\n      ]\n    }\n  },\n  \"content_plan\": {\n    \"sections_order\": [\n      \"1_intro\",\n      \"2_visit\",\n      \"3_inspection\",\n      \"4_doctor_tip\",\n      \"5_treatment\",\n      \"6_check_point\",\n      \"7_conclusion\"\n    ],\n    \"sections\": {\n      \"1_intro\": {\n        \"subtitle\": \"일반진료 소개\",\n        \"summary\": \"본 글에서는 일반진료에 대한 전반적인 내용을 다룹니다.  다양한 구강 질환 예방 및 치료에 대한 정보를 제공하여 건강한 치아 관리에 도움을 드리고자 합니다.  내용은 전문의의 의학적 지식을 바탕으로 작성되었습니다.\",\n        \"write_instruction\": \"톤=전문적, 친절, 길이=300~500자, 금지어=과장/비교/보장\",\n        \"must_include\": [],\n        \"may_include\": [\n          \"\",\n          \"일반진료\"\n        ],\n        \"must_not_include\": []\n      },\n      \"2_visit\": {\n        \"subtitle\": \"진료 방문 및 상담\",\n        \"summary\": \"환자분의 구강 상태를 정확하게 파악하기 위해,  상담과 진찰 과정이 중요합니다.  문진과 구강검진을 통해 현재 상태와 필요한 치료 계획을 수립합니다.\",\n        \"write_instruction\": \"톤=전문적, 친절, 길이=300~500자, 금지어=과장/비교/보장\",\n        \"must_include\": [],\n        \"may_include\": [\n          \"\",\n          \"경기 화성\"\n        ],\n        \"must_not_include\": []\n      },\n      \"3_inspection\": {\n        \"subtitle\": \"정밀 검사 및 진단\",\n        \"summary\": \"정확한 진단을 위해 필요한 검사들을 시행합니다.  엑스레이 촬영 등을 통해 치아의 상태를 자세히 확인하고,  진단 결과를 바탕으로 환자에게 최적의 치료 계획을 제시합니다.\",\n        \"write_instruction\": \"톤=전문적, 친절, 길이=300~500자, 금지어=과장/비교/보장\",\n        \"must_include\": [],\n        \"may_include\": [\n          \"\"\n        ],\n        \"must_not_include\": []\n      },\n      \"4_doctor_tip\": {\n        \"subtitle\": \"의사의 조언\",\n        \"summary\": \"구강 건강을 유지하기 위한 전문가의 조언을 제공합니다.  올바른 양치 방법, 정기적인 검진의 중요성 등을 설명하고,  개인에게 맞는 구강 관리 방법을 제시합니다.\",\n        \"write_instruction\": \"톤=전문적, 친절, 길이=300~500자, 금지어=과장/비교/보장\",\n        \"must_include\": [],\n        \"may_include\": [],\n        \"must_not_include\": [\n          \"가격\",\n          \"이벤트\"\n        ]\n      },\n      \"5_treatment\": {\n        \"subtitle\": \"치료 과정 및 방법\",\n        \"summary\": \"다양한 일반진료 치료 방법에 대해 설명합니다.  각 치료의 특징과 장단점을 비교하여 환자의 선택을 돕고,  치료 후 관리 방법에 대해 자세하게 안내합니다.\",\n        \"write_instruction\": \"톤=전문적, 친절, 길이=300~500자, 금지어=과장/비교/보장\",\n        \"must_include\": [],\n        \"may_include\": [\n          \"\",\n          \"일반진료\"\n        ],\n        \"must_not_include\": [\n          \"가격\",\n          \"무통증 단정\"\n        ]\n      },\n      \"6_check_point\": {\n        \"subtitle\": \"주의사항 및 관리\",\n        \"summary\": \"치료 후 주의사항과 관리 방법에 대해 설명합니다.  정기적인 검진의 중요성을 강조하고,  환자 스스로 구강 건강을 관리할 수 있도록 구체적인 방법을 제시합니다.\",\n        \"write_instruction\": \"톤=전문적, 친절, 길이=300~500자, 금지어=과장/비교/보장\",\n        \"must_include\": [],\n        \"may_include\": [\n          \"경기 화성\"\n        ],\n        \"must_not_include\": [\n          \"과장표현\"\n        ]\n      },\n      \"7_conclusion\": {\n        \"subtitle\": \"마무리\",\n        \"summary\": \"일반진료에 대한 내용을 요약하고,  건강한 구강 관리를 위한 메시지를 전달합니다.  정기적인 검진의 중요성을 다시 한번 강조합니다.\",\n        \"write_instruction\": \"톤=전문적, 친절, 길이=300~500자, 금지어=과장/비교/보장\",\n        \"must_include\": [],\n        \"may_include\": [],\n        \"must_not_include\": [\n          \"가격\",\n          \"이벤트\",\n          \"전화번호 직기재\"\n        ]\n      }\n    }\n  }\n}\n```\n",
+  "output_paths": {
+    "plan_path": "test_logs/use/20250826/20250826_132429_plan.json"
+  },
+  "plan_preview": {
+    "title_plan": {
+      "guidance": "경기/화성/경기 화성 + 카테고리 + 핵심 키워드",
+      "must_include_one_of": [
+        "경기",
+        "화성",
+        "경기 화성"
+      ],
+      "must_include": [],
+      "must_not_include": [
+        "내이튼치과의원",
+        "가격",
+        "이벤트",
+        "전화번호",
+        "1등",
+        "최고",
+        "완치",
+        "보장"
+      ],
+      "tone": "전문적·친절한 의사 설명",
+      "hints": {
+        "category": "일반진료",
+        "region_examples": [
+          "화성시",
+          "병점",
+          "동탄"
+        ]
+      }
+    },
+    "sections_order": [
+      "1_intro",
+      "2_visit",
+      "3_inspection",
+      "4_doctor_tip",
+      "5_treatment",
+      "6_check_point",
+      "7_conclusion"
+    ]
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "mode": "use",
+  "timestamp": "20250826_130605",
+  "plan_source": "(provided dict)",
+  "plan_snapshot": {
+    "title_plan": {
+      "guidance": "경기/화성/경기 화성 + 카테고리 + 핵심 키워드",
+      "must_include_one_of": [
+        "경기",
+        "화성",
+        "경기 화성"
+      ],
+      "must_include": [],
+      "must_not_include": [
+        "내이튼치과의원",
+        "가격",
+        "이벤트",
+        "전화번호",
+        "1등",
+        "최고",
+        "완치",
+        "보장"
+      ],
+      "tone": "전문적·친절한 의사 설명",
+      "hints": {
+        "category": "일반진료",
+        "region_examples": [
+          "화성시",
+          "병점",
+          "동탄"
+        ]
+      }
+    },
+    "content_plan": {
+      "sections_order": [
+        "1_intro",
+        "2_visit",
+        "3_inspection",
+        "4_doctor_tip",
+        "5_treatment",
+        "6_check_point",
+        "7_conclusion"
+      ],
+      "sections": {
+        "1_intro": {
+          "subtitle": "일반진료 소개",
+          "summary": "본 글에서는 일반진료에 대한 정보를 제공합니다.  다양한 구강 질환에 대한 이해를 돕고, 예방 및 관리법에 대해 알아보겠습니다.",
+          "write_instruction": "일반진료의 중요성과 범위를 설명하고,  본 글에서 다룰 내용을 간략하게 소개합니다. 300~500자, 전문적이고 친절한 어조로 작성합니다. 과장이나 비교 표현은 사용하지 않습니다.",
+          "must_include": [],
+          "may_include": [
+            "",
+            "일반진료"
+          ],
+          "must_not_include": [],
+          "image_binding": []
+        },
+        "2_visit": {
+          "subtitle": "내원 및 상담",
+          "summary": "환자분의 내원 과정과 상담 내용을 간략하게 설명합니다.  초진 시 필요한 준비물이나 유의사항을 안내합니다.",
+          "write_instruction": "환자의 내원 동기, 병력 청취 과정 등을 자세히 설명합니다.  300~500자, 전문적이고 친절한 어조로 작성합니다. 과장이나 비교 표현은 사용하지 않습니다.",
+          "must_include": [],
+          "may_include": [
+            "",
+            "경기 화성"
+          ],
+          "must_not_include": [],
+          "image_binding": []
+        },
+        "3_inspection": {
+          "subtitle": "정밀 검사 및 진단",
+          "summary": "구강 검진 및 필요한 검사에 대해 설명합니다.  정확한 진단을 위한 과정을 자세히 설명합니다.",
+          "write_instruction": "진찰, 방사선 사진 촬영 등의 검사 과정과 그 중요성을 설명합니다. 300~500자, 전문적이고 친절한 어조로 작성합니다. 과장이나 비교 표현은 사용하지 않습니다.",
+          "must_include": [],
+          "may_include": [
+            ""
+          ],
+          "must_not_include": [],
+          "image_binding": []
+        },
+        "4_doctor_tip": {
+          "subtitle": "의사의 조언",
+          "summary": "의사의 전문적인 의견을 바탕으로 환자에게 도움이 될 만한 정보를 제공합니다. 예방 및 관리법에 대한 조언을 포함합니다.",
+          "write_instruction": "전문적인 지식을 바탕으로 환자에게 도움이 되는 정보를 제공합니다.  예방 및 관리법에 대한 구체적인 설명을 포함합니다. 300~500자, 전문적이고 친절한 어조로 작성합니다. 과장이나 비교 표현은 사용하지 않습니다.",
+          "must_include": [],
+          "may_include": [],
+          "must_not_include": [
+            "가격",
+            "이벤트"
+          ],
+          "image_binding": []
+        },
+        "5_treatment": {
+          "subtitle": "치료 계획 및 과정",
+          "summary": "치료 계획 및 과정에 대한 설명을 제공합니다.  각 치료 단계별로 자세하게 설명합니다.",
+          "write_instruction": "치료 계획, 단계별 과정, 사용되는 재료 등에 대한 자세한 설명을 제공합니다.  300~500자, 전문적이고 친절한 어조로 작성합니다. 과장이나 비교 표현, 가격, 무통증 보장 등은 사용하지 않습니다.",
+          "must_include": [],
+          "may_include": [
+            "",
+            "일반진료"
+          ],
+          "must_not_include": [
+            "가격",
+            "무통증 단정"
+          ],
+          "image_binding": []
+        },
+        "6_check_point": {
+          "subtitle": "치료 후 주의사항",
+          "summary": "치료 후 주의사항과 관리법에 대한 정보를 제공합니다.  환자의 빠른 회복을 위한 구체적인 지침을 제공합니다.",
+          "write_instruction": "치료 후 주의사항, 관리법, 정기 검진의 중요성 등을 설명합니다.  300~500자, 전문적이고 친절한 어조로 작성합니다. 과장이나 비교 표현은 사용하지 않습니다.",
+          "must_include": [],
+          "may_include": [
+            "경기 화성"
+          ],
+          "must_not_include": [
+            "과장표현"
+          ],
+          "image_binding": []
+        },
+        "7_conclusion": {
+          "subtitle": "마무리",
+          "summary": "본 글에서 다룬 내용을 요약하고,  추가적인 문의 방법을 안내합니다.",
+          "write_instruction": "본 글의 내용을 간략하게 요약하고, 추가적인 문의에 대한 안내를 제공합니다.  300~500자, 전문적이고 친절한 어조로 작성합니다. 과장이나 비교 표현, 가격, 이벤트, 전화번호 직접 기재는 사용하지 않습니다.",
+          "must_include": [],
+          "may_include": [],
+          "must_not_include": [
+            "가격",
+            "이벤트",
+            "전화번호 직기재"
+          ],
+          "image_binding": []
+        }
+      }
+    },
+    "context_vars": {
+      "hospital_name": "내이튼치과의원",
+      "save_name": "내이튼치과의원",
+      "city": "경기",
+      "district": "화성",
+      "region_phrase": "경기 화성",
+      "category": "일반진료",
+      "map_link": ""
+    },
+    "meta": {
+      "mode": "use",
+      "timestamp": "20250826_130601",
+      "case_id": "case_내이튼치과의원_20250826_130549",
+      "source_log": "(provided dict)"
+    }
+  },
+  "used_data": {
+    "category": "일반진료",
+    "city": "경기",
+    "district": "화성",
+    "region_phrase": "경기 화성",
+    "representative_persona": "",
+    "section_summaries": {
+      "1_intro": "본 글에서는 일반진료에 대한 정보를 제공합니다.  다양한 구강 질환에 대한 이해를 돕고, 예방 및 관리법에 대해 알아보겠습니다.",
+      "2_visit": "환자분의 내원 과정과 상담 내용을 간략하게 설명합니다.  초진 시 필요한 준비물이나 유의사항을 안내합니다.",
+      "3_inspection": "구강 검진 및 필요한 검사에 대해 설명합니다.  정확한 진단을 위한 과정을 자세히 설명합니다.",
+      "4_doctor_tip": "의사의 전문적인 의견을 바탕으로 환자에게 도움이 될 만한 정보를 제공합니다. 예방 및 관리법에 대한 조언을 포함합니다.",
+      "5_treatment": "치료 계획 및 과정에 대한 설명을 제공합니다.  각 치료 단계별로 자세하게 설명합니다.",
+      "6_check_point": "치료 후 주의사항과 관리법에 대한 정보를 제공합니다.  환자의 빠른 회복을 위한 구체적인 지침을 제공합니다.",
+      "7_conclusion": "본 글에서 다룬 내용을 요약하고,  추가적인 문의 방법을 안내합니다."
+    }
+  }
+}
