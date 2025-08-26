@@ -31,7 +31,7 @@ class N8nCompletionRequest(BaseModel):
     post_id: str
     workflow_id: str
     timestamp: str
-    n8n_result: Optional[Dict[str, Any]] = None
+    n8n_result: str
 
 @app.get("/")
 async def root():
