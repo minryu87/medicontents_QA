@@ -1297,8 +1297,8 @@ export default function Home() {
                     }
                 }
                 
-                // 5. n8n 완료 확인 (폴링)
-                addLog('n8n 워크플로우 완료 대기 중...');
+                // 5. Airtable Status 확인 (폴링) - 자동 생성과 동일한 로직
+                addLog('AI Agent 작업 완료 대기 중...');
                 let isCompleted = false;
                 let attempts = 0;
                 const maxAttempts = 60; // 5분 대기
@@ -1308,55 +1308,52 @@ export default function Home() {
                     attempts++;
                     
                     try {
-                        addLog(`n8n 완료 확인 시도 ${attempts}/${maxAttempts}...`);
-                        const completionResponse = await fetch(`${API_BASE_URL}/api/n8n-completion`, {
-                            method: 'POST',
+                        addLog(`완료 확인 시도 ${attempts}/${maxAttempts}...`);
+                        
+                        // Post Data Requests 테이블에서 Status 확인
+                        const postDataResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Post%20Data%20Requests?filterByFormula={Post%20ID}='${postId}'`, {
                             headers: {
+                                'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
                                 'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                post_id: postId,
-                                workflow_id: 'medicontent_autoblog_QA_manual',
-                                timestamp: new Date().toISOString(),
-                                n8n_result: 'success'
-                            })
+                            }
                         });
                         
-                        if (completionResponse.ok) {
-                            const completionData = await completionResponse.json();
-                            addLog(`n8n 응답: ${JSON.stringify(completionData, null, 2)}`);
+                        if (postDataResponse.ok) {
+                            const postData = await postDataResponse.json();
+                            const postDataStatus = postData.records?.[0]?.fields?.Status || '';
+                            addLog(`Post Data Requests Status: ${postDataStatus}`);
                             
-                            if (completionData.is_completed) {
-                                addLog('n8n 워크플로우 완료 확인됨');
-                                addLog('후속 작업 완료');
-                                
-                                // 완료된 포스팅을 자동으로 선택하여 HTML 렌더링
-                                try {
-                                    const completedPostsResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts?filterByFormula={Post%20Id}='${postId}'`, {
-                                        headers: {
-                                            'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-                                            'Content-Type': 'application/json'
-                                        }
-                                    });
-                                    
-                                    if (completedPostsResponse.ok) {
-                                        const data = await completedPostsResponse.json();
-                                        if (data.records && data.records.length > 0) {
-                                            setSelectedPost(data.records[0]);
-                                            addLog('완료된 포스팅을 우측 패널에 표시합니다.');
-                                        }
-                                    }
-                                } catch (error) {
-                                    addLog(`포스팅 선택 중 오류: ${error}`);
+                            // Medicontent Posts 테이블에서 Status 확인
+                            const medicontentResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts?filterByFormula={Post%20Id}='${postId}'`, {
+                                headers: {
+                                    'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+                                    'Content-Type': 'application/json'
                                 }
+                            });
+                            
+                            if (medicontentResponse.ok) {
+                                const medicontentData = await medicontentResponse.json();
+                                const medicontentStatus = medicontentData.records?.[0]?.fields?.Status || '';
+                                addLog(`Medicontent Posts Status: ${medicontentStatus}`);
                                 
-                                isCompleted = true;
+                                // 두 테이블 모두 완료 상태인지 확인
+                                if (postDataStatus === '완료' && medicontentStatus === '작업 완료') {
+                                    addLog('✅ 모든 작업 완료 확인됨');
+                                    
+                                    // 완료된 포스팅을 자동으로 선택하여 HTML 렌더링
+                                    setSelectedPost(medicontentData.records[0]);
+                                    addLog('완료된 포스팅을 우측 패널에 표시합니다.');
+                                    
+                                    isCompleted = true;
+                                } else {
+                                    addLog(`⏳ 작업 진행 중... (${attempts}/${maxAttempts})`);
+                                    addLog(`상태: Post Data=${postDataStatus}, Medicontent=${medicontentStatus}`);
+                                }
                             } else {
-                                addLog(`n8n 워크플로우 진행 중... (${attempts}/${maxAttempts})`);
-                                addLog(`상태: Post Data=${completionData.post_data_status}, Medicontent=${completionData.medicontent_status}`);
+                                addLog(`Medicontent Posts 조회 실패: ${medicontentResponse.status}`);
                             }
                         } else {
-                            addLog(`n8n 완료 확인 실패: ${completionResponse.status}`);
+                            addLog(`Post Data Requests 조회 실패: ${postDataResponse.status}`);
                         }
                     } catch (error) {
                         addLog(`완료 확인 중 오류: ${error}`);
@@ -1364,7 +1361,7 @@ export default function Home() {
                 }
                 
                 if (!isCompleted) {
-                    addLog('n8n 워크플로우 완료 시간 초과');
+                    addLog('❌ 작업 완료 시간 초과');
                 }
             } else {
                 // 폴링 중지
