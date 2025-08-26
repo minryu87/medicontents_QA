@@ -224,7 +224,8 @@ export default function Home() {
         total: 0,
         completed: 0,
         current: 0,
-        startTime: 0
+        startTime: 0,
+        isCompleted: false
     });
 
     // 탭 변경 시 우측 패널 초기화
@@ -241,7 +242,8 @@ export default function Home() {
             total: 0,
             completed: 0,
             current: 0,
-            startTime: 0
+            startTime: 0,
+            isCompleted: false
         });
     };
 
@@ -415,7 +417,8 @@ export default function Home() {
                 total: autoFormData.count,
                 completed: 0,
                 current: 0,
-                startTime: startTime
+                startTime: startTime,
+                isCompleted: false
             });
             
             addLog('자동 생성 웹훅 호출 시작...');
@@ -542,9 +545,11 @@ export default function Home() {
                         const totalTime = Math.round((endTime - startTime) / 1000);
                         addLog(`🎉 자동 생성 프로세스 완료 (소요시간: ${totalTime}초)`);
                         
-                        setTimeout(() => {
-                            setAutoProcessing(false);
-                        }, 3000);
+                        // 완료 후에도 진행 상황 표시 유지
+                        setAutoProgress(prev => ({
+                            ...prev,
+                            isCompleted: true
+                        }));
                         return;
                     }
                     
@@ -665,6 +670,12 @@ export default function Home() {
                         if (postId && !trackedPostIds.includes(postId)) {
                             trackedPostIds.push(postId);
                             addLog(`🆔 새로운 Post ID 발견: ${postId}`);
+                            
+                            // 새로운 Post ID 발견 시 current 업데이트
+                            setAutoProgress(prev => ({
+                                ...prev,
+                                current: Math.max(prev.current, trackedPostIds.length + 1)
+                            }));
                         }
                     });
                     
@@ -706,6 +717,12 @@ export default function Home() {
                                                     if (medicontentStatus === '작업 완료') {
                                                         completedPostIds.push(postId);
                                                         addLog(`✅ Post ID ${postId} 모든 작업 완료 확인됨 (Post Data: 완료, Medicontent: 작업 완료)`);
+                                                        
+                                                        // autoProgress 상태 업데이트
+                                                        setAutoProgress(prev => ({
+                                                            ...prev,
+                                                            completed: prev.completed + 1
+                                                        }));
                                                     } else if (medicontentStatus === '리걸케어 작업 중') {
                                                         addLog(`📊 Post ID ${postId} Agent 작업 완료, n8n 후속 작업 진행 중...`);
                                                     } else {
@@ -715,6 +732,12 @@ export default function Home() {
                                             }
                                         } else if (postDataStatus === '처리 중') {
                                             addLog(`📊 Post ID ${postId} Agent 작업 진행 중...`);
+                                            
+                                            // 진행 중인 작업으로 current 업데이트
+                                            setAutoProgress(prev => ({
+                                                ...prev,
+                                                current: Math.max(prev.current, trackedPostIds.length)
+                                            }));
                                         } else {
                                             addLog(`📊 Post ID ${postId} Post Data Status: ${postDataStatus}`);
                                         }
@@ -734,9 +757,11 @@ export default function Home() {
                         addLog(`✅ 완료된 Post ID 목록: ${completedPostIds.join(', ')}`);
                         addLog(`✅ 자동 생성 프로세스가 성공적으로 완료되었습니다. (소요시간: ${totalTime}초)`);
                         
-                        setTimeout(() => {
-                            setAutoProcessing(false);
-                        }, 3000);
+                        // 완료 후에도 진행 상황 표시 유지
+                        setAutoProgress(prev => ({
+                            ...prev,
+                            isCompleted: true
+                        }));
                         return;
                     }
                     
@@ -1051,9 +1076,9 @@ export default function Home() {
         }
     };
 
-    // 로그 추가 함수
+    // 로그 추가 함수 (최신 메시지가 위에 표시되도록)
     const addLog = (message: string) => {
-        setLogs(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`]);
+        setLogs(prev => [`${new Date().toLocaleTimeString()}: ${message}`, ...prev]);
     };
 
     // 이미지 업로드 핸들러
@@ -2072,16 +2097,54 @@ export default function Home() {
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     생성할 포스팅 개수
                                 </label>
-                                <input
-                                    type="number"
-                                    min="1"
-                                    max="10"
-                                    value={autoFormData.count}
-                                    onChange={(e) => setAutoFormData(prev => ({ ...prev, count: parseInt(e.target.value) || 1 }))}
-                                    className="w-full p-2 border border-gray-300 rounded-md"
-                                    disabled={autoProcessing}
-                                />
-                                <p className="text-xs text-gray-500 mt-1">1-10개까지 생성 가능합니다.</p>
+                                <div className="flex items-center space-x-3">
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max="100"
+                                        value={autoFormData.count}
+                                        onChange={(e) => {
+                                            const value = parseInt(e.target.value) || 1;
+                                            const clampedValue = Math.max(1, Math.min(100, value));
+                                            setAutoFormData(prev => ({ ...prev, count: clampedValue }));
+                                        }}
+                                        className="flex-1 p-2 border border-gray-300 rounded-md"
+                                        disabled={autoProcessing}
+                                        placeholder="1-100"
+                                    />
+                                    <span className="text-sm text-gray-500 whitespace-nowrap">
+                                        개
+                                    </span>
+                                </div>
+                                
+                                {/* 슬라이더 */}
+                                <div className="mt-3">
+                                    <input
+                                        type="range"
+                                        min="1"
+                                        max="100"
+                                        step="10"
+                                        value={autoFormData.count}
+                                        onChange={(e) => setAutoFormData(prev => ({ ...prev, count: parseInt(e.target.value) }))}
+                                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                                        disabled={autoProcessing}
+                                    />
+                                    <div className="flex justify-between text-xs text-gray-500 mt-1">
+                                        <span>1</span>
+                                        <span>10</span>
+                                        <span>20</span>
+                                        <span>30</span>
+                                        <span>40</span>
+                                        <span>50</span>
+                                        <span>60</span>
+                                        <span>70</span>
+                                        <span>80</span>
+                                        <span>90</span>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                                
+                                <p className="text-xs text-gray-500 mt-2">1-100개까지 생성 가능합니다. (10개 단위로 슬라이더 조정 가능)</p>
                             </div>
 
                             {/* 자동 생성 버튼 */}
@@ -2224,20 +2287,23 @@ export default function Home() {
                                 </div>
 
                                 {/* 자동 생성 진행 상황 표시 */}
-                                {autoProcessing && (
-                                    <div className="mb-4 p-4 bg-blue-50 rounded-lg">
+                                {(autoProcessing || autoProgress.isCompleted) && (
+                                    <div className={`mb-4 p-4 rounded-lg ${autoProgress.isCompleted ? 'bg-green-50' : 'bg-blue-50'}`}>
                                         <div className="flex items-center justify-between mb-2">
-                                            <span className="text-sm font-medium text-blue-800">
-                                                전체 {autoProgress.total}개 중 {autoProgress.current}개 진행 중
+                                            <span className={`text-sm font-medium ${autoProgress.isCompleted ? 'text-green-800' : 'text-blue-800'}`}>
+                                                {autoProgress.isCompleted 
+                                                    ? `✅ 전체 ${autoProgress.total}개 작업 완료!` 
+                                                    : `전체 ${autoProgress.total}개 중 ${autoProgress.current}개 진행 중`
+                                                }
                                             </span>
-                                            <span className="text-sm text-blue-600">
+                                            <span className={`text-sm ${autoProgress.isCompleted ? 'text-green-600' : 'text-blue-600'}`}>
                                                 완료: {autoProgress.completed}/{autoProgress.total}
                                             </span>
                                         </div>
-                                        <div className="w-full bg-blue-200 rounded-full h-3">
+                                        <div className={`w-full rounded-full h-3 ${autoProgress.isCompleted ? 'bg-green-200' : 'bg-blue-200'}`}>
                                             <div 
-                                                className="bg-blue-500 h-3 rounded-full transition-all duration-300"
-                                                style={{ width: `${(autoProgress.current / autoProgress.total) * 100}%` }}
+                                                className={`h-3 rounded-full transition-all duration-300 ${autoProgress.isCompleted ? 'bg-green-500' : 'bg-blue-500'}`}
+                                                style={{ width: `${autoProgress.isCompleted ? 100 : (autoProgress.current / autoProgress.total) * 100}%` }}
                                             ></div>
                                         </div>
                                         {autoProgress.startTime > 0 && (
