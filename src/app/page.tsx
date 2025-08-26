@@ -172,7 +172,6 @@ export default function Home() {
     const [logs, setLogs] = useState<string[]>([]);
     const [currentPostId, setCurrentPostId] = useState<string>('');
     const [isProcessing, setIsProcessing] = useState(false);
-    const [detailedLogs, setDetailedLogs] = useState<any[]>([]);
     
     // QA 검토 관련 상태
     const [qaData, setQaData] = useState<QAData>({
@@ -264,7 +263,7 @@ export default function Home() {
         }
     }, [isResizing]);
 
-    // 랜덤 데이터 불러오기
+    // 래덤 데이터 불러오기
     const loadRandomData = async () => {
         try {
             const response = await fetch('http://localhost:8000/api/random-post-data');
@@ -272,6 +271,25 @@ export default function Home() {
                 const data = await response.json();
                 if (data.status === 'success' && data.data) {
                     const randomData = data.data;
+                    
+                    // 샘플 이미지들을 File 객체로 생성
+                    const createSampleImageFile = (filename: string): File => {
+                        // 간단한 샘플 이미지 데이터 (1x1 픽셀 JPEG)
+                        const sampleImageData = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
+                        const byteCharacters = atob(sampleImageData.split(',')[1]);
+                        const byteNumbers = new Array(byteCharacters.length);
+                        for (let i = 0; i < byteCharacters.length; i++) {
+                            byteNumbers[i] = byteCharacters.charCodeAt(i);
+                        }
+                        const byteArray = new Uint8Array(byteNumbers);
+                        const blob = new Blob([byteArray], { type: 'image/jpeg' });
+                        return new File([blob], filename, { type: 'image/jpeg' });
+                    };
+                    
+                    // 샘플 이미지 파일들 생성
+                    const beforeImage = createSampleImageFile('sample_before.jpg');
+                    const processImage = createSampleImageFile('sample_process.jpg');
+                    const afterImage = createSampleImageFile('sample_after.jpg');
                     
                     // 폼 데이터 업데이트
                     setFormData(prev => ({
@@ -282,14 +300,17 @@ export default function Home() {
                             randomData.treatment_process_message || '',
                             randomData.treatment_result_message || '',
                             randomData.additional_message || '',
-                            '', // 이미지 설명은 비워둠
-                            '', // 이미지 설명은 비워둠
-                            ''  // 이미지 설명은 비워둠
-                        ]
+                            '초진 시 촬영한 파노라마 사진. 치아 주변으로 잇몸 손상 확인됨',
+                            '디지털 가이드 사진',
+                            '임플란트 완료 후 정상적으로 재건된 모습'
+                        ],
+                        beforeImages: [beforeImage],
+                        processImages: [processImage],
+                        afterImages: [afterImage]
                     }));
                     
                     // 성공 메시지 표시
-                    alert('기존 데이터를 성공적으로 불러왔습니다!');
+                    alert('기존 데이터와 샘플 이미지를 성공적으로 불러왔습니다!');
                 } else {
                     alert('데이터를 불러오는데 실패했습니다.');
                 }
@@ -584,7 +605,6 @@ export default function Home() {
                         if (logResponse.ok) {
                             const logData = await logResponse.json();
                             if (logData.logs && logData.logs.length > 0) {
-                                setDetailedLogs(logData.logs);
                                 // 새로운 로그들을 간단한 로그에도 추가
                                 logData.logs.forEach((log: any) => {
                                     if (log.level === 'INFO' || log.level === 'ERROR' || log.level === 'WARNING') {
@@ -618,11 +638,10 @@ export default function Home() {
                 const agentData = await agentResponse.json();
                 addLog('AI Agent 실행 완료');
                 
-                // 상세한 로그 처리
+                // 로그 처리
                 console.log('Agent 응답:', agentData);
                 
                 if (agentData.logs && Array.isArray(agentData.logs)) {
-                    setDetailedLogs(agentData.logs);
                     addLog(`상세 로그 ${agentData.logs.length}개 수신됨`);
                     
                     // 중요한 로그 메시지들을 간단한 로그에도 추가
@@ -636,7 +655,6 @@ export default function Home() {
                         }
                     });
                 } else if (agentData.result && agentData.result.logs && Array.isArray(agentData.result.logs)) {
-                    setDetailedLogs(agentData.result.logs);
                     addLog(`상세 로그 ${agentData.result.logs.length}개 수신됨 (result 내부)`);
                     
                     // 중요한 로그 메시지들을 간단한 로그에도 추가
@@ -736,7 +754,6 @@ export default function Home() {
                 try {
                     const errorData = JSON.parse(errorText);
                     if (errorData.logs && Array.isArray(errorData.logs)) {
-                        setDetailedLogs(errorData.logs);
                         addLog(`오류 상세 로그 ${errorData.logs.length}개 수신됨`);
                     }
                 } catch (e) {
@@ -1563,51 +1580,22 @@ export default function Home() {
                                     <h3 className="text-lg font-semibold">작업 진행 상황</h3>
                                     <div className="flex space-x-2">
                                         <button
-                                            onClick={() => setDetailedLogs([])}
+                                            onClick={() => setLogs([])}
                                             className="px-3 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded"
                                         >
                                             로그 초기화
                                         </button>
-                                        <span className="text-xs text-gray-500">
-                                            {detailedLogs.length}개 상세 로그
-                                        </span>
                                     </div>
                                 </div>
                                 
-                                {/* 간단한 로그 */}
-                                <div className="mb-4">
-                                    <h4 className="text-sm font-medium text-gray-700 mb-2">진행 상황</h4>
-                                    <div className="bg-gray-900 text-green-400 p-3 rounded-lg font-mono text-sm h-32 overflow-auto">
-                                        {logs.map((log, index) => (
-                                            <div key={index} className="mb-1">
-                                                {log}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                                
-                                {/* 상세한 로그 */}
-                                {detailedLogs.length > 0 && (
-                                    <div>
-                                        <h4 className="text-sm font-medium text-gray-700 mb-2">상세 로그</h4>
-                                        <div className="bg-gray-900 text-gray-300 p-3 rounded-lg font-mono text-xs h-80 overflow-auto">
-                                            {detailedLogs.map((log, index) => (
-                                                <div key={index} className="mb-1">
-                                                    <span className="text-gray-500">[{log.timestamp}]</span>
-                                                    <span className={`ml-2 ${
-                                                        log.level === 'ERROR' ? 'text-red-400' :
-                                                        log.level === 'WARNING' ? 'text-yellow-400' :
-                                                        log.level === 'INFO' ? 'text-blue-400' :
-                                                        'text-gray-400'
-                                                    }`}>
-                                                        [{log.level}]
-                                                    </span>
-                                                    <span className="ml-2">{log.message}</span>
-                                                </div>
-                                            ))}
+                                {/* 로그 창 - 최대 높이 제한 */}
+                                <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-auto" style={{ maxHeight: 'calc(100vh - 200px)', minHeight: '400px' }}>
+                                    {logs.map((log, index) => (
+                                        <div key={index} className="mb-1">
+                                            {log}
                                         </div>
-                                    </div>
-                                )}
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     ) : selectedPost ? (
