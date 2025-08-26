@@ -172,6 +172,7 @@ export default function Home() {
     const [logs, setLogs] = useState<string[]>([]);
     const [currentPostId, setCurrentPostId] = useState<string>('');
     const [isProcessing, setIsProcessing] = useState(false);
+    const [detailedLogs, setDetailedLogs] = useState<any[]>([]);
     
     // QA 검토 관련 상태
     const [qaData, setQaData] = useState<QAData>({
@@ -184,6 +185,8 @@ export default function Home() {
     });
     const [isSavingQA, setIsSavingQA] = useState(false);
     const [savedFields, setSavedFields] = useState<Set<string>>(new Set());
+    const [leftPanelWidth, setLeftPanelWidth] = useState(50); // 좌측 패널 너비 (%)
+    const [isResizing, setIsResizing] = useState(false);
     const [reviewerOptions, setReviewerOptions] = useState<string[]>(['YB', 'Min', 'Hani', 'Hyuni', 'Naten']);
     const [showNewReviewerInput, setShowNewReviewerInput] = useState(false);
     const [newReviewerName, setNewReviewerName] = useState('');
@@ -223,6 +226,81 @@ export default function Home() {
             console.error('localStorage 로드 실패:', error);
         }
     }, []);
+
+    // 리사이즈 관련 함수들
+    const handleMouseDown = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setIsResizing(true);
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+        if (!isResizing) return;
+        
+        const container = document.getElementById('main-container');
+        if (!container) return;
+        
+        const containerRect = container.getBoundingClientRect();
+        const newWidth = ((e.clientX - containerRect.left) / containerRect.width) * 100;
+        
+        // 최소 20%, 최대 80%로 제한
+        const clampedWidth = Math.max(20, Math.min(80, newWidth));
+        setLeftPanelWidth(clampedWidth);
+    };
+
+    const handleMouseUp = () => {
+        setIsResizing(false);
+    };
+
+    // 마우스 이벤트 리스너 등록
+    useEffect(() => {
+        if (isResizing) {
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+            
+            return () => {
+                document.removeEventListener('mousemove', handleMouseMove);
+                document.removeEventListener('mouseup', handleMouseUp);
+            };
+        }
+    }, [isResizing]);
+
+    // 랜덤 데이터 불러오기
+    const loadRandomData = async () => {
+        try {
+            const response = await fetch('http://localhost:8000/api/random-post-data');
+            if (response.ok) {
+                const data = await response.json();
+                if (data.status === 'success' && data.data) {
+                    const randomData = data.data;
+                    
+                    // 폼 데이터 업데이트
+                    setFormData(prev => ({
+                        ...prev,
+                        questions: [
+                            randomData.concept_message || '',
+                            randomData.patient_condition || '',
+                            randomData.treatment_process_message || '',
+                            randomData.treatment_result_message || '',
+                            randomData.additional_message || '',
+                            '', // 이미지 설명은 비워둠
+                            '', // 이미지 설명은 비워둠
+                            ''  // 이미지 설명은 비워둠
+                        ]
+                    }));
+                    
+                    // 성공 메시지 표시
+                    alert('기존 데이터를 성공적으로 불러왔습니다!');
+                } else {
+                    alert('데이터를 불러오는데 실패했습니다.');
+                }
+            } else {
+                alert('서버 오류가 발생했습니다.');
+            }
+        } catch (error) {
+            console.error('랜덤 데이터 불러오기 오류:', error);
+            alert('데이터를 불러오는 중 오류가 발생했습니다.');
+        }
+    };
 
     // 신규 검토자 추가
     const addNewReviewer = () => {
@@ -428,6 +506,8 @@ export default function Home() {
 
     // 폼 제출 핸들러
     const handleSubmit = async () => {
+        let pollInterval: NodeJS.Timeout | undefined;
+        
         try {
             setIsProcessing(true);
             setLogs([]);
@@ -495,6 +575,34 @@ export default function Home() {
 
             // 4. Agent 실행
             addLog('AI Agent 실행 시작...');
+            
+            // 실시간 로그 폴링 시작
+            const startLogPolling = () => {
+                const pollInterval = setInterval(async () => {
+                    try {
+                        const logResponse = await fetch(`http://localhost:8000/api/get-logs/${postId}`);
+                        if (logResponse.ok) {
+                            const logData = await logResponse.json();
+                            if (logData.logs && logData.logs.length > 0) {
+                                setDetailedLogs(logData.logs);
+                                // 새로운 로그들을 간단한 로그에도 추가
+                                logData.logs.forEach((log: any) => {
+                                    if (log.level === 'INFO' || log.level === 'ERROR' || log.level === 'WARNING') {
+                                        addLog(`[${log.level}] ${log.message}`);
+                                    }
+                                });
+                            }
+                        }
+                    } catch (error) {
+                        console.error('로그 폴링 오류:', error);
+                    }
+                }, 2000); // 2초마다 폴링
+                
+                return pollInterval;
+            };
+            
+            const pollInterval = startLogPolling();
+            
             const agentResponse = await fetch('http://localhost:8000/api/process-post', {
                 method: 'POST',
                 headers: {
@@ -504,9 +612,49 @@ export default function Home() {
             });
 
             if (agentResponse.ok) {
+                // 폴링 중지
+                clearInterval(pollInterval);
+                
                 const agentData = await agentResponse.json();
                 addLog('AI Agent 실행 완료');
-                addLog(`Agent 응답: ${JSON.stringify(agentData, null, 2)}`);
+                
+                // 상세한 로그 처리
+                console.log('Agent 응답:', agentData);
+                
+                if (agentData.logs && Array.isArray(agentData.logs)) {
+                    setDetailedLogs(agentData.logs);
+                    addLog(`상세 로그 ${agentData.logs.length}개 수신됨`);
+                    
+                    // 중요한 로그 메시지들을 간단한 로그에도 추가
+                    agentData.logs.forEach((log: any) => {
+                        if (log.level === 'INFO' || log.level === 'ERROR' || log.level === 'WARNING') {
+                            const message = log.message.replace(/^.*?:\s*/, ''); // 로거 이름 제거
+                            if (message.includes('Step') || message.includes('Agent') || message.includes('실행') || 
+                                message.includes('완료') || message.includes('오류') || message.includes('실패')) {
+                                addLog(`[${log.level}] ${message}`);
+                            }
+                        }
+                    });
+                } else if (agentData.result && agentData.result.logs && Array.isArray(agentData.result.logs)) {
+                    setDetailedLogs(agentData.result.logs);
+                    addLog(`상세 로그 ${agentData.result.logs.length}개 수신됨 (result 내부)`);
+                    
+                    // 중요한 로그 메시지들을 간단한 로그에도 추가
+                    agentData.result.logs.forEach((log: any) => {
+                        if (log.level === 'INFO' || log.level === 'ERROR' || log.level === 'WARNING') {
+                            const message = log.message.replace(/^.*?:\s*/, ''); // 로거 이름 제거
+                            if (message.includes('Step') || message.includes('Agent') || message.includes('실행') || 
+                                message.includes('완료') || message.includes('오류') || message.includes('실패')) {
+                                addLog(`[${log.level}] ${message}`);
+                            }
+                        }
+                    });
+                } else {
+                    addLog(`Agent 응답 구조: ${Object.keys(agentData).join(', ')}`);
+                    if (agentData.result) {
+                        addLog(`Result 구조: ${Object.keys(agentData.result).join(', ')}`);
+                    }
+                }
                 
                 // 5. n8n 완료 확인 (폴링)
                 addLog('n8n 워크플로우 완료 대기 중...');
@@ -578,13 +726,31 @@ export default function Home() {
                     addLog('n8n 워크플로우 완료 시간 초과');
                 }
             } else {
+                // 폴링 중지
+                clearInterval(pollInterval);
+                
                 const errorText = await agentResponse.text();
                 addLog(`AI Agent 실행 실패: ${agentResponse.status} - ${errorText}`);
+                
+                // 오류 응답에서 상세 로그 추출 시도
+                try {
+                    const errorData = JSON.parse(errorText);
+                    if (errorData.logs && Array.isArray(errorData.logs)) {
+                        setDetailedLogs(errorData.logs);
+                        addLog(`오류 상세 로그 ${errorData.logs.length}개 수신됨`);
+                    }
+                } catch (e) {
+                    // JSON 파싱 실패 시 무시
+                }
             }
 
         } catch (error) {
             addLog(`오류 발생: ${error}`);
         } finally {
+            // 폴링 중지 (혹시 아직 실행 중이라면)
+            if (typeof pollInterval !== 'undefined') {
+                clearInterval(pollInterval);
+            }
             setIsProcessing(false);
         }
     };
@@ -983,13 +1149,21 @@ export default function Home() {
                 return (
                     <div className="flex-1 overflow-auto">
                         <div className="p-4">
-                            <div className="flex items-center gap-2 mb-4">
-                                <h3 className="text-lg font-semibold">수동 생성하기</h3>
-                                {currentPostId && (
-                                    <span className="text-xs font-mono bg-blue-100 px-2 py-1 rounded text-blue-600">
-                                        {currentPostId}
-                                    </span>
-                                )}
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center gap-2">
+                                    <h3 className="text-lg font-semibold">수동 생성하기</h3>
+                                    {currentPostId && (
+                                        <span className="text-xs font-mono bg-blue-100 px-2 py-1 rounded text-blue-600">
+                                            {currentPostId}
+                                        </span>
+                                    )}
+                                </div>
+                                <button
+                                    onClick={loadRandomData}
+                                    className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors text-sm"
+                                >
+                                    기존 데이터 불러오기
+                                </button>
                             </div>
                             
                             {/* 진료 유형 선택 */}
@@ -1318,9 +1492,16 @@ export default function Home() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <div className="flex h-screen">
+            <div 
+                id="main-container"
+                className="flex h-screen"
+                style={{ cursor: isResizing ? 'col-resize' : 'default' }}
+            >
                 {/* 좌측 패널 */}
-                <div className="w-1/2 bg-white border-r border-gray-200 flex flex-col">
+                <div 
+                    className="bg-white border-r border-gray-200 flex flex-col"
+                    style={{ width: `${leftPanelWidth}%` }}
+                >
                     {/* 탭 메뉴 */}
                     <div className="border-b border-gray-200">
                         <div className="flex">
@@ -1361,20 +1542,72 @@ export default function Home() {
                     {renderTabContent()}
                 </div>
 
+                {/* 리사이즈 핸들 */}
+                <div
+                    className="w-1 bg-gray-300 hover:bg-blue-400 cursor-col-resize flex items-center justify-center transition-colors"
+                    onMouseDown={handleMouseDown}
+                >
+                    <div className="w-0.5 h-8 bg-gray-400 rounded-full"></div>
+                </div>
+
                 {/* 우측 패널 */}
-                <div className="w-1/2 bg-white flex flex-col">
+                <div 
+                    className="bg-white flex flex-col"
+                    style={{ width: `${100 - leftPanelWidth}%` }}
+                >
                     {isProcessing ? (
                         // 작업 진행 중일 때 로그 표시
                         <div className="flex-1 overflow-auto">
                             <div className="p-4">
-                                <h3 className="text-lg font-semibold mb-4">작업 진행 상황</h3>
-                                <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm h-96 overflow-auto">
-                                    {logs.map((log, index) => (
-                                        <div key={index} className="mb-1">
-                                            {log}
-                                        </div>
-                                    ))}
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="text-lg font-semibold">작업 진행 상황</h3>
+                                    <div className="flex space-x-2">
+                                        <button
+                                            onClick={() => setDetailedLogs([])}
+                                            className="px-3 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded"
+                                        >
+                                            로그 초기화
+                                        </button>
+                                        <span className="text-xs text-gray-500">
+                                            {detailedLogs.length}개 상세 로그
+                                        </span>
+                                    </div>
                                 </div>
+                                
+                                {/* 간단한 로그 */}
+                                <div className="mb-4">
+                                    <h4 className="text-sm font-medium text-gray-700 mb-2">진행 상황</h4>
+                                    <div className="bg-gray-900 text-green-400 p-3 rounded-lg font-mono text-sm h-32 overflow-auto">
+                                        {logs.map((log, index) => (
+                                            <div key={index} className="mb-1">
+                                                {log}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                
+                                {/* 상세한 로그 */}
+                                {detailedLogs.length > 0 && (
+                                    <div>
+                                        <h4 className="text-sm font-medium text-gray-700 mb-2">상세 로그</h4>
+                                        <div className="bg-gray-900 text-gray-300 p-3 rounded-lg font-mono text-xs h-80 overflow-auto">
+                                            {detailedLogs.map((log, index) => (
+                                                <div key={index} className="mb-1">
+                                                    <span className="text-gray-500">[{log.timestamp}]</span>
+                                                    <span className={`ml-2 ${
+                                                        log.level === 'ERROR' ? 'text-red-400' :
+                                                        log.level === 'WARNING' ? 'text-yellow-400' :
+                                                        log.level === 'INFO' ? 'text-blue-400' :
+                                                        'text-gray-400'
+                                                    }`}>
+                                                        [{log.level}]
+                                                    </span>
+                                                    <span className="ml-2">{log.message}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     ) : selectedPost ? (

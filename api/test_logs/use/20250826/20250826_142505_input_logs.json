@@ -1,0 +1,328 @@
+[
+  {
+    "hospital": {
+      "name": "내이튼치과의원",
+      "save_name": "내이튼치과의원",
+      "address": "B동 507호 라스플로레스 경기도 화성시 동탄대로 537",
+      "phone": "031-526-2246"
+    },
+    "category": "일반진료",
+    "question1_concept": "전신질환(당뇨, 고혈압 등)이 있어도 체계적인 진단과 협진, 안정적인 혈당/혈압 관리가 동반된다면 안전하고 성공적인 임플란트 수술이 가능하다는 점을 강조. 임플란트는 단순히 빠진 치아를 대체하는 것을 넘어, 전신 건강과 삶의 질을 회복하는 중요한 치료임을 설명.",
+    "question2_condition": "50대 남성 환자로, 10년 이상 제2형 당뇨를 앓고 계셨지만 꾸준한 관리로 혈당 수치는 안정적이었습니다. 타 치과에서 아래 어금니의 수직 치근 파절로 발치 진단을 받았으나, 당뇨 때문에 임플란트가 어렵다는 말을 듣고 치료를 망설이며 내원하셨습니다. 해당 치아 주변 잇몸에 염증이 있었고, 저작 기능의 불편함을 호소하셨습니다.",
+    "question3_visit_images": [
+      {
+        "filename": {
+          "id": "attGoHbuQArAr50a6",
+          "width": 337,
+          "height": 201,
+          "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/C-01KKimpTU-QxmcfAr64w/DtATcUBatoHY7nwOEJkeoKz54dNHfsBxPCNQfu5JYvDbomL33puMiWOTo1lVBMU1TMOaMC06ZBRCQZjfuB_bdQIbbkScUwC0pS_Emo0Ja1vX_U1vi4nYH5zTto_59RgGKbFiyq2Y8m7j8GUZd_Yzu2rfJZv2BX1bEc2JRoIYT40/lQx58KbFm2zwxlSNn8Ld2S13_5Ji46LYqBSw0LkezlM",
+          "filename": "recitOSncYZmMmQ8k_1.JPG",
+          "size": 17971,
+          "type": "image/jpeg",
+          "thumbnails": {
+            "small": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/e5-EKHnGO8q64_msHmrV1A/djiixoJTbvw6wrFChLQuKTOeV6EmLnqRuqAn9vEH9KEZ4feAgLPH-p5ZgnLiRl6qhymrvDAViRi7B9UZjX-fOSvNHVu4ODWo5Ekuvcs7N-BU6VJWTd4Vc1hzfsi7rHXdS1zbWitY3f4VPr37miN9sg/TEDJ6-mDBXq253grDDiIVrKISB6I6oEMvl5A4kVxKxA",
+              "width": 60,
+              "height": 36
+            },
+            "large": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/DpI9uVxEBlFi9svkwIFuKg/6hXlNneZvgmiUOl5qgq1QGH6GUPvJhxWUJhgRo6l8snrNyhIiEfm-GEMD3be8A9YLATo-o69Qmqz-GRsOT26gaiBMcywjDh59bOzcKq_0okuHsI6ztsTl9O0nqTO5OTUJXaAfgwvrxGzIQx4eh1vhA/QrcytyIhq8fVdrXyC6bHLRKXECGdHnmQmULq7WZsi3E",
+              "width": 337,
+              "height": 201
+            },
+            "full": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/NrfsV5h-VIhuD5mIBi_KQQ/ROxmge62HKUizqynryGNePuEysjuYWiEwiZ6Dyx1RY_-__fue-X4KJMa40fjpEGJySLsL3t1aFi5mCQ4CadexiMf9VyU3eNy7GtvpW_ghsYNtan4O3eeJrmzJGc8u-_T2jmynAwNuF8trdC7lJOhLQ/ZHbEDxJ4naRXqADl3ur2d40IwpL5xN4p4wW4t31ddDE",
+              "width": 337,
+              "height": 201
+            }
+          }
+        },
+        "description": "해당 치아 주변 잇몸에 염증"
+      }
+    ],
+    "question4_treatment": "내과 주치의와의 협진을 통해 환자의 전신 건강 상태를 면밀히 확인하고, 수술 전후로 혈당 수치를 철저히 모니터링하는 등 '안전'을 최우선으로 한 치료 계획을 강조. 3D-CT를 이용한 정밀 진단으로 뼈의 상태를 정확히 파악하고, 최소 절개와 컴퓨터 분석 가이드 임플란트 수술을 통해 출혈과 통증을 최소화하고 감염 위험을 낮추는 등 당뇨 환자에게 특화된 섬세한 수술 과정을 부각.",
+    "question5_therapy_images": [
+      {
+        "filename": {
+          "id": "attNEeOigAaU3BnPL",
+          "width": 416,
+          "height": 139,
+          "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/nQ-uGZfy4cp1hW8iidmSBA/nUQvLGAZaf07b6kEPAdmvkNw9YZBb9De9zT-bB1qhzIIsQnUaxDq4nTArDIUvOuO3mc8208gtxiIuYf3ZJzkKi_dEX9-0qp6lt85g02l_V6rNTsf4mWSZh_KpEI-9o0vQ0vywbwgRXv1K9o2WH9xcp-gltgix2neHddThXy_Gqg/R2D7alfGH5snJGIE0URe1nNBk7HNc1xWhfCT_mP4Ue4",
+          "filename": "recitOSncYZmMmQ8k_2.JPG",
+          "size": 14157,
+          "type": "image/jpeg",
+          "thumbnails": {
+            "small": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/DhRwWgrQD73BQsik13gXPg/V4akI3R3BqStUnEb-rYuXvmr7bIdsmcoQyrel0dW_bHshMYiONM5hLCeVmbgOtGZdqsqWQkRUbxfuvkOR2wUJyJ99yMtSfmnzC-mc_AKK71JLcHTI7zjdQw5fhvajtalDZ1ceBkHVVVmpbkQFPDIIg/zgcu1B0nZzWCnqPkdyRl2J2i3stuc65Kv95EVAAKz_U",
+              "width": 108,
+              "height": 36
+            },
+            "large": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/9f4VUBsqwpVzB27_xMVoHA/ce2eTZSaP_jDdI6XQ9h5JjHCqe8RrQ5ytNiYYbtLOUNV2lQS0NburAw_wvWrZ35qiRDcZs_7oNfz3_HMAEIs7BObf7aheBkc4uYi6L-Ep2P0kgTvMMgOyx8IMbWx5ZLCBaIhSPQ7cz8sDOMnTZf9Zw/HimKBaxGgkSlGxz536WJ2NHxFdwYXMZWeFMmbnjGiGE",
+              "width": 416,
+              "height": 139
+            },
+            "full": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/7U-txuEEWZnVtSmgLbNI6A/WMBiYyP8QVl3DHqgcu6hBuXGneSd0UXFsRTK2URaZRA8LfEGge4xsOO8Ni7v3Io7oMfHlSZWjWzh_H0V_Ec2BbRpYHpGZ81DFsYi0Z6mKjzgpuj-H4gDu3Cu4eTV1vObFDAItZtj2NOE8mfbcBJs8w/GIY2unJf41MPWXsPRk4Xk_Ph8mBpt7xwal_xy_Sle-c",
+              "width": 416,
+              "height": 139
+            }
+          }
+        },
+        "description": "3D-CT를 이용한 정밀 진단으로 뼈의 상태를 정확히 파악"
+      }
+    ],
+    "question6_result": "성공적인 임플란트 식립과 안정적인 골유착을 통해, 환자가 이전에 가졌던 '당뇨 환자는 임플란트가 어렵다'는 편견을 극복하고 건강한 저작 기능을 회복한 점을 강조. 정밀한 보철물 제작으로 주변 치아와 자연스럽게 어우러지는 심미적 결과와 함께, 자신감을 되찾고 식사의 즐거움을 다시 누리게 된 환자의 만족감을 부각.",
+    "question7_result_images": [
+      {
+        "filename": {
+          "id": "att17sBM8sJZieOHn",
+          "width": 590,
+          "height": 313,
+          "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/qtMTREBzMJdfPZBcekMZeA/jjEJvsJO2ArfLS5BPsm-9NurRAe8-evyna7DqG8M_kgkMpwfOZc8j50elSy4HjCEoXZSMForUutpKSHfWKjQvmT9UxKYHwPhox8eM8bSLJVLgPZj9rw3t2vvIUZTSJRkZ2hU5hvLg47KjpiC0GSDcmagbFagMuTig2zYk64La6k/ecMGrf0FC3jRryZBsbBS1ew7jTXSYLw_UPd0lCCSLe4",
+          "filename": "recitOSncYZmMmQ8k_3.JPG",
+          "size": 44335,
+          "type": "image/jpeg",
+          "thumbnails": {
+            "small": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/cCADn4cjmork3mV-rxlBPw/mvdhj9RQyfuNSGhKjuvtnqZUivu3gk5ACI3_cJLB4ZyfyrRGpFtlxFKkN_cGAXOM0ZEkIW1Poc4SSO-spnxwPz075CZ0zHRJcuKhaGAjdI6q9XAxJrGKUG8EE8gdcK-IIxLX7jz2Qod2-znzWhSrlg/_RuQGM17pcamEAAnGFUjuN2YobLZ58YW3EO1xjgPxus",
+              "width": 67,
+              "height": 36
+            },
+            "large": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/iTwQIfhfFb9FMZt7MqsT1Q/k9tvjQcnb7BcHtKK9Y9pN1py_uhbobA_P2vcrFzflJ5E4lkW6XA-HZXTFoAsF0YJb8Ft0Sf6DF1kW9OPiJDU_eTiXd08NGQcBuuQNh5SA9oza6IGqkzruo37nwwopIgc7Q1QVybtJ4rddz9EQSpz7w/9B5xBu8romr0Lk2oxsYyUDHWqUq0yf0JW80m63JVGGk",
+              "width": 590,
+              "height": 313
+            },
+            "full": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/NUWidvjD8HgjYuTI-zWabQ/jYj6x0LN2XSsPFyGYYVDWZ4loavYanoC-oklYHV8Xsgn9GHFGPEYfybcTJ78xelOZEdf_UV1fI2hpuXbWfqgzwmP2x0-nfF7azLicwmVtUPGXXFutcHZ0NO1QuzDZ4N1RiSaZe16j3VbZqRGNI_NUw/MyPSYQC881JCl1DqUYx3T05KrAJT8Mwg7Q_gvJn24IU",
+              "width": 590,
+              "height": 313
+            }
+          }
+        },
+        "description": "성공적인 임플란트 식립과 안정적인 골유착"
+      }
+    ],
+    "question8_extra": "만성질환이 임플란트의 절대적인 금기증은 아닙니다. 중요한 것은 환자의 상태를 정확히 파악하고, 그에 맞는 최적의 치료 계획을 세울 수 있는 의료진의 경험과 시스템입니다. 막연한 두려움 때문에 치료를 미루지 마시고, 풍부한 임상 경험을 갖춘 의료진과 충분히 상담하여 건강한 미소를 되찾으시길 바랍니다.",
+    "include_tooth_numbers": false,
+    "tooth_numbers": [],
+    "persona_candidates": [],
+    "representative_persona": "",
+    "city": "경기",
+    "district": "화성",
+    "region_phrase": "경기 화성",
+    "case_id": "case_내이튼치과의원_20250826_142505",
+    "clinical_context": {
+      "normalized": {
+        "symptoms": [
+          "50대",
+          "남성",
+          "환자로",
+          "10년",
+          "이상",
+          "제2형",
+          "당뇨를",
+          "앓고",
+          "계셨지만",
+          "꾸준한",
+          "관리로",
+          "혈당",
+          "수치는",
+          "안정적이었습니다",
+          "치과에서",
+          "아래",
+          "어금니의",
+          "수직",
+          "치근",
+          "파절로",
+          "발치",
+          "진단을",
+          "받았으나",
+          "당뇨",
+          "때문에",
+          "임플란트가",
+          "어렵다는",
+          "말을",
+          "듣고",
+          "치료를",
+          "망설이며",
+          "내원하셨습니다",
+          "해당",
+          "치아",
+          "주변",
+          "잇몸에",
+          "염증이",
+          "있었고",
+          "저작",
+          "기능의"
+        ],
+        "procedures": [
+          "50대",
+          "남성",
+          "환자로",
+          "10년",
+          "이상",
+          "제2형",
+          "당뇨를",
+          "앓고",
+          "계셨지만",
+          "꾸준한",
+          "관리로",
+          "혈당",
+          "수치는",
+          "안정적이었습니다",
+          "치과에서",
+          "아래",
+          "어금니의",
+          "수직",
+          "치근",
+          "파절로",
+          "발치",
+          "진단을",
+          "받았으나",
+          "당뇨",
+          "때문에",
+          "임플란트가",
+          "어렵다는",
+          "말을",
+          "듣고",
+          "치료를",
+          "망설이며",
+          "내원하셨습니다",
+          "해당",
+          "치아",
+          "주변",
+          "잇몸에",
+          "염증이",
+          "있었고",
+          "저작",
+          "기능의"
+        ],
+        "treatments": [
+          "내과",
+          "주치의와의",
+          "협진을",
+          "통해",
+          "환자의",
+          "전신",
+          "건강",
+          "상태를",
+          "면밀히",
+          "확인하고",
+          "수술",
+          "전후로",
+          "혈당",
+          "수치를",
+          "철저히",
+          "모니터링하는",
+          "안전",
+          "최우선으로",
+          "치료",
+          "계획을",
+          "강조",
+          "3D",
+          "CT를",
+          "이용한",
+          "정밀",
+          "진단으로",
+          "뼈의",
+          "정확히",
+          "파악하고",
+          "최소",
+          "절개와",
+          "컴퓨터",
+          "분석",
+          "가이드",
+          "임플란트",
+          "수술을",
+          "출혈과",
+          "통증을"
+        ],
+        "tooth_numbers": []
+      },
+      "category_scores": {
+        "신경치료": 0.8211,
+        "임플란트": 1.0,
+        "심미수복": 0.5081,
+        "충치치료": 0.3943,
+        "크라운보철": 0.378,
+        "브릿지": 0.0488,
+        "소아치과": 0.0244,
+        "발치": 0.1138,
+        "보철": 0.0732,
+        "미백": 0.0264
+      },
+      "primary_category": "임플란트",
+      "secondary_categories": [
+        "신경치료",
+        "심미수복"
+      ],
+      "flow": [
+        "주호소: 50대, 남성, 환자로, 10년, 이상, 제2형, 당뇨를, 앓고, 계셨지만, 꾸준한, 관리로, 혈당, 수치는, 안정적이었습니다, 치과에서, 아래, 어금니의, 수직, 치근, 파절로, 발치, 진단을, 받았으나, 당뇨, 때문에, 임플란트가, 어렵다는, 말을, 듣고, 치료를, 망설이며, 내원하셨습니다, 해당, 치아, 주변, 잇몸에, 염증이, 있었고, 저작, 기능의",
+        "검사: 50대, 남성, 환자로, 10년, 이상, 제2형, 당뇨를, 앓고, 계셨지만, 꾸준한, 관리로, 혈당, 수치는, 안정적이었습니다, 치과에서, 아래, 어금니의, 수직, 치근, 파절로, 발치, 진단을, 받았으나, 당뇨, 때문에, 임플란트가, 어렵다는, 말을, 듣고, 치료를, 망설이며, 내원하셨습니다, 해당, 치아, 주변, 잇몸에, 염증이, 있었고, 저작, 기능의",
+        "치료계획: 내과, 주치의와의, 협진을, 통해, 환자의, 전신, 건강, 상태를, 면밀히, 확인하고, 수술, 전후로, 혈당, 수치를, 철저히, 모니터링하는, 안전, 최우선으로, 치료, 계획을, 강조, 3D, CT를, 이용한, 정밀, 진단으로, 뼈의, 정확히, 파악하고, 최소, 절개와, 컴퓨터, 분석, 가이드, 임플란트, 수술을, 출혈과, 통증을",
+        "예후/관리: 정기 검진 및 위생관리 안내"
+      ],
+      "top_matches": [
+        {
+          "score": 0.1975,
+          "symptom_text": "잇몸 부종 및 염증, 흔들리는 어금니(신경치료받은 치아), 어금니 뿌리 주변 매복 사랑니, 치아 하방 잇몸 누공 및 출혈.",
+          "procedure_text": "우측 상악 최후방 구치 주변 잇몸 붓기 및 흔들림 확인, 신경치료받은 치아 및 매복 사랑니 확인, 치주염 진단, 발치 필요성 판단.",
+          "treatment_text": "매복 사랑니 제거 및 가이드 임플란트 식립, 컴퓨터 분석 기반 수술 계획 및 시행, 스플린트 고정, 3개월 치유 후 최종 보철물 제작."
+        },
+        {
+          "score": 0.1306,
+          "symptom_text": "과거 신경치료를 받았던 어금니에 수직 치근 파절이 발생하여 몇 주 이상 지속되는 통증이 점점 심해짐.",
+          "procedure_text": "화성 동탄역 치과에서 파노라마 사진 촬영 및 X-ray 촬영을 통해 수직 치근 파절을 정밀 진단.",
+          "treatment_text": "파절된 어금니 발치 후 잇몸뼈가 회복될 때까지 기다린 후 임플란트 픽스처 식립 및 3개월 후 보철물 제작 및 장착."
+        },
+        {
+          "score": 0.1251,
+          "symptom_text": "좌측 아래 어금니의 충치, 사랑니에 의한 인접치 압박 및 통증, 어금니 뿌리 주변 잇몸 염증, 치조골 소실 및 치아 흔들림.",
+          "procedure_text": "X-ray 및 CT 촬영을 통한 치아 및 치조골 상태 확인, 신경치료 불가 판정, 발치 및 임플란트 식립 계획 수립.",
+          "treatment_text": "흔들리는 치아와 사랑니 발치, 골 유도 재생술 및 2차 골이식을 동반한 지연 임플란트 식립, 5개월 유착 기간 확보 후 보철물 제작 및 장착."
+        },
+        {
+          "score": 0.1138,
+          "symptom_text": "위아래 좌측 어금니 사이에 충치가 발생하여 염증과 골소실이 진행되었고, 치아가 많이 흔들리는 심한 동요감을 보였습니다.",
+          "procedure_text": "어금니 사이 충치 및 골소실 진단 후 발치가 불가피하다는 판단하에, 상악동과의 근접성을 고려하여 가이드 방식을 이용한 발치 즉시 임플란트 수술을 진행했습니다.",
+          "treatment_text": "가이드 수술을 통해 정확한 위치와 각도로 임플란트 픽스처를 식립하고, 교합을 고려하여 제작한 보철물로 수복하였습니다."
+        },
+        {
+          "score": 0.1065,
+          "symptom_text": "앞니 잇몸 퇴축으로 인해 치근이 드러나고, 치아 흔들림이 심하며, 치아 사이 공간으로 인해 음식물이 끼고 염증이 발생했습니다.",
+          "procedure_text": "앞니 잇몸 퇴축 및 치주염, 치근 주변 염증, 치아 흔들림, 치아 내부 세균 침투 등을 확인했습니다. 방사선 사진 촬영을 통해 염증의 정도와 골소실을 확인하였고, 자연치 보존이 어렵다고 판단하여 발치 및 임플란트 시술이 필요하다고 진단했습니다.",
+          "treatment_text": "흔들리는 앞니 발치 후 골이식과 함께 임플란트 식립을 진행하였고, 남은 앞니는 신경치료 후 크라운을 수복했습니다. 3개월 후 임플란트가 고정된 후 최종 보철물을 제작하여 장착했습니다."
+        }
+      ],
+      "recommended_treatments": [
+        {
+          "name": "매복 사랑니 제거 및 가이드 임플란트 식립, 컴퓨터 분석 기반 수술 계획 및 시행, 스플린트 고정, 3개월 치유 후 최종 보철물 제작.",
+          "score": 0.1975
+        },
+        {
+          "name": "파절된 어금니 발치 후 잇몸뼈가 회복될 때까지 기다린 후 임플란트 픽스처 식립 및 3개월 후 보철물 제작 및 장착.",
+          "score": 0.1306
+        },
+        {
+          "name": "흔들리는 치아와 사랑니 발치, 골 유도 재생술 및 2차 골이식을 동반한 지연 임플란트 식립, 5개월 유착 기간 확보 후 보철물 제작 및 장착.",
+          "score": 0.1251
+        },
+        {
+          "name": "가이드 수술을 통해 정확한 위치와 각도로 임플란트 픽스처를 식립하고, 교합을 고려하여 제작한 보철물로 수복하였습니다.",
+          "score": 0.1138
+        },
+        {
+          "name": "흔들리는 앞니 발치 후 골이식과 함께 임플란트 식립을 진행하였고, 남은 앞니는 신경치료 후 크라운을 수복했습니다. 3개월 후 임플란트가 고정된 후 최종 보철물을 제작하여 장착했습니다.",
+          "score": 0.1065
+        }
+      ]
+    },
+    "timestamp": "2025-08-26 14:25:05",
+    "created_at": "2025-08-26 14:25:05",
+    "updated_at": "2025-08-26 14:25:05",
+    "mode": "use",
+    "status": "temp"
+  }
+]

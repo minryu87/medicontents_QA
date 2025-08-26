@@ -1,0 +1,304 @@
+[
+  {
+    "hospital": {
+      "name": "내이튼치과의원",
+      "save_name": "내이튼치과의원",
+      "address": "B동 507호 라스플로레스 경기도 화성시 동탄대로 537",
+      "phone": "031-526-2246"
+    },
+    "category": "일반진료",
+    "question1_concept": "치아 상실을 방치하면 주변 치아 배열이 무너지고 잇몸뼈가 흡수되는 등 더 큰 문제가 발생할 수 있습니다. 임플란트는 자연치아와 가장 유사한 기능과 심미성을 회복시켜주는 최선의 해결책이며, 특히 최근의 디지털 네비게이션 기술은 수술의 정확도와 안전성을 획기적으로 높였습니다.",
+    "question2_condition": "20대 후반의 남성 환자로, 운동 중 불의의 사고로 앞니(상악 우측 중절치)가 파절되어 내원하셨습니다. 치아 뿌리까지 손상되어 발치가 불가피한 상황이었으며, 갑작스러운 치아 상실로 인해 심미적인 스트레스가 매우 크고, 식사 시 불편함을 호소하셨습니다. 또한, 사고 당시의 충격으로 잇몸뼈 일부가 소실된 상태였습니다.",
+    "question3_visit_images": [
+      {
+        "filename": {
+          "id": "attts9SBlgyutif9Y",
+          "width": 337,
+          "height": 201,
+          "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/HUpp3-DpD9fS17sz-I7NyQ/xCWJnY3Y4atWoVfyNguROU5BobWIHwsS_DT1KKyXAZQUD3Hou8-xDu5Dhpk_b9yitZZNqwZKXvRPZb1P7CpUrM-55ON6TfruyF8dupGk47Hzi7mlNBmrsMDEwuQyOb0cvOQ7s1Uhg4hSLEyg_5B2lX1kQGDfqflxF1jQ2SosfB0/vr8AEkUZH4oN3wmZQIICFNCA1Nrbx8c0V8k7QjLLAc4",
+          "filename": "recitOSncYZmMmQ8k_1.JPG",
+          "size": 17971,
+          "type": "image/jpeg",
+          "thumbnails": {
+            "small": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/YCAtY5l1K1cxJuLZ1RR4ZQ/kxyY5fpvDmGJqptifyad4PQVn19Dq_5LNKG-8PncnGzu_Bps-DrUD5J7gYZXb2MiTBmUQAYx_seLsXeFE1gbhU0QyH_O5iqx5Opr0vJXXBkICZ_xXJNfSQe2g33mIT-ZAzvSUvkFI3N4WGZV9hceUg/oBtSxQWjJNN3FzZ9QQdcf2CHP6cJ0cHqM0doiU_dCmg",
+              "width": 60,
+              "height": 36
+            },
+            "large": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/1ThQNaFUm52chsdryl4jSA/w1S5t1XAofpBpDp1K8yHkbMtq0HNmyHB_GnuuNjlo1U75ZpJgT4b_71TkU6-LuTBWiMTXIySODk-ndb-LfOmnxis_JP2XNEsrdS4jBIBA2zgTZFPlo2R5UvH_Z8eHKYUC1Ce29o1Kt_WxniyO4g3vA/WpzjgaEvL33FUGQidmigEJQSnC48J1Y60MXkdmxL7Fk",
+              "width": 337,
+              "height": 201
+            },
+            "full": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/CKg1T0QAF1HqbQVFzGsaFQ/XCnrT0ROLD2DC5u9c-_c3IkUVmAYbC-Z6F-YT1T8zxtYKIpfAHIMs-L7I94KGK4JmpTespEtlgIyyqUUGsu3iy0UqWU5098JKWIyoOx9a_dSZWaeVUBT_gMZpaGb2Ws9dZ7UdBWnymAZqS2KVH74nQ/zQuITmJowUcYOWtqp7zv0FPr3H84FNWYkR9wbaaqEV4",
+              "width": 337,
+              "height": 201
+            }
+          }
+        },
+        "description": ""
+      }
+    ],
+    "question4_treatment": "3D-CT를 이용한 정밀 진단으로 환자의 잇몸뼈 상태를 정확히 파악하고, 부족한 뼈를 보강하기 위한 뼈이식 수술을 선행했습니다. 이후, 컴퓨터 가이드 분석을 통해 최적의 임플란트 식립 위치와 각도, 깊이를 미리 계획하는 '네비게이션 임플란트' 수술을 진행하여 오차를 최소화하고 안전성을 높였습니다. 통증에 대한 환자의 불안감을 줄이기 위해 무통마취 시스템을 적용했습니다.",
+    "question5_therapy_images": [
+      {
+        "filename": {
+          "id": "att9Nh1SoZGxq9ym0",
+          "width": 416,
+          "height": 139,
+          "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/JV2KSDYtGNvdZbEpIAt7aw/IypHTpcrPpscB8gTUC6eEU1BdvKIVS12HihU4z6API55W6l-VZ6-owHmEaSSDA1zCvBe2ySZZuhdLGG4o8IYhg9jpCnTuX1lAcr6939vCBxaLgOzGnHwSA7qSTXOqY2uN4ArKLuD84jp9ICK3868q6eGggYJUp47vVn7MnY_5WU/XxXfxALipwIojwEg_EZ0lue-yhjXK008rBJVStnX3MQ",
+          "filename": "recitOSncYZmMmQ8k_2.JPG",
+          "size": 14157,
+          "type": "image/jpeg",
+          "thumbnails": {
+            "small": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/SxxpLpHBj21u-T-T-pGpsg/5QuwDCeY-8wCvOxuh9Uo2D47bV2fxcDBQyRwGXlhBNUPaks48McCvT2so4hNcDp70Dge4Tif4QUM8tFbzsyqFFncvbAMU4aVaQfUcUBufs4XieJvJyWO5_y87CrNJABE9RBjDeLOabYGQRHuF5LU2g/j6uzGyuor86yllsDK9mn0ITt0VPNbnEDXdM3wfYQ05k",
+              "width": 108,
+              "height": 36
+            },
+            "large": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/2I7P2MmaMCbX1nc22YNI1A/JpSLjH4XJSTGowRKjuiUPXkBwdX24JmzLFpeMSvEj1QUavpyowtNqXjK-_kQIieCQdLfP0IHXsINJri5Aq0_SM5cz1qp77G90QvYXJafJo90w2ziY28xZP1Yu2MjrmawrgUumIGHe4_HdT9l00pVcg/hIkEP1zbr4l0i5v9EeR4mKPdKh4NSi3Gyi4zvHz2Wrs",
+              "width": 416,
+              "height": 139
+            },
+            "full": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/_kD2JV6SlJETFA3L34EPcA/9ZmBhxMSF1dI270pPNVGAeTLbM-JJU_O2qahYE2tygoeCWqMdnsSpbVJpxGTXOofdAvdI5yOCvf5_SuwFojhtDJOYdU27bFs8hVuonAg6BpztlokfYEo7hmRjuimzWIvJv9PxyXNv7cEMLsKy3UuUQ/iVfgox63nAznZQ85ee6GPmyw-Y4U103aoNN4vXvIQwE",
+              "width": 416,
+              "height": 139
+            }
+          }
+        },
+        "description": ""
+      }
+    ],
+    "question6_result": "최종적으로 주변 치아와 색상, 모양, 투명도까지 완벽하게 조화되는 맞춤형 지대주 및 크라운을 제작하여 연결했습니다. 환자분께서는 사고 이전보다 더 자연스럽고 아름다운 미소를 되찾았다며 매우 만족하셨고, 이제는 어떤 음식이든 편안하게 씹을 수 있게 되었습니다. 임플란트가 마치 원래 자신의 치아처럼 느껴진다고 하셨습니다.",
+    "question7_result_images": [
+      {
+        "filename": {
+          "id": "attgfY0NTCI8brnYr",
+          "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756195200000/wvaNiwqM4S6ogoC18zM4IA/FNSIaJm7rORiYjVqLnMDozcQMZIOAimTlpZdp99N8UWZNBmsMkU-XxHqxb9eX6PP060StefHHGVs2doAGec9PC7rr9535OpXGW2_TOcHnL0r3HBa46R4odLbH9OApaqdNZi7tAC9MC9HbU_9abPMM8MmplgjFTQdD_imQnawr2Q/qcMyPmCjNUHh1QOMmTvvRs93BqeLzzczEX3V3XmzR6w",
+          "filename": "recitOSncYZmMmQ8k_3.JPG",
+          "size": 44335,
+          "type": "image/jpeg"
+        },
+        "description": ""
+      }
+    ],
+    "question8_extra": "치아 상실은 더 이상 되돌릴 수 없는 영구적인 손상이지만, 임플란트 기술의 발전으로 충분히 극복할 수 있습니다. 중요한 것은 풍부한 경험을 갖춘 의료진에게 정확한 진단을 받고 체계적인 계획하에 치료를 진행하는 것입니다. 치료를 미루지 말고, 건강한 미소를 되찾기 위한 첫걸음을 내딛으시길 바랍니다.",
+    "include_tooth_numbers": false,
+    "tooth_numbers": [],
+    "persona_candidates": [],
+    "representative_persona": "",
+    "city": "경기",
+    "district": "화성",
+    "region_phrase": "경기 화성",
+    "case_id": "case_내이튼치과의원_20250826_143404",
+    "clinical_context": {
+      "normalized": {
+        "symptoms": [
+          "20대",
+          "후반의",
+          "남성",
+          "환자로",
+          "운동",
+          "불의의",
+          "사고로",
+          "앞니",
+          "상악",
+          "우측",
+          "중절치",
+          "파절되어",
+          "내원하셨습니다",
+          "치아",
+          "뿌리까지",
+          "손상되어",
+          "발치가",
+          "불가피한",
+          "상황이었으며",
+          "갑작스러운",
+          "상실로",
+          "인해",
+          "심미적인",
+          "스트레스가",
+          "매우",
+          "크고",
+          "식사",
+          "불편함을",
+          "호소하셨습니다",
+          "또한",
+          "사고",
+          "당시의",
+          "충격으로",
+          "잇몸뼈",
+          "일부가",
+          "소실된",
+          "상태였습니다",
+          "상실을"
+        ],
+        "procedures": [
+          "20대",
+          "후반의",
+          "남성",
+          "환자로",
+          "운동",
+          "불의의",
+          "사고로",
+          "앞니",
+          "상악",
+          "우측",
+          "중절치",
+          "파절되어",
+          "내원하셨습니다",
+          "치아",
+          "뿌리까지",
+          "손상되어",
+          "발치가",
+          "불가피한",
+          "상황이었으며",
+          "갑작스러운",
+          "상실로",
+          "인해",
+          "심미적인",
+          "스트레스가",
+          "매우",
+          "크고",
+          "식사",
+          "불편함을",
+          "호소하셨습니다",
+          "또한",
+          "사고",
+          "당시의",
+          "충격으로",
+          "잇몸뼈",
+          "일부가",
+          "소실된",
+          "상태였습니다"
+        ],
+        "treatments": [
+          "3D",
+          "CT를",
+          "이용한",
+          "정밀",
+          "진단으로",
+          "환자의",
+          "잇몸뼈",
+          "상태를",
+          "정확히",
+          "파악하고",
+          "부족한",
+          "뼈를",
+          "보강하기",
+          "위한",
+          "뼈이식",
+          "수술을",
+          "선행했습니다",
+          "이후",
+          "컴퓨터",
+          "가이드",
+          "분석을",
+          "통해",
+          "최적의",
+          "임플란트",
+          "식립",
+          "위치와",
+          "각도",
+          "깊이를",
+          "미리",
+          "계획하는",
+          "네비게이션",
+          "진행하여",
+          "오차를",
+          "최소화하고",
+          "안전성을",
+          "높였습니다",
+          "통증에",
+          "대한"
+        ],
+        "tooth_numbers": []
+      },
+      "category_scores": {
+        "신경치료": 0.5992,
+        "임플란트": 1.0,
+        "심미수복": 0.5894,
+        "충치치료": 0.2829,
+        "크라운보철": 0.3969,
+        "브릿지": 0.0275,
+        "소아치과": 0.0275,
+        "발치": 0.0806,
+        "보철": 0.0589,
+        "미백": 0.0196
+      },
+      "primary_category": "임플란트",
+      "secondary_categories": [
+        "신경치료",
+        "심미수복"
+      ],
+      "flow": [
+        "주호소: 20대, 후반의, 남성, 환자로, 운동, 불의의, 사고로, 앞니, 상악, 우측, 중절치, 파절되어, 내원하셨습니다, 치아, 뿌리까지, 손상되어, 발치가, 불가피한, 상황이었으며, 갑작스러운, 상실로, 인해, 심미적인, 스트레스가, 매우, 크고, 식사, 불편함을, 호소하셨습니다, 또한, 사고, 당시의, 충격으로, 잇몸뼈, 일부가, 소실된, 상태였습니다, 상실을",
+        "검사: 20대, 후반의, 남성, 환자로, 운동, 불의의, 사고로, 앞니, 상악, 우측, 중절치, 파절되어, 내원하셨습니다, 치아, 뿌리까지, 손상되어, 발치가, 불가피한, 상황이었으며, 갑작스러운, 상실로, 인해, 심미적인, 스트레스가, 매우, 크고, 식사, 불편함을, 호소하셨습니다, 또한, 사고, 당시의, 충격으로, 잇몸뼈, 일부가, 소실된, 상태였습니다",
+        "치료계획: 3D, CT를, 이용한, 정밀, 진단으로, 환자의, 잇몸뼈, 상태를, 정확히, 파악하고, 부족한, 뼈를, 보강하기, 위한, 뼈이식, 수술을, 선행했습니다, 이후, 컴퓨터, 가이드, 분석을, 통해, 최적의, 임플란트, 식립, 위치와, 각도, 깊이를, 미리, 계획하는, 네비게이션, 진행하여, 오차를, 최소화하고, 안전성을, 높였습니다, 통증에, 대한",
+        "예후/관리: 정기 검진 및 위생관리 안내"
+      ],
+      "top_matches": [
+        {
+          "score": 0.1563,
+          "symptom_text": "잇몸 부종 및 염증, 흔들리는 어금니(신경치료받은 치아), 어금니 뿌리 주변 매복 사랑니, 치아 하방 잇몸 누공 및 출혈.",
+          "procedure_text": "우측 상악 최후방 구치 주변 잇몸 붓기 및 흔들림 확인, 신경치료받은 치아 및 매복 사랑니 확인, 치주염 진단, 발치 필요성 판단.",
+          "treatment_text": "매복 사랑니 제거 및 가이드 임플란트 식립, 컴퓨터 분석 기반 수술 계획 및 시행, 스플린트 고정, 3개월 치유 후 최종 보철물 제작."
+        },
+        {
+          "score": 0.1422,
+          "symptom_text": "위아래 좌측 어금니 사이에 충치가 발생하여 염증과 골소실이 진행되었고, 치아가 많이 흔들리는 심한 동요감을 보였습니다.",
+          "procedure_text": "어금니 사이 충치 및 골소실 진단 후 발치가 불가피하다는 판단하에, 상악동과의 근접성을 고려하여 가이드 방식을 이용한 발치 즉시 임플란트 수술을 진행했습니다.",
+          "treatment_text": "가이드 수술을 통해 정확한 위치와 각도로 임플란트 픽스처를 식립하고, 교합을 고려하여 제작한 보철물로 수복하였습니다."
+        },
+        {
+          "score": 0.1415,
+          "symptom_text": "앞니 통증, 빠질 것 같은 느낌, 오른쪽 앞니 뿌리 끝 염증과 큰 낭종, 32번 치아 치관 파절.",
+          "procedure_text": "치아 상태 확인, 발치 및 임플란트 식립 필요성 설명, 오른쪽 앞니 신경치료 계획.",
+          "treatment_text": "32번 치아 발치 후 즉시 임플란트 식립, 오른쪽 앞니 미세 현미경을 이용한 신경치료 및 충전, 충분한 골유착 기간 후 보철물 제작 및 장착."
+        },
+        {
+          "score": 0.1361,
+          "symptom_text": "교정 치료 후 앞니(12번 치아)가 흔들리는 증상이 나타났다.",
+          "procedure_text": "엑스레이 및 CT 촬영을 통해 치근흡수 진단 후, 치아 뿌리 흡수로 인한 12번 치아의 심한 동요감을 확인했다.",
+          "treatment_text": "12번 치아 발치 후 앞니 임플란트 식립 및 크라운 제작을 진행하여 심미적으로 자연치아와 유사하게 회복시켰다."
+        },
+        {
+          "score": 0.1338,
+          "symptom_text": "앞니 끝이 깨지고 앞니 잇몸에 통증이 있으며, 11번 치아는 신경치료가 가능했으나 21번 치아는 심한 충격으로 인해 치수가 괴사한 상태였다.",
+          "procedure_text": "3D-CT 촬영을 통해 치조골 상태를 확인하고, 21번 치아 발치 및 골이식을 동반한 임플란트 식립과 11번 치아 신경치료를 진행하였다.",
+          "treatment_text": "21번 치아는 임플란트 식립과 골이식을 통해 심미 기능을 개선하였고, 11번 치아는 신경치료 후 충전하여 자연치를 보존하였다. 임플란트 식립 후에는 임시 보철을 장착하고, 골유착 후 최종 보철물을 제작하여 장착하였다."
+        }
+      ],
+      "recommended_treatments": [
+        {
+          "name": "매복 사랑니 제거 및 가이드 임플란트 식립, 컴퓨터 분석 기반 수술 계획 및 시행, 스플린트 고정, 3개월 치유 후 최종 보철물 제작.",
+          "score": 0.1563
+        },
+        {
+          "name": "가이드 수술을 통해 정확한 위치와 각도로 임플란트 픽스처를 식립하고, 교합을 고려하여 제작한 보철물로 수복하였습니다.",
+          "score": 0.1422
+        },
+        {
+          "name": "32번 치아 발치 후 즉시 임플란트 식립, 오른쪽 앞니 미세 현미경을 이용한 신경치료 및 충전, 충분한 골유착 기간 후 보철물 제작 및 장착.",
+          "score": 0.1415
+        },
+        {
+          "name": "12번 치아 발치 후 앞니 임플란트 식립 및 크라운 제작을 진행하여 심미적으로 자연치아와 유사하게 회복시켰다.",
+          "score": 0.1361
+        },
+        {
+          "name": "21번 치아는 임플란트 식립과 골이식을 통해 심미 기능을 개선하였고, 11번 치아는 신경치료 후 충전하여 자연치를 보존하였다. 임플란트 식립 후에는 임시 보철을 장착하고, 골유착 후 최종 보철물을 제작하여 장착하였다.",
+          "score": 0.1338
+        }
+      ]
+    },
+    "timestamp": "2025-08-26 14:34:04",
+    "created_at": "2025-08-26 14:34:04",
+    "updated_at": "2025-08-26 14:34:04",
+    "mode": "use",
+    "status": "temp"
+  }
+]

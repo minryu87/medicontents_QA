@@ -6,8 +6,12 @@ import asyncio
 from typing import Optional, Dict, Any
 import logging
 from datetime import datetime
+import json
 
 from services.medicontent_service import process_post_data_request
+
+# 실시간 로그를 저장할 전역 변수
+realtime_logs = {}
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
@@ -37,6 +41,57 @@ class N8nCompletionRequest(BaseModel):
 async def root():
     return {"message": "메디컨텐츠 QA API가 실행 중입니다."}
 
+@app.post("/api/add-log")
+async def add_log(request: dict):
+    """실시간 로그 추가"""
+    global realtime_logs
+    post_id = request.get('post_id')
+    log_data = request.get('log')
+    
+    if post_id not in realtime_logs:
+        realtime_logs[post_id] = []
+    
+    realtime_logs[post_id].append({
+        'timestamp': datetime.now().isoformat(),
+        'level': log_data.get('level', 'INFO'),
+        'message': log_data.get('message', ''),
+        'logger': 'realtime'
+    })
+    
+    return {"status": "success", "log_count": len(realtime_logs[post_id])}
+
+@app.get("/api/get-logs/{post_id}")
+async def get_logs(post_id: str):
+    """특정 Post ID의 실시간 로그 조회"""
+    global realtime_logs
+    logs = realtime_logs.get(post_id, [])
+    return {"logs": logs}
+
+@app.delete("/api/clear-logs/{post_id}")
+async def clear_logs(post_id: str):
+    """특정 Post ID의 로그 삭제"""
+    global realtime_logs
+    if post_id in realtime_logs:
+        del realtime_logs[post_id]
+    return {"status": "success"}
+
+@app.get("/api/random-post-data")
+async def get_random_post_data():
+    """Post Data Requests 테이블에서 랜덤 데이터 조회"""
+    try:
+        from services.medicontent_service import get_random_post_data_request
+        random_data = await get_random_post_data_request()
+        return {
+            "status": "success",
+            "data": random_data
+        }
+    except Exception as e:
+        logger.error(f"랜덤 데이터 조회 실패: {str(e)}")
+        return {
+            "status": "error",
+            "message": str(e)
+        }
+
 @app.post("/api/process-post")
 async def process_post(request: ProcessRequest):
     """Post Data Requests 테이블에서 데이터를 조회하고 agent를 실행합니다."""
@@ -46,14 +101,28 @@ async def process_post(request: ProcessRequest):
         # 비동기로 agent 처리 실행
         result = await process_post_data_request(request.post_id)
         
-        return {
-            "status": "success",
-            "post_id": request.post_id,
-            "result": result
-        }
+        # result가 이미 완전한 응답 형태인지 확인
+        if isinstance(result, dict) and "status" in result:
+            return result
+        else:
+            return {
+                "status": "success",
+                "post_id": request.post_id,
+                "result": result
+            }
         
     except Exception as e:
         logger.error(f"Post 처리 중 오류 발생: {str(e)}")
+        
+        # 예외 메시지에서 JSON 형태의 오류 응답 추출 시도
+        try:
+            import json
+            error_data = json.loads(str(e))
+            if isinstance(error_data, dict) and "logs" in error_data:
+                return error_data
+        except:
+            pass
+        
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/health")

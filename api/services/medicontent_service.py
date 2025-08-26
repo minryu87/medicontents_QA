@@ -4,6 +4,7 @@ import json
 import logging
 import asyncio
 import aiohttp
+import io
 from datetime import datetime
 from typing import Dict, Any, Optional
 from pathlib import Path
@@ -21,8 +22,103 @@ from pyairtable import Api
 
 logger = logging.getLogger(__name__)
 
+# 로그 캡처를 위한 클래스
+class LogCapture:
+    def __init__(self):
+        self.logs = []
+        self.original_handlers = {}
+    
+    def start_capture(self):
+        """로그 캡처 시작"""
+        # 루트 로거에만 커스텀 핸들러 추가
+        self.custom_handler = CustomLogHandler(self.logs)
+        logging.getLogger().addHandler(self.custom_handler)
+        
+        # 주요 로거들에도 핸들러 추가
+        loggers_to_capture = [
+            'services.medicontent_service',
+            'input_agent',
+            'plan_agent', 
+            'title_agent',
+            'content_agent',
+            'evaluation_agent'
+        ]
+        
+        for logger_name in loggers_to_capture:
+            logger_obj = logging.getLogger(logger_name)
+            logger_obj.addHandler(self.custom_handler)
+    
+    def stop_capture(self):
+        """로그 캡처 중지"""
+        # 루트 로거에서 핸들러 제거
+        if hasattr(self, 'custom_handler'):
+            logging.getLogger().removeHandler(self.custom_handler)
+        
+        # 주요 로거들에서도 핸들러 제거
+        loggers_to_capture = [
+            'services.medicontent_service',
+            'input_agent',
+            'plan_agent', 
+            'title_agent',
+            'content_agent',
+            'evaluation_agent'
+        ]
+        
+        for logger_name in loggers_to_capture:
+            logger_obj = logging.getLogger(logger_name)
+            if hasattr(self, 'custom_handler'):
+                logger_obj.removeHandler(self.custom_handler)
+    
+    def get_logs(self):
+        """캡처된 로그 반환"""
+        return self.logs.copy()
+    
+    def add_log(self, level: str, message: str):
+        """수동으로 로그 추가"""
+        self.logs.append({
+            'timestamp': datetime.now().isoformat(),
+            'level': level,
+            'message': message,
+            'logger': 'manual'
+        })
+
+class CustomLogHandler(logging.Handler):
+    def __init__(self, logs_list):
+        super().__init__()
+        self.logs_list = logs_list
+    
+    def emit(self, record):
+        try:
+            msg = self.format(record)
+            self.logs_list.append({
+                'timestamp': datetime.now().isoformat(),
+                'level': record.levelname,
+                'message': msg,
+                'logger': record.name
+            })
+        except Exception:
+            self.handleError(record)
+
 # 환경변수 로드
 load_dotenv()
+
+async def send_realtime_log(post_id: str, level: str, message: str):
+    """실시간 로그를 API로 전송"""
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.post('http://localhost:8000/api/add-log', json={
+                'post_id': post_id,
+                'log': {
+                    'level': level,
+                    'message': message
+                }
+            }) as response:
+                if response.status == 200:
+                    logger.debug(f"실시간 로그 전송 성공: {message}")
+                else:
+                    logger.warning(f"실시간 로그 전송 실패: {response.status}")
+    except Exception as e:
+        logger.warning(f"실시간 로그 전송 중 오류: {e}")
 
 # Airtable 설정
 AIRTABLE_API_KEY = 'pat6S8lzX8deRFTKC.0e92c4403cdc7878f8e61f815260852d4518a0b46fa3de2350e5e91f4f0f6af9'
@@ -102,6 +198,32 @@ async def call_webhook(post_id: str, results: Dict[str, Any]):
         logger.error(f"오류 상세: {type(e).__name__}")
         # 웹훅 호출 실패는 전체 프로세스를 중단시키지 않음
         return None
+
+async def get_random_post_data_request() -> Optional[Dict[str, Any]]:
+    """Post Data Requests 테이블에서 랜덤 데이터를 조회합니다."""
+    try:
+        import random
+        # 모든 레코드 조회
+        records = table_post_data_requests.all()
+        
+        if not records:
+            raise Exception("Post Data Requests 테이블에 데이터가 없습니다.")
+        
+        # 랜덤하게 하나 선택
+        random_record = random.choice(records)
+        
+        # 필요한 필드만 추출
+        fields = random_record.get('fields', {})
+        return {
+            'concept_message': fields.get('Concept Message', ''),
+            'patient_condition': fields.get('Patient Condition', ''),
+            'treatment_process_message': fields.get('Treatment Process Message', ''),
+            'treatment_result_message': fields.get('Treatment Result Message', ''),
+            'additional_message': fields.get('Additional Message', '')
+        }
+    except Exception as e:
+        logger.error(f"랜덤 Post Data Request 조회 실패: {e}")
+        raise Exception(f"랜덤 Post Data Request 조회 실패: {e}")
 
 async def get_post_data_request(post_id: str) -> Optional[Dict[str, Any]]:
     """Post Data Requests 테이블에서 Post ID로 데이터를 조회합니다."""
@@ -187,8 +309,15 @@ async def process_post_data_request(post_id: str) -> Dict[str, Any]:
     """Post Data Request를 처리하고 agent를 실행합니다."""
     record_id = None
     
+    # 로그 캡처 시작
+    log_capture = LogCapture()
+    log_capture.start_capture()
+    
     try:
+        log_capture.add_log("INFO", f"Post ID '{post_id}' 처리 시작")
+        
         # 1단계: Post Data Request 조회
+        log_capture.add_log("INFO", f"Step 1: Post ID '{post_id}' 데이터 조회...")
         logger.info(f"Step 1: Post ID '{post_id}' 데이터 조회...")
         post_data = await get_post_data_request(post_id)
         
@@ -198,10 +327,13 @@ async def process_post_data_request(post_id: str) -> Dict[str, Any]:
         record_id = post_data['id']
         
         # 2단계: 상태를 '처리 중'으로 변경
+        log_capture.add_log("INFO", "Step 2: 상태를 '처리 중'으로 변경...")
         logger.info("Step 2: 상태를 '처리 중'으로 변경...")
         await update_post_data_request_status(record_id, '처리 중')
+        log_capture.add_log("INFO", "Post Data Request 상태를 '처리 중'으로 변경 완료")
         
         # 3단계: 병원 정보 조회
+        log_capture.add_log("INFO", "Step 3: 병원 정보 조회 시작...")
         hospital_table = base.table('Hospital')
         try:
             hospital_records = hospital_table.all()
@@ -210,15 +342,18 @@ async def process_post_data_request(post_id: str) -> Dict[str, Any]:
                 hospital_name = hospital_record.get('Hospital Name', '병원')
                 hospital_address = hospital_record.get('Address', '')
                 hospital_phone = hospital_record.get('Phone', '')
+                log_capture.add_log("INFO", f"병원 정보 조회 완료: {hospital_name}")
             else:
                 raise Exception("Hospital 테이블에 데이터가 없음")
         except Exception as e:
+            log_capture.add_log("WARNING", f"Hospital 테이블 조회 실패: {e}, 기본값 사용")
             logger.warning(f"Hospital 테이블 조회 실패: {e}, 기본값 사용")
             hospital_name = "내이튼치과의원"
             hospital_address = "B동 507호 라스플로레스 경기도 화성시 동탄대로 537"
             hospital_phone = "031-526-2246"
         
         # 4단계: UI 데이터를 InputAgent 형식으로 변환
+        log_capture.add_log("INFO", "Step 4: UI 데이터를 InputAgent 형식으로 변환...")
         input_data = {
             "hospital": {
                 "name": hospital_name,
@@ -258,43 +393,68 @@ async def process_post_data_request(post_id: str) -> Dict[str, Any]:
             "persona_candidates": [],
             "representative_persona": ""
         }
+        log_capture.add_log("INFO", "InputAgent 입력 데이터 구성 완료")
         
         # 5단계: AI 에이전트들 import 및 실행
+        log_capture.add_log("INFO", "Step 5: AI 에이전트 모듈 import 시작...")
         try:
             from input_agent import InputAgent
             from plan_agent import main as plan_agent_main
             from title_agent import run as title_agent_run
             from content_agent import run as content_agent_run
+            log_capture.add_log("INFO", "AI 에이전트 모듈 import 완료")
         except ImportError as e:
+            log_capture.add_log("ERROR", f"AI 에이전트 import 실패: {e}")
             logger.error(f"AI 에이전트 import 실패: {e}")
             raise Exception("AI 에이전트 모듈을 찾을 수 없습니다. agents 폴더를 확인해주세요.")
         
         # 6단계: 전체 파이프라인 실행
+        log_capture.add_log("INFO", "Step 3: InputAgent 실행 시작...")
+        await send_realtime_log(post_id, "INFO", "Step 3: InputAgent 실행 시작...")
         logger.info("Step 3: InputAgent 실행...")
         input_agent = InputAgent(input_data=input_data)
         input_result = input_agent.collect(mode="use")
+        log_capture.add_log("INFO", "InputAgent 실행 완료")
+        await send_realtime_log(post_id, "INFO", "InputAgent 실행 완료")
         
+        log_capture.add_log("INFO", "Step 4: PlanAgent 실행 시작...")
+        await send_realtime_log(post_id, "INFO", "Step 4: PlanAgent 실행 시작...")
         logger.info("Step 4: PlanAgent 실행...")
         plan = plan_agent_main(mode='use', input_data=input_result)
+        log_capture.add_log("INFO", "PlanAgent 실행 완료")
+        await send_realtime_log(post_id, "INFO", "PlanAgent 실행 완료")
         
+        log_capture.add_log("INFO", "Step 5: TitleAgent 실행 시작...")
+        await send_realtime_log(post_id, "INFO", "Step 5: TitleAgent 실행 시작...")
         logger.info("Step 5: TitleAgent 실행...")
         title_result = title_agent_run(plan=plan, mode='use')
         title = title_result.get('selected', {}).get('title', '')
+        log_capture.add_log("INFO", f"TitleAgent 실행 완료 - 생성된 제목: {title}")
+        await send_realtime_log(post_id, "INFO", f"TitleAgent 실행 완료 - 생성된 제목: {title}")
         
+        log_capture.add_log("INFO", "Step 6: ContentAgent 실행 시작...")
+        await send_realtime_log(post_id, "INFO", "Step 6: ContentAgent 실행 시작...")
         logger.info("Step 6: ContentAgent 실행...")
         content_result = content_agent_run(mode='use')
         content = content_result
+        log_capture.add_log("INFO", "ContentAgent 실행 완료")
+        await send_realtime_log(post_id, "INFO", "ContentAgent 실행 완료")
         
         # 7단계: 전체 글 생성
+        log_capture.add_log("INFO", "전체 글 생성 시작...")
         try:
             from content_agent import format_full_article
             full_article = format_full_article(content, input_data={**input_result, **plan, 'title': title})
+            log_capture.add_log("INFO", "format_full_article 함수로 전체 글 생성 완료")
         except ImportError:
             full_article = content if isinstance(content, str) else str(content)
+            log_capture.add_log("WARNING", "format_full_article 함수를 찾을 수 없어 기본 콘텐츠 사용")
         
+        log_capture.add_log("INFO", "텍스트 생성 완료!")
         logger.info("텍스트 생성 완료!")
         
         # 8단계: 결과를 Post Data Requests에 업데이트 (상태: 완료)
+        log_capture.add_log("INFO", "결과 데이터 구성 시작...")
         results = {
             "title": title,
             "content": full_article,
@@ -305,29 +465,47 @@ async def process_post_data_request(post_id: str) -> Dict[str, Any]:
                 "content_evaluation": "콘텐츠 생성 완료"
             }
         }
+        log_capture.add_log("INFO", f"결과 데이터 구성 완료 - 제목: {title[:50]}...")
         
+        log_capture.add_log("INFO", "Step 7: 결과를 Airtable에 저장...")
         logger.info("Step 7: 결과를 Airtable에 저장...")
         await update_post_data_request_status(record_id, '완료', results)
+        log_capture.add_log("INFO", "Post Data Requests 테이블 업데이트 완료")
         
         # 9단계: Medicontent Posts 상태를 '리걸케어 작업 중'으로 업데이트
+        log_capture.add_log("INFO", "Medicontent Posts 상태 업데이트 시작...")
         await update_medicontent_post_status(post_id, '리걸케어 작업 중')
+        log_capture.add_log("INFO", "Medicontent Posts 상태를 '리걸케어 작업 중'으로 업데이트 완료")
         
         # 10단계: 웹훅 API 호출
+        log_capture.add_log("INFO", "Step 8: 웹훅 API 호출...")
         logger.info("Step 8: 웹훅 API 호출...")
         webhook_response = await call_webhook(post_id, results)
         
         # 11단계: n8n 응답 확인 및 완료 처리
         if webhook_response and webhook_response.get('status') == 'completed':
+            log_capture.add_log("INFO", "n8n 워크플로우 완료 확인됨")
             logger.info("n8n 워크플로우 완료 확인됨")
             # 여기서 다음 작업을 진행할 수 있습니다
         else:
+            log_capture.add_log("INFO", "n8n 워크플로우 진행 중 또는 응답 대기 중")
             logger.info("n8n 워크플로우 진행 중 또는 응답 대기 중")
+        
+        # 로그 캡처 중지
+        log_capture.stop_capture()
+        captured_logs = log_capture.get_logs()
+        
+        # 디버그: 캡처된 로그 확인
+        logger.info(f"캡처된 로그 개수: {len(captured_logs)}")
+        for i, log in enumerate(captured_logs[:5]):  # 처음 5개만 출력
+            logger.info(f"로그 {i+1}: {log}")
         
         return {
             "status": "success",
             "post_id": post_id,
             "record_id": record_id,
             "results": results,
+            "logs": captured_logs,
             "message": "메디컨텐츠 생성 및 DB 저장 완료!"
         }
         
@@ -337,6 +515,10 @@ async def process_post_data_request(post_id: str) -> Dict[str, Any]:
         logger.error(f"오류 발생: {str(e)}")
         logger.error(f"상세: {error_details}")
         
+        # 로그 캡처 중지
+        log_capture.stop_capture()
+        captured_logs = log_capture.get_logs()
+        
         # 오류 발생 시 상태를 '대기'로 되돌리기
         if record_id:
             try:
@@ -344,4 +526,11 @@ async def process_post_data_request(post_id: str) -> Dict[str, Any]:
             except:
                 pass
         
-        raise Exception(f"텍스트 생성 실패: {str(e)}")
+        # 오류 정보와 함께 로그도 포함하여 예외 발생
+        error_response = {
+            "status": "error",
+            "message": f"텍스트 생성 실패: {str(e)}",
+            "logs": captured_logs,
+            "error_details": error_details
+        }
+        raise Exception(json.dumps(error_response))
