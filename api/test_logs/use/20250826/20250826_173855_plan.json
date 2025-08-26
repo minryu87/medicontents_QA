@@ -1,0 +1,146 @@
+{
+  "title_plan": {
+    "guidance": "경기/화성/경기 화성 + 카테고리 + 핵심 키워드",
+    "must_include_one_of": [
+      "경기",
+      "화성",
+      "경기 화성"
+    ],
+    "must_include": [],
+    "must_not_include": [
+      "내이튼치과의원",
+      "가격",
+      "이벤트",
+      "전화번호",
+      "1등",
+      "최고",
+      "완치",
+      "보장"
+    ],
+    "tone": "전문적·친절한 의사 설명",
+    "hints": {
+      "category": "임플란트",
+      "region_examples": [
+        "화성시",
+        "화성 지역",
+        "경기 화성"
+      ]
+    }
+  },
+  "content_plan": {
+    "sections_order": [
+      "1_intro",
+      "2_visit",
+      "3_inspection",
+      "4_doctor_tip",
+      "5_treatment",
+      "6_check_point",
+      "7_conclusion"
+    ],
+    "sections": {
+      "1_intro": {
+        "subtitle": "임플란트 치료의 중요성",
+        "summary": "임플란트는 단순한 치아 대체를 넘어 삶의 질 향상에 중요한 역할을 합니다.  숙련된 의료진과 첨단 장비를 통해 안전하고 정확한 시술이 중요합니다.  본 글에서는 임플란트 치료 경험을 바탕으로 환자분들의 고민을 해결하는 데 도움을 드리고자 합니다.",
+        "write_instruction": "톤=전문적·친절, 길이=300~500자, 금지어=과장/비교/보장",
+        "must_include": [],
+        "may_include": [
+          "",
+          "일반진료"
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "2_visit": {
+        "subtitle": "환자의 내원 및 주호소",
+        "summary": "60대 후반 남성 환자분께서 10년 이상 사용한 부분틀니로 인한 불편함을 호소하며 내원하셨습니다.  틀니로 인한 통증, 음식물 저작곤란, 심미적 불안감 등이 주된 증상이었습니다. 환자분의 어려움을 공감하고 최선을 다해 치료 계획을 수립했습니다.",
+        "write_instruction": "톤=전문적·친절, 길이=300~500자, 금지어=과장/비교/보장",
+        "must_include": [],
+        "may_include": [
+          "",
+          "경기 화성"
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "3_inspection": {
+        "subtitle": "정밀 검사 및 진단",
+        "summary": "환자분의 잇몸뼈 상태를 정밀하게 분석하기 위해 3D-CT 촬영을 시행했습니다.  영상 분석을 통해 환자분의 구강 상태를 정확하게 파악하고, 최적의 치료 계획을 세우는 데 중요한 자료로 활용했습니다.",
+        "write_instruction": "톤=전문적·친절, 길이=300~500자, 금지어=과장/비교/보장",
+        "must_include": [],
+        "may_include": [
+          ""
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "4_doctor_tip": {
+        "subtitle": "의료진의 전문적인 조언",
+        "summary": "네비게이션 임플란트 시술을 통해 환자분의 불편함을 최소화하고 최상의 예후를 얻을 수 있도록 노력했습니다.  정확한 식립 위치와 각도를 계획하고, 최소 절개를 통해 통증과 붓기를 줄이는 데 집중했습니다.",
+        "write_instruction": "톤=전문적·친절, 길이=300~500자, 금지어=과장/비교/보장",
+        "must_include": [],
+        "may_include": [],
+        "must_not_include": [
+          "가격",
+          "이벤트"
+        ],
+        "image_binding": []
+      },
+      "5_treatment": {
+        "subtitle": "네비게이션 임플란트 시술 과정",
+        "summary": "3D-CT 촬영과 컴퓨터 모의 시술을 통해 환자 개별 맞춤형 수술 계획을 세웠습니다.  맞춤형 수술 유도 장치(가이드)를 이용하여 최소 절개로 정확한 위치에 임플란트를 식립했습니다.  환자분의 불편함을 최소화하기 위해 최선을 다했습니다.",
+        "write_instruction": "톤=전문적·친절, 길이=300~500자, 금지어=과장/비교/보장",
+        "must_include": [],
+        "may_include": [
+          "",
+          "일반진료"
+        ],
+        "must_not_include": [
+          "가격",
+          "무통증 단정"
+        ],
+        "image_binding": []
+      },
+      "6_check_point": {
+        "subtitle": "치료 후 주의사항 및 관리",
+        "summary": "임플란트 시술 후 주의사항과 정기적인 검진 및 관리의 중요성을 설명합니다.  환자분의 구강 건강을 유지하고 임플란트의 수명을 연장하기 위한 구체적인 방법들을 제시합니다.",
+        "write_instruction": "톤=전문적·친절, 길이=300~500자, 금지어=과장/비교/보장",
+        "must_include": [],
+        "may_include": [
+          "경기 화성"
+        ],
+        "must_not_include": [
+          "과장표현"
+        ],
+        "image_binding": []
+      },
+      "7_conclusion": {
+        "subtitle": "치료 결과 및 향후 계획",
+        "summary": "환자분께서는 치료 후 만족감을 표현하셨으며, 삶의 질 향상에 대한 긍정적인 변화를 경험하셨습니다.  본원에서는 환자 중심의 맞춤형 치료를 통해 최상의 결과를 제공하기 위해 노력하고 있습니다.",
+        "write_instruction": "톤=전문적·친절, 길이=300~500자, 금지어=과장/비교/보장",
+        "must_include": [],
+        "may_include": [],
+        "must_not_include": [
+          "가격",
+          "이벤트",
+          "전화번호 직기재"
+        ],
+        "image_binding": []
+      }
+    }
+  },
+  "context_vars": {
+    "hospital_name": "내이튼치과의원",
+    "save_name": "내이튼치과의원",
+    "city": "경기",
+    "district": "화성",
+    "region_phrase": "경기 화성",
+    "category": "일반진료",
+    "map_link": ""
+  },
+  "meta": {
+    "mode": "use",
+    "timestamp": "20250826_173855",
+    "case_id": "case_내이튼치과의원_20250826_173844",
+    "source_log": "(provided dict)"
+  }
+}

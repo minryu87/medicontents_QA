@@ -1,0 +1,167 @@
+{
+  "mode": "use",
+  "timestamp": "20250826_173538",
+  "plan_source": "(provided dict)",
+  "plan_snapshot": {
+    "title_plan": {
+      "guidance": "경기/화성/경기 화성 + 카테고리 + 핵심 키워드",
+      "must_include_one_of": [
+        "경기",
+        "화성",
+        "경기 화성"
+      ],
+      "must_include": [],
+      "must_not_include": [
+        "내이튼치과의원",
+        "가격",
+        "이벤트",
+        "전화번호",
+        "1등",
+        "최고",
+        "완치",
+        "보장"
+      ],
+      "tone": "전문적·친절한 의사 설명",
+      "hints": {
+        "category": "임플란트",
+        "region_examples": [
+          "화성시",
+          "병점",
+          "동탄"
+        ]
+      }
+    },
+    "content_plan": {
+      "sections_order": [
+        "1_intro",
+        "2_visit",
+        "3_inspection",
+        "4_doctor_tip",
+        "5_treatment",
+        "6_check_point",
+        "7_conclusion"
+      ],
+      "sections": {
+        "1_intro": {
+          "subtitle": "임플란트 치료, 시작하기 전 알아야 할 것들",
+          "summary": "임플란트는 상실된 치아 기능 회복에 효과적인 방법입니다. 자연치아와 유사한 저작력과 심미성을 제공하며, 의료진의 숙련도와 정밀 진단 시스템이 중요합니다.  본 글에서는 임플란트 치료에 대한 정보를 제공합니다.",
+          "write_instruction": "톤=전문적·친절, 길이=300~500자, 금지어=과장/비교/보장",
+          "must_include": [],
+          "may_include": [
+            "",
+            "일반진료"
+          ],
+          "must_not_include": [],
+          "image_binding": []
+        },
+        "2_visit": {
+          "subtitle": "치과 방문 및 상담",
+          "summary": "상실된 치아로 인한 불편함과 치료에 대한 걱정을 상담을 통해 해소하고,  정확한 진단을 위한 검사 과정을 설명합니다.  환자의 상태를 정확히 파악하는 것이 중요합니다.",
+          "write_instruction": "톤=전문적·친절, 길이=300~500자, 금지어=과장/비교/보장",
+          "must_include": [],
+          "may_include": [
+            "",
+            "경기 화성"
+          ],
+          "must_not_include": [],
+          "image_binding": []
+        },
+        "3_inspection": {
+          "subtitle": "정밀 검사 및 진단",
+          "summary": "3D-CT 촬영 등 정밀 검사를 통해 잇몸뼈 상태, 신경관 위치 등을 정확히 분석하여 안전하고 효과적인 치료 계획을 수립하는 과정을 설명합니다. 정확한 진단이 치료 성공의 중요한 요소입니다.",
+          "write_instruction": "톤=전문적·친절, 길이=300~500자, 금지어=과장/비교/보장",
+          "must_include": [],
+          "may_include": [
+            ""
+          ],
+          "must_not_include": [],
+          "image_binding": []
+        },
+        "4_doctor_tip": {
+          "subtitle": "의사의 조언: 임플란트 치료의 중요성",
+          "summary": "치아 상실을 방치하면 주변 치아 배열이 무너지고 잇몸뼈가 흡수될 수 있습니다. 조기에 치료받는 것이 중요하며, 임플란트 치료에 대한 두려움은 전문가와 상담을 통해 해소할 수 있습니다.",
+          "write_instruction": "톤=전문적·친절, 길이=300~500자, 금지어=과장/비교/보장",
+          "must_include": [],
+          "may_include": [],
+          "must_not_include": [
+            "가격",
+            "이벤트"
+          ],
+          "image_binding": []
+        },
+        "5_treatment": {
+          "subtitle": "임플란트 치료 과정",
+          "summary": "최소 절개 방식으로 시술하여 통증과 출혈을 최소화하고, 환자에게 각 단계를 상세히 설명하여 안심할 수 있도록 합니다.  맞춤형 지대주와 보철물을 연결하여 자연스러운 결과를 얻습니다.",
+          "write_instruction": "톤=전문적·친절, 길이=300~500자, 금지어=과장/비교/보장",
+          "must_include": [],
+          "may_include": [
+            "",
+            "일반진료"
+          ],
+          "must_not_include": [
+            "가격",
+            "무통증 단정"
+          ],
+          "image_binding": []
+        },
+        "6_check_point": {
+          "subtitle": "병원 선택 시 체크 포인트",
+          "summary": "의료진의 숙련도와 정밀 진단 시스템을 확인하는 것이 중요합니다. 환자와의 소통과 충분한 설명 또한 중요한 요소입니다.  ",
+          "write_instruction": "톤=전문적·친절, 길이=300~500자, 금지어=과장/비교/보장",
+          "must_include": [],
+          "may_include": [
+            "경기 화성"
+          ],
+          "must_not_include": [
+            "과장표현"
+          ],
+          "image_binding": []
+        },
+        "7_conclusion": {
+          "subtitle": "건강한 미소를 되찾는 첫걸음",
+          "summary": "임플란트 치료를 통해 저작 기능 회복 및 심미적인 개선을 얻을 수 있습니다.  치아 상실로 인한 고민이 있다면, 전문가와 상담하여 적절한 치료 계획을 세우는 것이 중요합니다. ",
+          "write_instruction": "톤=전문적·친절, 길이=300~500자, 금지어=과장/비교/보장",
+          "must_include": [],
+          "may_include": [],
+          "must_not_include": [
+            "가격",
+            "이벤트",
+            "전화번호 직기재"
+          ],
+          "image_binding": []
+        }
+      }
+    },
+    "context_vars": {
+      "hospital_name": "내이튼치과의원",
+      "save_name": "내이튼치과의원",
+      "city": "경기",
+      "district": "화성",
+      "region_phrase": "경기 화성",
+      "category": "일반진료",
+      "map_link": ""
+    },
+    "meta": {
+      "mode": "use",
+      "timestamp": "20250826_173534",
+      "case_id": "case_내이튼치과의원_20250826_173524",
+      "source_log": "(provided dict)"
+    }
+  },
+  "used_data": {
+    "category": "일반진료",
+    "city": "경기",
+    "district": "화성",
+    "region_phrase": "경기 화성",
+    "representative_persona": "",
+    "section_summaries": {
+      "1_intro": "임플란트는 상실된 치아 기능 회복에 효과적인 방법입니다. 자연치아와 유사한 저작력과 심미성을 제공하며, 의료진의 숙련도와 정밀 진단 시스템이 중요합니다.  본 글에서는 임플란트 치료에 대한 정보를 제공합니다.",
+      "2_visit": "상실된 치아로 인한 불편함과 치료에 대한 걱정을 상담을 통해 해소하고,  정확한 진단을 위한 검사 과정을 설명합니다.  환자의 상태를 정확히 파악하는 것이 중요합니다.",
+      "3_inspection": "3D-CT 촬영 등 정밀 검사를 통해 잇몸뼈 상태, 신경관 위치 등을 정확히 분석하여 안전하고 효과적인 치료 계획을 수립하는 과정을 설명합니다. 정확한 진단이 치료 성공의 중요한 요소입니다.",
+      "4_doctor_tip": "치아 상실을 방치하면 주변 치아 배열이 무너지고 잇몸뼈가 흡수될 수 있습니다. 조기에 치료받는 것이 중요하며, 임플란트 치료에 대한 두려움은 전문가와 상담을 통해 해소할 수 있습니다.",
+      "5_treatment": "최소 절개 방식으로 시술하여 통증과 출혈을 최소화하고, 환자에게 각 단계를 상세히 설명하여 안심할 수 있도록 합니다.  맞춤형 지대주와 보철물을 연결하여 자연스러운 결과를 얻습니다.",
+      "6_check_point": "의료진의 숙련도와 정밀 진단 시스템을 확인하는 것이 중요합니다. 환자와의 소통과 충분한 설명 또한 중요한 요소입니다.  ",
+      "7_conclusion": "임플란트 치료를 통해 저작 기능 회복 및 심미적인 개선을 얻을 수 있습니다.  치아 상실로 인한 고민이 있다면, 전문가와 상담하여 적절한 치료 계획을 세우는 것이 중요합니다. "
+    }
+  }
+}

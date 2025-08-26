@@ -1,0 +1,146 @@
+{
+  "title_plan": {
+    "guidance": "경기/화성/경기 화성 + 카테고리 + 핵심 키워드",
+    "must_include_one_of": [
+      "경기",
+      "화성",
+      "경기 화성"
+    ],
+    "must_include": [],
+    "must_not_include": [
+      "내이튼치과의원",
+      "가격",
+      "이벤트",
+      "전화번호",
+      "1등",
+      "최고",
+      "완치",
+      "보장"
+    ],
+    "tone": "전문적·친절한 의사 설명",
+    "hints": {
+      "category": "임플란트",
+      "region_examples": [
+        "화성시",
+        "화성시 임플란트",
+        "경기 화성 임플란트"
+      ]
+    }
+  },
+  "content_plan": {
+    "sections_order": [
+      "1_intro",
+      "2_visit",
+      "3_inspection",
+      "4_doctor_tip",
+      "5_treatment",
+      "6_check_point",
+      "7_conclusion"
+    ],
+    "sections": {
+      "1_intro": {
+        "subtitle": "임플란트란 무엇일까요?",
+        "summary": "임플란트는 자연치아를 대체하는 시술로, 치아 상실로 인한 저작 기능 저하, 심미적인 문제를 해결하는 데 도움을 줍니다.  본 글에서는 임플란트 시술 과정과 주의사항에 대해 알아봅니다.",
+        "write_instruction": "임플란트의 개념과 중요성을 설명하고, 본 글에서 다룰 내용을 간략하게 소개합니다. 300~500자, 전문적이고 친절한 톤으로 작성합니다. 과장/비교/보장 표현은 금지합니다.",
+        "must_include": [],
+        "may_include": [
+          "",
+          "일반진료"
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "2_visit": {
+        "subtitle": "70대 남성 환자의 내원",
+        "summary": "70대 남성 환자분은 오랜 기간 틀니 사용으로 인한 불편함과 저작 기능 저하를 호소하며 내원하셨습니다. 다수의 치아 상실과 잇몸뼈 흡수가 진행된 상태였습니다.",
+        "write_instruction": "환자의 상태와 내원 배경을 자세히 설명합니다. 300~500자, 전문적이고 친절한 톤으로 작성합니다. 과장/비교/보장 표현은 금지합니다.",
+        "must_include": [],
+        "may_include": [
+          "",
+          "경기 화성"
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "3_inspection": {
+        "subtitle": "정밀 검사 및 진단",
+        "summary": "정밀 CT 촬영을 통해 환자분의 구강 구조, 잇몸뼈 상태, 상악동 위치 등을 정확하게 파악했습니다.  잇몸뼈 흡수가 심하여 고난도 임플란트 시술이 필요한 상황이었습니다.",
+        "write_instruction": "정밀 검사의 종류와 중요성, 검사 결과를 설명합니다. 300~500자, 전문적이고 친절한 톤으로 작성합니다. 과장/비교/보장 표현은 금지합니다.",
+        "must_include": [],
+        "may_include": [
+          ""
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "4_doctor_tip": {
+        "subtitle": "임플란트 시술의 중요 고려사항",
+        "summary": "임플란트는 환자의 구강 구조, 잇몸뼈 상태 등을 종합적으로 고려해야 하는 고난도 수술입니다. 풍부한 임상 경험과 정밀 진단 장비가 필수적입니다.",
+        "write_instruction": "임플란트 시술의 어려움과 중요성을 설명하고, 의사의 전문적인 지식을 바탕으로 환자에게 필요한 정보를 제공합니다. 300~500자, 전문적이고 친절한 톤으로 작성합니다. 과장/비교/보장 표현은 금지합니다.",
+        "must_include": [],
+        "may_include": [],
+        "must_not_include": [
+          "가격",
+          "이벤트"
+        ],
+        "image_binding": []
+      },
+      "5_treatment": {
+        "subtitle": "상악동 거상술과 뼈이식을 동반한 임플란트 시술",
+        "summary": "환자분의 잇몸뼈 부족으로 상악동 거상술과 뼈이식을 동반한 고난도 임플란트 시술을 진행했습니다. 디지털 내비게이션 시스템을 활용하여 정확하고 안전하게 시술을 완료했습니다.",
+        "write_instruction": "시술 과정과 방법을 자세하게 설명합니다. 300~500자, 전문적이고 친절한 톤으로 작성합니다. 과장/비교/보장 표현은 금지합니다.",
+        "must_include": [],
+        "may_include": [
+          "",
+          "일반진료"
+        ],
+        "must_not_include": [
+          "가격",
+          "무통증 단정"
+        ],
+        "image_binding": []
+      },
+      "6_check_point": {
+        "subtitle": "임플란트 시술 후 주의사항",
+        "summary": "임플란트 시술 후에는 정기적인 검진과 철저한 구강 위생 관리가 중요합니다.  저희 병원은 체계적인 사후 관리 프로그램을 운영하고 있습니다.",
+        "write_instruction": "시술 후 주의사항과 관리 방법을 설명하고,  정기 검진의 중요성을 강조합니다. 300~500자, 전문적이고 친절한 톤으로 작성합니다. 과장/비교/보장 표현은 금지합니다.",
+        "must_include": [],
+        "may_include": [
+          "경기 화성"
+        ],
+        "must_not_include": [
+          "과장표현"
+        ],
+        "image_binding": []
+      },
+      "7_conclusion": {
+        "subtitle": "마무리",
+        "summary": "70대 남성 환자분은 임플란트 시술 후 저작 기능이 개선되고 심미적인 만족도도 높아졌습니다.  정기적인 검진을 통해 건강한 구강 상태를 유지하도록 돕겠습니다.",
+        "write_instruction": "환자의 만족도와 향후 관리 계획을 간략하게 요약합니다. 300~500자, 전문적이고 친절한 톤으로 작성합니다. 과장/비교/보장 표현은 금지합니다. 가격, 이벤트, 전화번호 직접 기재는 금지합니다.",
+        "must_include": [],
+        "may_include": [],
+        "must_not_include": [
+          "가격",
+          "이벤트",
+          "전화번호 직기재"
+        ],
+        "image_binding": []
+      }
+    }
+  },
+  "context_vars": {
+    "hospital_name": "내이튼치과의원",
+    "save_name": "내이튼치과의원",
+    "city": "경기",
+    "district": "화성",
+    "region_phrase": "경기 화성",
+    "category": "일반진료",
+    "map_link": ""
+  },
+  "meta": {
+    "mode": "use",
+    "timestamp": "20250826_181114",
+    "case_id": "case_내이튼치과의원_20250826_181103",
+    "source_log": "(provided dict)"
+  }
+}

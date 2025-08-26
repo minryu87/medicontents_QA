@@ -1,0 +1,167 @@
+{
+  "mode": "use",
+  "timestamp": "20250826_184440",
+  "plan_source": "(provided dict)",
+  "plan_snapshot": {
+    "title_plan": {
+      "guidance": "경기/화성/경기 화성 + 카테고리 + 핵심 키워드",
+      "must_include_one_of": [
+        "경기",
+        "화성",
+        "경기 화성"
+      ],
+      "must_include": [],
+      "must_not_include": [
+        "내이튼치과의원",
+        "가격",
+        "이벤트",
+        "전화번호",
+        "1등",
+        "최고",
+        "완치",
+        "보장"
+      ],
+      "tone": "전문적·친절한 의사 설명",
+      "hints": {
+        "category": "임플란트",
+        "region_examples": [
+          "화성시",
+          "화성 지역",
+          "경기 화성"
+        ]
+      }
+    },
+    "content_plan": {
+      "sections_order": [
+        "1_intro",
+        "2_visit",
+        "3_inspection",
+        "4_doctor_tip",
+        "5_treatment",
+        "6_check_point",
+        "7_conclusion"
+      ],
+      "sections": {
+        "1_intro": {
+          "subtitle": "임플란트 치료의 중요성",
+          "summary": "임플란트는 단순한 치아 대체를 넘어 저작 기능 회복 및 삶의 질 향상에 중요합니다. 성공적인 임플란트를 위해서는 정밀한 진단과 숙련된 의료진의 기술이 필수적입니다.",
+          "write_instruction": "임플란트 치료의 중요성과 필요성을 전문적이고 친절하게 설명합니다. 300~500자 분량으로 작성하며, 과장, 비교, 보장 표현은 금지합니다.",
+          "must_include": [],
+          "may_include": [
+            "",
+            "일반진료"
+          ],
+          "must_not_include": [],
+          "image_binding": []
+        },
+        "2_visit": {
+          "subtitle": "환자의 내원 및 상담",
+          "summary": "오른쪽 아래 어금니 상실로 인한 저작 기능 저하, 주변 치아 기울어짐, 심미적 자신감 저하 등으로 내원한 환자의 상태를 설명합니다.",
+          "write_instruction": "환자의 주호소와 내원 배경을 자세히 설명합니다. 300~500자 분량으로 작성하며, 과장, 비교, 보장 표현은 금지합니다.",
+          "must_include": [],
+          "may_include": [
+            "",
+            "경기 화성"
+          ],
+          "must_not_include": [],
+          "image_binding": []
+        },
+        "3_inspection": {
+          "subtitle": "정밀 검사 및 진단",
+          "summary": "3D-CT를 활용한 정밀 진단으로 환자의 잇몸뼈 상태를 정확하게 파악하고, 뼈이식 수술의 필요성을 판단하는 과정을 설명합니다.",
+          "write_instruction": "3D-CT 등 정밀 검사를 통해 환자 상태를 정확하게 진단하는 과정을 상세히 설명합니다. 300~500자 분량으로 작성하며, 과장, 비교, 보장 표현은 금지합니다.",
+          "must_include": [],
+          "may_include": [
+            ""
+          ],
+          "must_not_include": [],
+          "image_binding": []
+        },
+        "4_doctor_tip": {
+          "subtitle": "임플란트 치료 전문가 팁",
+          "summary": "임플란트 치료의 성공적인 결과를 위해 환자의 잇몸뼈 상태, 컴퓨터 분석 모의 시술 등을 통해 부작용 가능성을 최소화하는 방법을 설명합니다.",
+          "write_instruction": "의료진의 전문적인 지식과 경험을 바탕으로 임플란트 치료의 성공적인 결과를 위한 팁을 제공합니다. 300~500자 분량으로 작성하며, 과장, 비교, 보장 표현은 금지하고 가격, 이벤트 언급은 금지합니다.",
+          "must_include": [],
+          "may_include": [],
+          "must_not_include": [
+            "가격",
+            "이벤트"
+          ],
+          "image_binding": []
+        },
+        "5_treatment": {
+          "subtitle": "임플란트 치료 과정",
+          "summary": "뼈이식 수술 후 컴퓨터 분석 모의 시술을 통해 이상적인 위치에 임플란트를 식립하고, 자연스러운 보철물을 장착하는 과정을 설명합니다.",
+          "write_instruction": "임플란트 치료의 단계별 과정을 자세하고 명확하게 설명합니다. 300~500자 분량으로 작성하며, 과장, 비교, 보장 표현은 금지하고 가격과 무통증을 단정하는 표현은 금지합니다.",
+          "must_include": [],
+          "may_include": [
+            "",
+            "일반진료"
+          ],
+          "must_not_include": [
+            "가격",
+            "무통증 단정"
+          ],
+          "image_binding": []
+        },
+        "6_check_point": {
+          "subtitle": "치료 후 주의사항",
+          "summary": "임플란트 치료 후 주의사항과 정기 검진의 중요성을 설명합니다. 치아 상실 방치의 위험성을 강조합니다.",
+          "write_instruction": "임플란트 치료 후 주의사항과 정기 검진의 중요성을 강조합니다. 300~500자 분량으로 작성하며, 과장 표현은 금지합니다.",
+          "must_include": [],
+          "may_include": [
+            "경기 화성"
+          ],
+          "must_not_include": [
+            "과장표현"
+          ],
+          "image_binding": []
+        },
+        "7_conclusion": {
+          "subtitle": "건강한 미소를 위한 조언",
+          "summary": "치아 상실을 방치하지 말고, 전문의와 상담하여 적절한 치료를 받아 건강한 미소를 되찾으라는 조언을 합니다.",
+          "write_instruction": "치아 건강 관리의 중요성을 다시 한번 강조하고, 전문의와의 상담을 권장합니다. 300~500자 분량으로 작성하며, 가격, 이벤트, 전화번호 직접 기재는 금지합니다.",
+          "must_include": [],
+          "may_include": [],
+          "must_not_include": [
+            "가격",
+            "이벤트",
+            "전화번호 직기재"
+          ],
+          "image_binding": []
+        }
+      }
+    },
+    "context_vars": {
+      "hospital_name": "내이튼치과의원",
+      "save_name": "내이튼치과의원",
+      "city": "경기",
+      "district": "화성",
+      "region_phrase": "경기 화성",
+      "category": "일반진료",
+      "map_link": ""
+    },
+    "meta": {
+      "mode": "use",
+      "timestamp": "20250826_184436",
+      "case_id": "case_내이튼치과의원_20250826_184425",
+      "source_log": "(provided dict)"
+    }
+  },
+  "used_data": {
+    "category": "일반진료",
+    "city": "경기",
+    "district": "화성",
+    "region_phrase": "경기 화성",
+    "representative_persona": "",
+    "section_summaries": {
+      "1_intro": "임플란트는 단순한 치아 대체를 넘어 저작 기능 회복 및 삶의 질 향상에 중요합니다. 성공적인 임플란트를 위해서는 정밀한 진단과 숙련된 의료진의 기술이 필수적입니다.",
+      "2_visit": "오른쪽 아래 어금니 상실로 인한 저작 기능 저하, 주변 치아 기울어짐, 심미적 자신감 저하 등으로 내원한 환자의 상태를 설명합니다.",
+      "3_inspection": "3D-CT를 활용한 정밀 진단으로 환자의 잇몸뼈 상태를 정확하게 파악하고, 뼈이식 수술의 필요성을 판단하는 과정을 설명합니다.",
+      "4_doctor_tip": "임플란트 치료의 성공적인 결과를 위해 환자의 잇몸뼈 상태, 컴퓨터 분석 모의 시술 등을 통해 부작용 가능성을 최소화하는 방법을 설명합니다.",
+      "5_treatment": "뼈이식 수술 후 컴퓨터 분석 모의 시술을 통해 이상적인 위치에 임플란트를 식립하고, 자연스러운 보철물을 장착하는 과정을 설명합니다.",
+      "6_check_point": "임플란트 치료 후 주의사항과 정기 검진의 중요성을 설명합니다. 치아 상실 방치의 위험성을 강조합니다.",
+      "7_conclusion": "치아 상실을 방치하지 말고, 전문의와 상담하여 적절한 치료를 받아 건강한 미소를 되찾으라는 조언을 합니다."
+    }
+  }
+}

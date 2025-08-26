@@ -1,0 +1,143 @@
+{
+  "title_plan": {
+    "guidance": "경기/화성/경기 화성 + 카테고리 + 핵심 키워드",
+    "must_include_one_of": [
+      "경기",
+      "화성",
+      "경기 화성"
+    ],
+    "must_include": [],
+    "must_not_include": [
+      "내이튼치과의원",
+      "가격",
+      "이벤트",
+      "전화번호",
+      "1등",
+      "최고",
+      "완치",
+      "보장"
+    ],
+    "tone": "전문적·친절한 의사 설명",
+    "hints": {
+      "category": "임플란트",
+      "region_examples": [
+        "화성시",
+        "병점",
+        "동탄"
+      ]
+    }
+  },
+  "content_plan": {
+    "sections_order": [
+      "1_intro",
+      "2_visit",
+      "3_inspection",
+      "4_doctor_tip",
+      "5_treatment",
+      "6_check_point",
+      "7_conclusion"
+    ],
+    "sections": {
+      "1_intro": {
+        "subtitle": "임플란트 치료란 무엇일까요?",
+        "summary": "상실된 치아의 기능과 심미성을 회복하는 최선의 방법으로, 자연치아와 유사한 저작력을 제공합니다. 정밀한 진단과 숙련된 의료진의 기술이 중요합니다.",
+        "write_instruction": "임플란트 치료의 개념과 중요성을 설명합니다. 300-500자, 전문적이고 친절한 톤으로 작성하며, 과장/비교/보장 표현은 금지합니다.",
+        "must_include": [],
+        "may_include": [
+          "일반진료"
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "2_visit": {
+        "subtitle": "환자분의 내원 상황",
+        "summary": "오른쪽 아래 어금니 상실 후 1년 이상 방치, 저작 기능 불편 및 주변 치아 기울어짐, 임플란트에 대한 두려움과 비용 부담으로 치료 지연.",
+        "write_instruction": "환자의 내원 배경과 상태를 설명합니다. 300-500자, 전문적이고 친절한 톤으로 작성하며, 과장/비교/보장 표현은 금지합니다.",
+        "must_include": [],
+        "may_include": [
+          "경기 화성"
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "3_inspection": {
+        "subtitle": "정밀 검사 및 진단",
+        "summary": "3D-CT를 이용한 정밀 진단으로 잇몸뼈 상태를 정확히 파악, 최적의 식립 위치와 각도 결정, 컴퓨터 분석을 통한 모의 수술로 오차 최소화.",
+        "write_instruction": "정밀 검사 과정과 결과를 설명합니다. 300-500자, 전문적이고 친절한 톤으로 작성하며, 과장/비교/보장 표현은 금지합니다.",
+        "must_include": [
+          "3D-CT"
+        ],
+        "may_include": [],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "4_doctor_tip": {
+        "subtitle": "의료진의 설명",
+        "summary": "최소 절개 방식으로 통증과 부기를 줄이고, 환자와의 충분한 소통을 통해 치료 계획 수립 및 불안감 해소에 노력.",
+        "write_instruction": "의료진의 치료 접근 방식과 환자와의 소통 과정을 설명합니다. 300-500자, 전문적이고 친절한 톤으로 작성하며, 과장/비교/보장 표현은 금지합니다.",
+        "must_include": [],
+        "may_include": [],
+        "must_not_include": [
+          "가격",
+          "이벤트"
+        ],
+        "image_binding": []
+      },
+      "5_treatment": {
+        "subtitle": "임플란트 시술 과정",
+        "summary": "최적의 식립 위치와 각도로 임플란트 식립, 주변 치아의 안정적인 위치 회복 및 저작 기능 회복, 자연스러운 심미성 확보.",
+        "write_instruction": "임플란트 시술 과정을 설명합니다. 300-500자, 전문적이고 친절한 톤으로 작성하며, 과장/비교/보장 표현과 가격, 무통증 단정은 금지합니다.",
+        "must_include": [],
+        "may_include": [
+          "일반진료"
+        ],
+        "must_not_include": [
+          "가격",
+          "무통증 단정"
+        ],
+        "image_binding": []
+      },
+      "6_check_point": {
+        "subtitle": "치료 후 주의사항",
+        "summary": "임플란트 수명은 시술 후 관리에 달려 있습니다. 정기적인 검진과 올바른 구강 위생 관리가 중요합니다.",
+        "write_instruction": "치료 후 주의사항 및 관리 방법을 설명합니다. 300-500자, 전문적이고 친절한 톤으로 작성하며, 과장 표현은 금지합니다.",
+        "must_include": [],
+        "may_include": [
+          "경기 화성"
+        ],
+        "must_not_include": [
+          "과장표현"
+        ],
+        "image_binding": []
+      },
+      "7_conclusion": {
+        "subtitle": "마무리",
+        "summary": "치료를 미루지 말고, 상담을 통해 본인에게 맞는 치료 계획을 세우세요.",
+        "write_instruction": "글의 결론을 맺습니다. 300-500자, 전문적이고 친절한 톤으로 작성하며, 가격, 이벤트, 전화번호 직접 기재는 금지합니다.",
+        "must_include": [],
+        "may_include": [],
+        "must_not_include": [
+          "가격",
+          "이벤트",
+          "전화번호 직기재"
+        ],
+        "image_binding": []
+      }
+    }
+  },
+  "context_vars": {
+    "hospital_name": "내이튼치과의원",
+    "save_name": "내이튼치과의원",
+    "city": "경기",
+    "district": "화성",
+    "region_phrase": "경기 화성",
+    "category": "일반진료",
+    "map_link": ""
+  },
+  "meta": {
+    "mode": "use",
+    "timestamp": "20250826_184315",
+    "case_id": "case_내이튼치과의원_20250826_184305",
+    "source_log": "(provided dict)"
+  }
+}

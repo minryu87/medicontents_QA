@@ -1,0 +1,146 @@
+{
+  "title_plan": {
+    "guidance": "경기/화성/경기 화성 + 카테고리 + 핵심 키워드",
+    "must_include_one_of": [
+      "경기",
+      "화성",
+      "경기 화성"
+    ],
+    "must_include": [],
+    "must_not_include": [
+      "내이튼치과의원",
+      "가격",
+      "이벤트",
+      "전화번호",
+      "1등",
+      "최고",
+      "완치",
+      "보장"
+    ],
+    "tone": "전문적·친절한 의사 설명",
+    "hints": {
+      "category": "임플란트",
+      "region_examples": [
+        "화성시",
+        "경기 화성",
+        "화성 지역"
+      ]
+    }
+  },
+  "content_plan": {
+    "sections_order": [
+      "1_intro",
+      "2_visit",
+      "3_inspection",
+      "4_doctor_tip",
+      "5_treatment",
+      "6_check_point",
+      "7_conclusion"
+    ],
+    "sections": {
+      "1_intro": {
+        "subtitle": "임플란트 치료의 중요성",
+        "summary": "임플란트는 단순한 치아 대체를 넘어 저작 기능 회복과 자신감 향상에 중요한 역할을 합니다. 환자 개별 잇몸뼈 상태에 맞는 정확한 진단과 치료 계획이 성공의 핵심입니다.",
+        "write_instruction": "전문적이고 친절한 톤으로, 300~500자 분량으로 작성. 과장/비교/보장 표현 금지.",
+        "must_include": [],
+        "may_include": [
+          "",
+          "일반진료"
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "2_visit": {
+        "subtitle": "60대 여성 환자의 내원",
+        "summary": "60대 후반 여성 환자가 틀니 사용으로 인한 불편함(잦은 탈락, 식사 어려움)을 호소하며 내원했습니다.  오랜 틀니 사용으로 인한 잇몸뼈 소실이 확인되었습니다.",
+        "write_instruction": "전문적이고 친절한 톤으로, 300~500자 분량으로 작성. 과장/비교/보장 표현 금지.",
+        "must_include": [],
+        "may_include": [
+          "",
+          "경기 화성"
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "3_inspection": {
+        "subtitle": "정밀 검사 및 진단",
+        "summary": "정밀 검사 결과, 틀니의 지속적인 압력으로 인한 상당한 잇몸뼈 소실이 확인되어 임플란트 식립의 어려움이 예상되었습니다.",
+        "write_instruction": "전문적이고 친절한 톤으로, 300~500자 분량으로 작성. 과장/비교/보장 표현 금지.",
+        "must_include": [],
+        "may_include": [
+          ""
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "4_doctor_tip": {
+        "subtitle": "임플란트 성공을 위한 의료진의 노하우",
+        "summary": "본원에서는 3D-CT 및 디지털 가이드를 활용하여 정밀한 수술 계획을 세우고, 환자 맞춤형 치료를 제공합니다.  뼈 이식 등을 통해 안전하고 정확한 임플란트 식립을 시행합니다.",
+        "write_instruction": "전문적이고 친절한 톤으로, 300~500자 분량으로 작성. 과장/비교/보장 표현 금지. 가격, 이벤트 언급 금지",
+        "must_include": [],
+        "may_include": [],
+        "must_not_include": [
+          "가격",
+          "이벤트"
+        ],
+        "image_binding": []
+      },
+      "5_treatment": {
+        "subtitle": "뼈 이식 및 임플란트 시술 과정",
+        "summary": "잇몸뼈 부족으로 인해 뼈 이식을 먼저 시행했습니다.  3D-CT와 디지털 가이드를 활용하여 정확한 위치에 임플란트를 식립, 부작용 위험을 최소화했습니다.",
+        "write_instruction": "전문적이고 친절한 톤으로, 300~500자 분량으로 작성. 과장/비교/보장 표현 금지. 가격, 무통증 단정 언급 금지",
+        "must_include": [],
+        "may_include": [
+          "",
+          "일반진료"
+        ],
+        "must_not_include": [
+          "가격",
+          "무통증 단정"
+        ],
+        "image_binding": []
+      },
+      "6_check_point": {
+        "subtitle": "임플란트 시술 후 주의사항",
+        "summary": "임플란트 수명은 사후 관리에 따라 크게 달라집니다.  본원에서는 체계적인 사후 관리 프로그램을 통해 장기적인 사용을 지원합니다.",
+        "write_instruction": "전문적이고 친절한 톤으로, 300~500자 분량으로 작성. 과장/비교/보장 표현 금지.",
+        "must_include": [],
+        "may_include": [
+          "경기 화성"
+        ],
+        "must_not_include": [
+          "과장표현"
+        ],
+        "image_binding": []
+      },
+      "7_conclusion": {
+        "subtitle": "마무리",
+        "summary": "환자분은 틀니 사용의 불편함에서 벗어나 만족스러운 결과를 얻으셨습니다.  임플란트에 대한 문의는 본원에 내원하여 정확한 진단을 받아보시기 바랍니다.",
+        "write_instruction": "전문적이고 친절한 톤으로, 300~500자 분량으로 작성. 과장/비교/보장 표현 금지. 가격, 이벤트, 전화번호 직접 기재 금지",
+        "must_include": [],
+        "may_include": [],
+        "must_not_include": [
+          "가격",
+          "이벤트",
+          "전화번호 직기재"
+        ],
+        "image_binding": []
+      }
+    }
+  },
+  "context_vars": {
+    "hospital_name": "내이튼치과의원",
+    "save_name": "내이튼치과의원",
+    "city": "경기",
+    "district": "화성",
+    "region_phrase": "경기 화성",
+    "category": "일반진료",
+    "map_link": ""
+  },
+  "meta": {
+    "mode": "use",
+    "timestamp": "20250826_174439",
+    "case_id": "case_내이튼치과의원_20250826_174429",
+    "source_log": "(provided dict)"
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "mode": "use",
+  "timestamp": "20250826_183054",
+  "plan_source": "(provided dict)",
+  "plan_snapshot": {
+    "title_plan": {
+      "guidance": "경기/화성/경기 화성 + 카테고리 + 핵심 키워드",
+      "must_include_one_of": [
+        "경기",
+        "화성",
+        "경기 화성"
+      ],
+      "must_include": [],
+      "must_not_include": [
+        "내이튼치과의원",
+        "가격",
+        "이벤트",
+        "전화번호",
+        "1등",
+        "최고",
+        "완치",
+        "보장"
+      ],
+      "tone": "전문적·친절한 의사 설명",
+      "hints": {
+        "category": "임플란트",
+        "region_examples": [
+          "화성시",
+          "병점",
+          "동탄"
+        ]
+      }
+    },
+    "content_plan": {
+      "sections_order": [
+        "1_intro",
+        "2_visit",
+        "3_inspection",
+        "4_doctor_tip",
+        "5_treatment",
+        "6_check_point",
+        "7_conclusion"
+      ],
+      "sections": {
+        "1_intro": {
+          "subtitle": "임플란트 치료란 무엇일까요?",
+          "summary": "임플란트는 단순히 빠진 치아를 채우는 것이 아니라, 저작 기능 회복 및 심미적인 개선을 통해 삶의 질 향상을 목표로 합니다. 정확한 진단과 계획이 중요합니다.",
+          "write_instruction": "전문적이고 친절한 톤으로, 300-500자 분량으로 작성. 과장, 비교, 보장 표현 금지. 임플란트의 개념과 중요성 설명",
+          "must_include": [],
+          "may_include": [
+            "일반진료"
+          ],
+          "must_not_include": [],
+          "image_binding": []
+        },
+        "2_visit": {
+          "subtitle": "내원 상황",
+          "summary": "오른쪽 아래 어금니 상실로 인한 저작 기능 저하와 기존 부분 틀니의 불편함으로 내원하셨습니다.  식사 어려움 호소.",
+          "write_instruction": "전문적이고 친절한 톤으로, 300-500자 분량으로 작성. 과장, 비교, 보장 표현 금지. 환자의 증상과 어려움을 자세히 기술",
+          "must_include": [],
+          "may_include": [
+            "경기 화성"
+          ],
+          "must_not_include": [],
+          "image_binding": []
+        },
+        "3_inspection": {
+          "subtitle": "정밀 검사 및 진단",
+          "summary": "3D-CT 등 정밀 검사를 통해 환자의 잇몸뼈 상태를 정확히 파악하고, 최적의 식립 위치와 각도를 계획했습니다.",
+          "write_instruction": "전문적이고 친절한 톤으로, 300-500자 분량으로 작성. 과장, 비교, 보장 표현 금지. 사용된 장비와 검사 과정 자세히 설명",
+          "must_include": [],
+          "may_include": [],
+          "must_not_include": [],
+          "image_binding": []
+        },
+        "4_doctor_tip": {
+          "subtitle": "의료진의 설명",
+          "summary": "최소 절개 방식으로 통증과 붓기를 최소화하고 환자의 편안함을 우선으로 치료를 진행했습니다.",
+          "write_instruction": "전문적이고 친절한 톤으로, 300-500자 분량으로 작성. 과장, 비교, 보장 표현 금지. 치료 과정에서 고려된 사항과 의료진의 노력 설명",
+          "must_include": [],
+          "may_include": [],
+          "must_not_include": [
+            "가격",
+            "이벤트"
+          ],
+          "image_binding": []
+        },
+        "5_treatment": {
+          "subtitle": "치료 과정 및 결과",
+          "summary": "임플란트 치료 후 환자는 어떤 음식이든 편안하게 씹을 수 있게 되었고, 틀니의 불편함에서 해방되어 식사의 즐거움을 되찾았습니다.",
+          "write_instruction": "전문적이고 친절한 톤으로, 300-500자 분량으로 작성. 과장, 비교, 보장 표현 금지. 치료 결과와 환자의 만족도 설명",
+          "must_include": [],
+          "may_include": [
+            "일반진료"
+          ],
+          "must_not_include": [
+            "가격",
+            "무통증 단정"
+          ],
+          "image_binding": []
+        },
+        "6_check_point": {
+          "subtitle": "치료 후 주의사항",
+          "summary": "치아 상실 방치 시 발생할 수 있는 문제점과 정기적인 검진의 중요성을 강조합니다.",
+          "write_instruction": "전문적이고 친절한 톤으로, 300-500자 분량으로 작성. 과장, 비교, 보장 표현 금지. 치료 후 관리 방법과 주의사항 설명",
+          "must_include": [],
+          "may_include": [
+            "경기 화성"
+          ],
+          "must_not_include": [
+            "과장표현"
+          ],
+          "image_binding": []
+        },
+        "7_conclusion": {
+          "subtitle": "마무리",
+          "summary": "치아 상실로 고민이시라면, 정확한 진단을 통해 적절한 치료 계획을 세우는 것이 중요합니다.  정기적인 검진을 통해 건강한 치아를 유지하세요.",
+          "write_instruction": "전문적이고 친절한 톤으로, 300-500자 분량으로 작성. 과장, 비교, 보장 표현 금지.  글 전체를 요약하고,  내원 상담을 권유하는 내용으로 마무리",
+          "must_include": [],
+          "may_include": [],
+          "must_not_include": [
+            "가격",
+            "이벤트",
+            "전화번호 직기재"
+          ],
+          "image_binding": []
+        }
+      }
+    },
+    "context_vars": {
+      "hospital_name": "내이튼치과의원",
+      "save_name": "내이튼치과의원",
+      "city": "경기",
+      "district": "화성",
+      "region_phrase": "경기 화성",
+      "category": "일반진료",
+      "map_link": ""
+    },
+    "meta": {
+      "mode": "use",
+      "timestamp": "20250826_183050",
+      "case_id": "case_내이튼치과의원_20250826_183040",
+      "source_log": "(provided dict)"
+    }
+  },
+  "used_data": {
+    "category": "일반진료",
+    "city": "경기",
+    "district": "화성",
+    "region_phrase": "경기 화성",
+    "representative_persona": "",
+    "section_summaries": {
+      "1_intro": "임플란트는 단순히 빠진 치아를 채우는 것이 아니라, 저작 기능 회복 및 심미적인 개선을 통해 삶의 질 향상을 목표로 합니다. 정확한 진단과 계획이 중요합니다.",
+      "2_visit": "오른쪽 아래 어금니 상실로 인한 저작 기능 저하와 기존 부분 틀니의 불편함으로 내원하셨습니다.  식사 어려움 호소.",
+      "3_inspection": "3D-CT 등 정밀 검사를 통해 환자의 잇몸뼈 상태를 정확히 파악하고, 최적의 식립 위치와 각도를 계획했습니다.",
+      "4_doctor_tip": "최소 절개 방식으로 통증과 붓기를 최소화하고 환자의 편안함을 우선으로 치료를 진행했습니다.",
+      "5_treatment": "임플란트 치료 후 환자는 어떤 음식이든 편안하게 씹을 수 있게 되었고, 틀니의 불편함에서 해방되어 식사의 즐거움을 되찾았습니다.",
+      "6_check_point": "치아 상실 방치 시 발생할 수 있는 문제점과 정기적인 검진의 중요성을 강조합니다.",
+      "7_conclusion": "치아 상실로 고민이시라면, 정확한 진단을 통해 적절한 치료 계획을 세우는 것이 중요합니다.  정기적인 검진을 통해 건강한 치아를 유지하세요."
+    }
+  }
+}

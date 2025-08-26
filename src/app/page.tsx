@@ -153,6 +153,12 @@ interface FormData {
     afterImages: File[];
 }
 
+// 자동 생성 폼 데이터 타입 정의
+interface AutoFormData {
+    treatmentType: string;
+    count: number;
+}
+
 // QA 검토 데이터 타입 정의
 interface QAData {
     reviewer: string;
@@ -205,6 +211,39 @@ export default function Home() {
         processImages: [],
         afterImages: []
     });
+
+    // 자동 생성 폼 데이터 상태
+    const [autoFormData, setAutoFormData] = useState<AutoFormData>({
+        treatmentType: '임플란트',
+        count: 1
+    });
+
+    // 자동 생성 진행 상태
+    const [autoProcessing, setAutoProcessing] = useState(false);
+    const [autoProgress, setAutoProgress] = useState({
+        total: 0,
+        completed: 0,
+        current: 0,
+        startTime: 0
+    });
+
+    // 탭 변경 시 우측 패널 초기화
+    const handleTabChange = (newTab: TabType) => {
+        setActiveTab(newTab);
+        
+        // 우측 패널 상태 초기화
+        setSelectedPost(null);
+        setLogs([]);
+        setCurrentPostId('');
+        setIsProcessing(false);
+        setAutoProcessing(false);
+        setAutoProgress({
+            total: 0,
+            completed: 0,
+            current: 0,
+            startTime: 0
+        });
+    };
 
     // 완료된 포스팅 목록 로드
     useEffect(() => {
@@ -262,6 +301,517 @@ export default function Home() {
             };
         }
     }, [isResizing]);
+
+    // 자동 생성 웹훅 호출 함수
+    const callAutoGenerationWebhook = async (treatmentType: string, count: number) => {
+        try {
+            const response = await fetch('https://medisales-u45006.vm.elestio.app/webhook/f9cb5f6a-a22b-4141-8e6a-69373d0301d1', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    treatmentType: treatmentType,
+                    count: count,
+                    timestamp: new Date().toISOString(),
+                    source: 'medicontents_QA_auto'
+                })
+            });
+
+            if (response.ok) {
+                // 응답 텍스트를 먼저 확인
+                const responseText = await response.text();
+                console.log('웹훅 응답 텍스트:', responseText);
+                
+                // JSON 응답 파싱 시도
+                try {
+                    const result = JSON.parse(responseText);
+                    console.log('웹훅 응답 파싱 성공:', result);
+                    return result;
+                } catch (jsonError) {
+                    console.log('웹훅 응답이 JSON이 아님, 텍스트 응답으로 처리');
+                    
+                    // 텍스트 응답을 JSON 형태로 변환
+                    return {
+                        success: true,
+                        message: responseText,
+                        isTextResponse: true
+                    };
+                }
+            } else {
+                const errorText = await response.text();
+                console.error('웹훅 응답 오류:', response.status, errorText);
+                throw new Error(`웹훅 호출 실패: ${response.status} - ${errorText}`);
+            }
+        } catch (error) {
+            console.error('웹훅 호출 오류:', error);
+            throw error;
+        }
+    };
+
+    // Post ID 생성 시 처리 함수
+    const handlePostIdCreated = async (postId: string, startTime: number) => {
+        addLog(`🔧 Post ID ${postId}에 대한 추가 처리 시작...`);
+        
+        // 진행 상황 업데이트
+        setAutoProgress(prev => ({ 
+            ...prev, 
+            current: prev.current + 1,
+            total: Math.max(prev.total, prev.current + 1)
+        }));
+        
+        // Post ID를 Airtable에서 확인
+        try {
+            const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts?filterByFormula={Post%20Id}='${postId}'`, {
+                headers: {
+                    'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                if (data.records && data.records.length > 0) {
+                    addLog(`✅ Post ID ${postId}가 Medicontent Posts 테이블에 생성되었습니다.`);
+                } else {
+                    addLog(`⚠️ Post ID ${postId}가 아직 Medicontent Posts 테이블에 없습니다.`);
+                }
+            }
+        } catch (error) {
+            addLog(`❌ Post ID ${postId} 확인 중 오류: ${error}`);
+        }
+        
+        // Post Data Requests 테이블도 확인
+        try {
+            const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Post%20Data%20Requests?filterByFormula={Post%20ID}='${postId}'`, {
+                headers: {
+                    'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                if (data.records && data.records.length > 0) {
+                    const status = data.records[0].fields.Status || '대기';
+                    addLog(`📊 Post ID ${postId}의 Post Data Requests 상태: ${status}`);
+                } else {
+                    addLog(`⚠️ Post ID ${postId}가 아직 Post Data Requests 테이블에 없습니다.`);
+                }
+            }
+        } catch (error) {
+            addLog(`❌ Post ID ${postId} Post Data Requests 확인 중 오류: ${error}`);
+        }
+    };
+
+    // 자동 생성 처리 함수
+    const handleAutoGeneration = async () => {
+        const startTime = Date.now();
+        let pollInterval: NodeJS.Timeout | undefined;
+        
+        try {
+            setAutoProcessing(true);
+            setAutoProgress({
+                total: autoFormData.count,
+                completed: 0,
+                current: 0,
+                startTime: startTime
+            });
+            
+            addLog('자동 생성 웹훅 호출 시작...');
+            
+            const webhookResult = await callAutoGenerationWebhook(
+                autoFormData.treatmentType, 
+                autoFormData.count
+            );
+            
+            addLog(`웹훅 호출 완료: ${autoFormData.count}개 포스팅 생성 요청`);
+            
+            // 웹훅 응답 처리
+            if (webhookResult.success) {
+                addLog(`📡 웹훅 응답: ${webhookResult.message || '성공'}`);
+                
+                // 텍스트 응답인 경우 특별 처리
+                if (webhookResult.isTextResponse) {
+                    addLog(`📝 텍스트 응답 처리 중...`);
+                    
+                    // 자동 생성 시작 메시지 처리
+                    if (webhookResult.message.includes('가상 포스팅 자동 생성 시작')) {
+                        addLog(`🚀 자동 생성 프로세스가 시작되었습니다.`);
+                        addLog(`⏳ n8n에서 작업을 진행 중입니다. 실시간 로그를 모니터링합니다...`);
+                        
+                        // 실시간 로그 폴링 시작
+                        const startLogPolling = () => {
+                            const processedLogs = new Set(); // 처리된 로그 추적
+                            
+                            const pollInterval = setInterval(async () => {
+                                try {
+                                    // 최근 Post Data Requests에서 생성된 Post ID 찾기
+                                    const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Post%20Data%20Requests?sort[0][field]=Submitted At&sort[0][direction]=desc&maxRecords=5`, {
+                                        headers: {
+                                            'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+                                            'Content-Type': 'application/json'
+                                        }
+                                    });
+                                    
+                                    if (response.ok) {
+                                        const data = await response.json();
+                                        const recentPosts = data.records || [];
+                                        
+                                        // 모니터링 시작 시점 이후에 생성된 포스트 찾기
+                                        const monitoringStartTime = new Date(startTime);
+                                        const newPosts = recentPosts.filter((post: any) => {
+                                            const submittedTime = new Date(post.fields['Submitted At'] || post.createdTime);
+                                            return submittedTime > monitoringStartTime;
+                                        });
+                                        
+                                        // 각 Post ID에 대해 실시간 로그 폴링 (Agent 작업 진행 상황)
+                                        for (const post of newPosts) {
+                                            const postId = post.fields['Post ID'];
+                                            if (postId) {
+                                                try {
+                                                    const logResponse = await fetch(`http://localhost:8000/api/get-logs/${postId}`);
+                                                    if (logResponse.ok) {
+                                                        const logData = await logResponse.json();
+                                                        if (logData.logs && logData.logs.length > 0) {
+                                                            // 새로운 로그만 처리 (중복 방지)
+                                                            const newLogs = logData.logs.filter((log: any) => {
+                                                                const logKey = `${postId}_${log.timestamp}_${log.message}`;
+                                                                if (processedLogs.has(logKey)) {
+                                                                    return false; // 이미 처리된 로그
+                                                                }
+                                                                processedLogs.add(logKey);
+                                                                return true;
+                                                            });
+                                                            
+                                                            // 새로운 로그들을 추가 (Agent 작업 진행 상황만)
+                                                            newLogs.forEach((log: any) => {
+                                                                if (log.level === 'INFO' || log.level === 'ERROR' || log.level === 'WARNING') {
+                                                                    const message = log.message.replace(/^.*?:\s*/, ''); // 로거 이름 제거
+                                                                    
+                                                                    if (message.includes('Step') || message.includes('Agent') || message.includes('실행') || 
+                                                                        message.includes('완료') || message.includes('오류') || message.includes('실패')) {
+                                                                        addLog(`[${postId}] [${log.level}] ${message}`);
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                } catch (error) {
+                                                    // 개별 Post ID 로그 폴링 실패는 무시
+                                                }
+                                            }
+                                        }
+                                    }
+                                } catch (error) {
+                                    console.error('로그 폴링 오류:', error);
+                                }
+                            }, 3000); // 3초마다 폴링
+                            
+                            return pollInterval;
+                        };
+                        
+                        pollInterval = startLogPolling();
+                        
+                        // Airtable 상태 모니터링과 함께 진행
+                        await monitorAutoGenerationProgress(startTime);
+                        
+                        // 폴링 중지
+                        if (pollInterval) {
+                            clearInterval(pollInterval);
+                        }
+                        return;
+                    }
+                    
+                    // Post ID 생성 응답 처리
+                    if (webhookResult.message.includes('Post ID = ')) {
+                        const postIdMatch = webhookResult.message.match(/Post ID = (QA_[A-Za-z0-9]+)/);
+                        if (postIdMatch) {
+                            const postId = postIdMatch[1];
+                            addLog(`🆔 Post ID 생성됨: ${postId}`);
+                            
+                            // Post ID를 활용한 추가 처리
+                            await handlePostIdCreated(postId, startTime);
+                        }
+                    }
+                    
+                    // 기타 텍스트 응답 처리
+                    if (webhookResult.message.includes('완료') || webhookResult.message.includes('성공')) {
+                        addLog(`✅ 작업 완료: ${webhookResult.message}`);
+                        const endTime = Date.now();
+                        const totalTime = Math.round((endTime - startTime) / 1000);
+                        addLog(`🎉 자동 생성 프로세스 완료 (소요시간: ${totalTime}초)`);
+                        
+                        setTimeout(() => {
+                            setAutoProcessing(false);
+                        }, 3000);
+                        return;
+                    }
+                    
+                    // 기타 메시지는 그대로 로그에 출력하고 모니터링 계속
+                    addLog(`⏳ 진행 중: ${webhookResult.message}`);
+                    await monitorAutoGenerationProgress(startTime);
+                    return;
+                }
+                
+                // JSON 응답 처리 (기존 로직)
+                // Post ID 생성 응답 처리
+                if (webhookResult.message && webhookResult.message.includes('Post ID = ')) {
+                    const postIdMatch = webhookResult.message.match(/Post ID = (QA_[A-Za-z0-9]+)/);
+                    if (postIdMatch) {
+                        const postId = postIdMatch[1];
+                        addLog(`🆔 Post ID 생성됨: ${postId}`);
+                        
+                        // Post ID를 활용한 추가 처리
+                        await handlePostIdCreated(postId, startTime);
+                    }
+                }
+                
+                // 응답 단계 확인
+                const step = webhookResult.step || 'unknown';
+                if (step !== 'unknown') {
+                    addLog(`📊 현재 단계: ${step}`);
+                }
+                
+                // Post ID 목록이 있는 경우
+                if (webhookResult.postIds && Array.isArray(webhookResult.postIds) && webhookResult.postIds.length > 0) {
+                    addLog(`📋 생성된 Post ID 목록: ${webhookResult.postIds.join(', ')}`);
+                    
+                    // 단계에 따른 처리
+                    if (step === 'post_creation_complete') {
+                        addLog('✅ Post ID 생성 완료. Agent 작업 시작을 기다리는 중...');
+                        await monitorAutoGenerationProgress(startTime);
+                    } else if (step === 'agent_started') {
+                        addLog('🤖 Agent 작업이 시작되었습니다. 진행 상황을 모니터링합니다...');
+                        await monitorAutoGenerationProgress(startTime);
+                    } else if (step === 'all_complete') {
+                        addLog('🎉 모든 작업이 완료되었습니다!');
+                        const endTime = Date.now();
+                        const totalTime = Math.round((endTime - startTime) / 1000);
+                        addLog(`✅ 자동 생성 프로세스 완료 (소요시간: ${totalTime}초)`);
+                        
+                        setTimeout(() => {
+                            setAutoProcessing(false);
+                        }, 3000);
+                    } else {
+                        addLog('⏳ n8n에서 작업을 진행 중입니다. 상태를 모니터링합니다...');
+                        await monitorAutoGenerationProgress(startTime);
+                    }
+                } else {
+                    addLog('⏳ n8n에서 Post ID 생성 및 Agent 작업을 진행 중입니다. 상태를 모니터링합니다...');
+                    await monitorAutoGenerationProgress(startTime);
+                }
+            } else {
+                addLog(`❌ 웹훅 호출 실패: ${webhookResult.message || '알 수 없는 오류'}`);
+                if (webhookResult.error) {
+                    addLog(`🔍 오류 상세: ${webhookResult.error}`);
+                }
+                setAutoProcessing(false);
+            }
+            
+        } catch (error) {
+            addLog(`자동 생성 오류: ${error}`);
+            setAutoProcessing(false);
+        } finally {
+            // 폴링 중지
+            if (pollInterval) {
+                clearInterval(pollInterval);
+            }
+        }
+    };
+
+    // 자동 생성 진행 상황 모니터링
+    const monitorAutoGenerationProgress = async (startTime: number) => {
+        const maxWaitTime = 300000; // 5분
+        const checkInterval = 5000; // 5초마다 체크
+        let elapsedTime = 0;
+        
+        // 모니터링 시작 시점 기록
+        const monitoringStartTime = new Date(startTime);
+        addLog(`📊 모니터링 시작 시점: ${monitoringStartTime.toLocaleTimeString()}`);
+        
+        // 추적할 Post ID 목록 (빈 배열로 시작)
+        let trackedPostIds: string[] = [];
+        let completedPostIds: string[] = [];
+        let processedLogs: Set<string> = new Set(); // 처리된 로그 추적
+        let lastStatus: string | null = null; // 마지막 상태 추적
+        
+        while (elapsedTime < maxWaitTime) {
+            await new Promise(resolve => setTimeout(resolve, checkInterval));
+            elapsedTime += checkInterval;
+            
+            try {
+                // 최근에 생성된 Post Data Requests 확인
+                const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Post%20Data%20Requests?sort[0][field]=Submitted At&sort[0][direction]=desc&maxRecords=20`, {
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const allPosts = data.records || [];
+                    
+                    // 모니터링 시작 시점 이후에 생성된 포스트만 필터링
+                    const recentPosts = allPosts.filter((post: any) => {
+                        const submittedTime = new Date(post.fields['Submitted At'] || post.createdTime);
+                        return submittedTime > monitoringStartTime;
+                    });
+                    
+                    // 새로운 Post ID 발견 시 추적 목록에 추가
+                    recentPosts.forEach((post: any) => {
+                        const postId = post.fields['Post ID'];
+                        if (postId && !trackedPostIds.includes(postId)) {
+                            trackedPostIds.push(postId);
+                            addLog(`🆔 새로운 Post ID 발견: ${postId}`);
+                        }
+                    });
+                    
+                    // 각 추적 중인 Post ID의 상태 확인
+                    for (const postId of trackedPostIds) {
+                        if (!completedPostIds.includes(postId)) {
+                            try {
+                                // 1단계: Post Data Requests 테이블에서 Agent 작업 완료 확인
+                                const postDataResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Post%20Data%20Requests?filterByFormula={Post%20ID}='${postId}'`, {
+                                    headers: {
+                                        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+                                        'Content-Type': 'application/json'
+                                    }
+                                });
+                                
+                                if (postDataResponse.ok) {
+                                    const postData = await postDataResponse.json();
+                                    const postDataRecord = postData.records?.[0];
+                                    
+                                    if (postDataRecord) {
+                                        const postDataStatus = postDataRecord.fields.Status || '대기';
+                                        
+                                        if (postDataStatus === '완료') {
+                                            // 2단계: Medicontent Posts 테이블에서 전체 작업 완료 확인
+                                            const medicontentResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts?filterByFormula={Post%20Id}='${postId}'`, {
+                                                headers: {
+                                                    'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+                                                    'Content-Type': 'application/json'
+                                                }
+                                            });
+                                            
+                                            if (medicontentResponse.ok) {
+                                                const medicontentData = await medicontentResponse.json();
+                                                const medicontentRecord = medicontentData.records?.[0];
+                                                
+                                                if (medicontentRecord) {
+                                                    const medicontentStatus = medicontentRecord.fields.Status || '대기';
+                                                    
+                                                    if (medicontentStatus === '작업 완료') {
+                                                        completedPostIds.push(postId);
+                                                        addLog(`✅ Post ID ${postId} 모든 작업 완료 확인됨 (Post Data: 완료, Medicontent: 작업 완료)`);
+                                                    } else if (medicontentStatus === '리걸케어 작업 중') {
+                                                        addLog(`📊 Post ID ${postId} Agent 작업 완료, n8n 후속 작업 진행 중...`);
+                                                    } else {
+                                                        addLog(`📊 Post ID ${postId} Post Data 완료, Medicontent Status: ${medicontentStatus}`);
+                                                    }
+                                                }
+                                            }
+                                        } else if (postDataStatus === '처리 중') {
+                                            addLog(`📊 Post ID ${postId} Agent 작업 진행 중...`);
+                                        } else {
+                                            addLog(`📊 Post ID ${postId} Post Data Status: ${postDataStatus}`);
+                                        }
+                                    }
+                                }
+                            } catch (error) {
+                                addLog(`Post ID ${postId} 상태 확인 오류: ${error}`);
+                            }
+                        }
+                    }
+                    
+                    // 완료 조건 확인 - 요청한 개수만큼 모두 "후속 작업 완료"되었는지 확인
+                    if (completedPostIds.length >= autoFormData.count) {
+                        const endTime = Date.now();
+                        const totalTime = Math.round((endTime - startTime) / 1000);
+                        addLog(`🎉 모든 작업 완료! 요청한 ${autoFormData.count}개 중 ${completedPostIds.length}개 포스팅의 후속 작업이 완료되었습니다.`);
+                        addLog(`✅ 완료된 Post ID 목록: ${completedPostIds.join(', ')}`);
+                        addLog(`✅ 자동 생성 프로세스가 성공적으로 완료되었습니다. (소요시간: ${totalTime}초)`);
+                        
+                        setTimeout(() => {
+                            setAutoProcessing(false);
+                        }, 3000);
+                        return;
+                    }
+                    
+                    // 진행 상황 요약 (변경사항이 있을 때만 출력)
+                    if (trackedPostIds.length > 0) {
+                        const currentStatus = `요청 ${autoFormData.count}개 / 추적 중 ${trackedPostIds.length}개 / 후속 작업 완료 ${completedPostIds.length}개`;
+                        
+                        // 상태가 변경되었을 때만 로그 출력
+                        if (!lastStatus || lastStatus !== currentStatus) {
+                            addLog(`📈 진행 상황: ${currentStatus}`);
+                            if (completedPostIds.length > 0) {
+                                addLog(`✅ 완료된 Post ID: ${completedPostIds.join(', ')}`);
+                            }
+                            lastStatus = currentStatus;
+                        }
+                    }
+                }
+                
+                // 경과 시간 로그는 30초마다만 출력
+                const elapsedSeconds = Math.round(elapsedTime / 1000);
+                if (elapsedSeconds % 30 === 0 && elapsedSeconds > 0) {
+                    addLog(`⏳ Agent 작업 진행 중... (${elapsedSeconds}초 경과)`);
+                }
+                
+            } catch (error) {
+                addLog(`모니터링 오류: ${error}`);
+            }
+        }
+        
+        addLog(`⏰ 최대 대기 시간 초과. 모니터링을 종료합니다.`);
+        setAutoProcessing(false);
+    };
+
+    // 단일 포스트 진행 상황 모니터링
+    const monitorSinglePostProgress = async (postId: string, startTime: number) => {
+        const maxWaitTime = 120000; // 2분
+        const checkInterval = 3000; // 3초마다 체크
+        let elapsedTime = 0;
+        
+        while (elapsedTime < maxWaitTime) {
+            await new Promise(resolve => setTimeout(resolve, checkInterval));
+            elapsedTime += checkInterval;
+            
+            try {
+                const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Post%20Data%20Requests?filterByFormula={Post%20ID}='${postId}'`, {
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const records = data.records || [];
+                    
+                    if (records.length > 0) {
+                        const status = records[0].fields.Status;
+                        
+                        if (status === '완료') {
+                            addLog(`✅ Post ID ${postId} Agent 작업 완료`);
+                            return;
+                        } else if (status === '오류') {
+                            addLog(`❌ Post ID ${postId} Agent 작업 실패`);
+                            return;
+                        }
+                    }
+                }
+                
+            } catch (error) {
+                addLog(`Post ID ${postId} 모니터링 오류: ${error}`);
+            }
+        }
+        
+        addLog(`⏰ Post ID ${postId} 모니터링 시간 초과`);
+    };
 
     // 래덤 데이터 불러오기
     const loadRandomData = async () => {
@@ -709,7 +1259,7 @@ export default function Home() {
                                 
                                 // 완료된 포스팅을 자동으로 선택하여 HTML 렌더링
                                 try {
-                                    const completedPostsResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts?filterByFormula={Post Id}="${postId}"`, {
+                                    const completedPostsResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts?filterByFormula={Post%20Id}='${postId}'`, {
                                         headers: {
                                             'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
                                             'Content-Type': 'application/json'
@@ -1497,7 +2047,90 @@ export default function Home() {
                     <div className="flex-1 overflow-auto">
                         <div className="p-4">
                             <h3 className="text-lg font-semibold mb-4">자동 생성하기</h3>
-                            <p className="text-gray-500">자동 생성 기능은 준비 중입니다.</p>
+                            
+                            {/* 진료 유형 선택 */}
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    진료 유형
+                                </label>
+                                <select
+                                    value={autoFormData.treatmentType}
+                                    onChange={(e) => setAutoFormData(prev => ({ ...prev, treatmentType: e.target.value }))}
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                    disabled={autoProcessing}
+                                >
+                                    <option value="신경치료">신경치료</option>
+                                    <option value="임플란트">임플란트</option>
+                                    <option value="교정치료">교정치료</option>
+                                    <option value="보철치료">보철치료</option>
+                                    <option value="예방치료">예방치료</option>
+                                </select>
+                            </div>
+
+                            {/* 생성 개수 입력 */}
+                            <div className="mb-6">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    생성할 포스팅 개수
+                                </label>
+                                <input
+                                    type="number"
+                                    min="1"
+                                    max="10"
+                                    value={autoFormData.count}
+                                    onChange={(e) => setAutoFormData(prev => ({ ...prev, count: parseInt(e.target.value) || 1 }))}
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                    disabled={autoProcessing}
+                                />
+                                <p className="text-xs text-gray-500 mt-1">1-10개까지 생성 가능합니다.</p>
+                            </div>
+
+                            {/* 자동 생성 버튼 */}
+                            <button
+                                onClick={handleAutoGeneration}
+                                disabled={autoProcessing}
+                                className={`w-full py-3 px-4 rounded-md font-medium transition-colors ${
+                                    autoProcessing
+                                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                        : 'bg-blue-500 text-white hover:bg-blue-600'
+                                }`}
+                            >
+                                {autoProcessing ? (
+                                    <>
+                                        <RefreshCw className="inline-block w-4 h-4 mr-2 animate-spin" />
+                                        자동 생성 중...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Play className="inline-block w-4 h-4 mr-2" />
+                                        자동 생성하기
+                                    </>
+                                )}
+                            </button>
+
+                            {/* 진행 상황 표시 */}
+                            {autoProcessing && (
+                                <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-sm font-medium text-blue-800">
+                                            진행 상황: {autoProgress.current}/{autoProgress.total}
+                                        </span>
+                                        <span className="text-sm text-blue-600">
+                                            완료: {autoProgress.completed}/{autoProgress.total}
+                                        </span>
+                                    </div>
+                                    <div className="w-full bg-blue-200 rounded-full h-2">
+                                        <div 
+                                            className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                                            style={{ width: `${(autoProgress.current / autoProgress.total) * 100}%` }}
+                                        ></div>
+                                    </div>
+                                    {autoProgress.startTime > 0 && (
+                                        <div className="mt-2 text-xs text-blue-600">
+                                            소요 시간: {Math.round((Date.now() - autoProgress.startTime) / 1000)}초
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
                 );
@@ -1523,7 +2156,7 @@ export default function Home() {
                     <div className="border-b border-gray-200">
                         <div className="flex">
                             <button
-                                onClick={() => setActiveTab('review')}
+                                onClick={() => handleTabChange('review')}
                                 className={`flex-1 py-3 px-4 text-sm font-medium border-b-2 transition-colors ${
                                     activeTab === 'review'
                                         ? 'border-blue-500 text-blue-600'
@@ -1533,7 +2166,7 @@ export default function Home() {
                                 포스팅 검토
                             </button>
                             <button
-                                onClick={() => setActiveTab('manual')}
+                                onClick={() => handleTabChange('manual')}
                                 className={`flex-1 py-3 px-4 text-sm font-medium border-b-2 transition-colors ${
                                     activeTab === 'manual'
                                         ? 'border-blue-500 text-blue-600'
@@ -1543,7 +2176,7 @@ export default function Home() {
                                 포스팅 수동 생성
                             </button>
                             <button
-                                onClick={() => setActiveTab('auto')}
+                                onClick={() => handleTabChange('auto')}
                                 className={`flex-1 py-3 px-4 text-sm font-medium border-b-2 transition-colors ${
                                     activeTab === 'auto'
                                         ? 'border-blue-500 text-blue-600'
@@ -1572,12 +2205,67 @@ export default function Home() {
                     className="bg-white flex flex-col"
                     style={{ width: `${100 - leftPanelWidth}%` }}
                 >
-                    {isProcessing ? (
+                    {(isProcessing || autoProcessing) ? (
                         // 작업 진행 중일 때 로그 표시
                         <div className="flex-1 overflow-auto">
                             <div className="p-4">
                                 <div className="flex items-center justify-between mb-4">
-                                    <h3 className="text-lg font-semibold">작업 진행 상황</h3>
+                                    <h3 className="text-lg font-semibold">
+                                        {autoProcessing ? '자동 생성 진행 상황' : '작업 진행 상황'}
+                                    </h3>
+                                    <div className="flex space-x-2">
+                                        <button
+                                            onClick={() => setLogs([])}
+                                            className="px-3 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded"
+                                        >
+                                            로그 초기화
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* 자동 생성 진행 상황 표시 */}
+                                {autoProcessing && (
+                                    <div className="mb-4 p-4 bg-blue-50 rounded-lg">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-sm font-medium text-blue-800">
+                                                전체 {autoProgress.total}개 중 {autoProgress.current}개 진행 중
+                                            </span>
+                                            <span className="text-sm text-blue-600">
+                                                완료: {autoProgress.completed}/{autoProgress.total}
+                                            </span>
+                                        </div>
+                                        <div className="w-full bg-blue-200 rounded-full h-3">
+                                            <div 
+                                                className="bg-blue-500 h-3 rounded-full transition-all duration-300"
+                                                style={{ width: `${(autoProgress.current / autoProgress.total) * 100}%` }}
+                                            ></div>
+                                        </div>
+                                        {autoProgress.startTime > 0 && (
+                                            <div className="mt-2 text-xs text-blue-600">
+                                                소요 시간: {Math.round((Date.now() - autoProgress.startTime) / 1000)}초
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                                
+                                {/* 로그 창 - 최대 높이 제한 */}
+                                <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-auto" style={{ maxHeight: 'calc(100vh - 200px)', minHeight: '400px' }}>
+                                    {logs.map((log, index) => (
+                                        <div key={index} className="mb-1">
+                                            {log}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    ) : (activeTab === 'manual' || activeTab === 'auto') ? (
+                        // 수동 생성 또는 자동 생성 탭일 때 빈 로그 화면 표시
+                        <div className="flex-1 overflow-auto">
+                            <div className="p-4">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="text-lg font-semibold">
+                                        {activeTab === 'manual' ? '수동 생성 로그' : '자동 생성 로그'}
+                                    </h3>
                                     <div className="flex space-x-2">
                                         <button
                                             onClick={() => setLogs([])}
@@ -1590,11 +2278,20 @@ export default function Home() {
                                 
                                 {/* 로그 창 - 최대 높이 제한 */}
                                 <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-auto" style={{ maxHeight: 'calc(100vh - 200px)', minHeight: '400px' }}>
-                                    {logs.map((log, index) => (
-                                        <div key={index} className="mb-1">
-                                            {log}
+                                    {logs.length > 0 ? (
+                                        logs.map((log, index) => (
+                                            <div key={index} className="mb-1">
+                                                {log}
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="text-gray-500">
+                                            {activeTab === 'manual' 
+                                                ? '수동 생성 버튼을 클릭하면 여기에 로그가 표시됩니다.' 
+                                                : '자동 생성 버튼을 클릭하면 여기에 로그가 표시됩니다.'
+                                            }
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
                             </div>
                         </div>
