@@ -2324,8 +2324,8 @@ export default function Home() {
                                 </div>
                             </div>
                         </div>
-                    ) : (activeTab === 'manual' || activeTab === 'auto') ? (
-                        // 수동 생성 또는 자동 생성 탭일 때 빈 로그 화면 표시
+                    ) : (activeTab === 'manual' || activeTab === 'auto') && !selectedPost ? (
+                        // 수동 생성 또는 자동 생성 탭일 때 빈 로그 화면 표시 (selectedPost가 없을 때만)
                         <div className="flex-1 overflow-auto">
                             <div className="p-4">
                                 <div className="flex items-center justify-between mb-4">
@@ -2362,16 +2362,26 @@ export default function Home() {
                             </div>
                         </div>
                     ) : selectedPost ? (
-                        // 완료된 포스팅 HTML 렌더링
+                        // 완료된 포스팅 HTML 렌더링 (수동 생성 완료 후)
                         <div className="flex-1 overflow-auto">
                             <div className="p-4">
                                 <div className="flex items-center justify-between mb-4">
                                     <h3 className="text-lg font-semibold">
                                         {selectedPost.fields.Title || selectedPost.fields['Post Id']}
                                     </h3>
-                                    <span className="text-xs font-mono bg-green-100 px-2 py-1 rounded text-green-600">
-                                        {selectedPost.fields['Post Id']}
-                                    </span>
+                                    <div className="flex items-center space-x-2">
+                                        <span className="text-xs font-mono bg-green-100 px-2 py-1 rounded text-green-600">
+                                            {selectedPost.fields['Post Id']}
+                                        </span>
+                                        {(activeTab === 'manual' || activeTab === 'auto') && (
+                                            <button
+                                                onClick={() => setSelectedPost(null)}
+                                                className="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded"
+                                            >
+                                                로그로 돌아가기
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                                 {selectedPost.fields.Content ? (
                                     <div 
