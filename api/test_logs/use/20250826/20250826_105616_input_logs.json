@@ -1,0 +1,324 @@
+[
+  {
+    "hospital": {
+      "name": "내이튼치과의원",
+      "save_name": "내이튼치과의원",
+      "address": "B동 507호 라스플로레스 경기도 화성시 동탄대로 537",
+      "phone": "031-526-2246"
+    },
+    "category": "일반진료",
+    "question1_concept": "임플란트는 상실된 치아의 기능적, 심미적 회복을 위한 최적의 솔루션입니다. 특히, 여러 개의 치아가 빠진 경우, 전체적인 교합의 균형과 잇몸뼈의 건강까지 고려한 종합적인 치료 계획이 무엇보다 중요합니다.",
+    "question2_condition": "오른쪽 위 어금니 2개가 빠진 상태로 수년간 방치하여 내원하셨습니다. 치아가 없는 공간으로 주변 치아들이 기울어져 있었고, 잇몸뼈도 상당히 흡수되어 임플란트 식립을 위한 충분한 공간과 지지 기반이 부족한 상태였습니다. 식사 시 불편함은 물론, 안모의 비대칭까지 미세하게 진행되고 있었습니다.",
+    "question3_visit_images": [
+      {
+        "filename": {
+          "id": "attFvEFbsieWhG9Jj",
+          "width": 337,
+          "height": 201,
+          "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756180800000/u-FMpW_rGFGnYk-8enyfkg/XR2uS9Yr7bGMnIcUCaSNliua2_Nr8jJyFANqZSHtpKtEIRAHjZ8fFQ1zvwOQqtiwp4K-MPVodNKelyqQblTuG36L94Yx9Fyv4fquCgfVyUXXWd_WMq8qvyitn5qpY2xYUFQ95Ym6Iyc2Ah1c2k-89pdUvcbr920fab0ECCcR9cs/G4kDZeIXa04EISCTz-SKmZt6C7DvkKVUg0AdQw-AMDk",
+          "filename": "recitOSncYZmMmQ8k_1.JPG",
+          "size": 17971,
+          "type": "image/jpeg",
+          "thumbnails": {
+            "small": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756180800000/Zgaa2zttyipjYKf9Er0MDg/xej5MVvfJRKqJCTCKSMMf0ah1wKUIulmOTlRJrx5U6BKLRig5qKneHwwKqSqfPPmTWvozLnOSv4jm82ZENlSjhxcqtC061l0bR8ZCKxIA7FmUTdbywlW8OmybBGIG5AbbDq2y9mqEyTQ-4obMnViFw/B3UPYA_0bgPlAp-Fm6wbSXd-uVg4gI_1lq3Md06j06A",
+              "width": 60,
+              "height": 36
+            },
+            "large": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756180800000/jL-uN6K_PyflEJYjuos_GQ/P759aw3wIIpfqqf8Mt2BwRlFor4ZuT35D9aVobliw6O1Kr7MUq-QKYrmHv4BEkYV6R03x29MbtiyhvlGcccBi6vJVeYajbaDq8qMhYIdA1MSZVQWwogn_wjXKKCgunG4fYZYGmX4G28z9OzRU2Ji-A/bLe5-U2e0uDumXxHc8YnoqdE_TISp87IFIHTzXCfXHg",
+              "width": 337,
+              "height": 201
+            },
+            "full": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756180800000/XIk3aS6JcQarGI9hanTAIg/NCx3jYUQ8w4QRUaMkgV8ylU_5lR8YIkRmwA7dHES4yZG2GtkTpwb1EQHMv5RK46ksxBquzMOs798pb4av0ew7BoSIuEp3EdtXb53sQqRtZVvjWt_ykNYu5kmPZQ0CcmgY3GTO0VbWQJ6W1M9SDS30A/8zk9eWDrZle8An5dClF8AMUVKj7Gqo7GVMrE-NYoLO4",
+              "width": 337,
+              "height": 201
+            }
+          }
+        },
+        "description": "치아가 없는 공간으로 주변 치아들이 기울어져 있었고"
+      }
+    ],
+    "question4_treatment": "부족한 잇몸뼈를 보강하기 위해 '상악동 거상술'을 동반한 뼈이식술을 먼저 시행했습니다. 튼튼한 기반을 마련한 후, 컴퓨터 분석을 통해 정확한 위치와 각도를 계산하여 임플란트를 식립했습니다. 또한, 기울어진 주변 치아를 바로잡기 위한 부분 교정 치료를 병행하여 전체적인 교합의 안정성을 높였습니다.",
+    "question5_therapy_images": [
+      {
+        "filename": {
+          "id": "att3qcTY8aohG6jyF",
+          "width": 416,
+          "height": 139,
+          "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756180800000/anQDLDoABE8Bbe59BiPt0g/lwdD-DP6e5G9dik1hVH3_DPL6PtGshOjTHkNrl9Ukx-FFEysIIerHCeKnDZQmdrLAAkDZJ-cWPul_V1PbQIzY824_OkA52tnIkYMiEPefFy9yKrRUxccDsY4fkBmOOjtYlQFChJENwImFZl5N0Bg-aU06liUal82roNpXmx7WoM/jU4mVAJGxdhIX3hXD74hfeNXMf0Y1DDHPhZUkc7fNMc",
+          "filename": "recitOSncYZmMmQ8k_2.JPG",
+          "size": 14157,
+          "type": "image/jpeg",
+          "thumbnails": {
+            "small": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756180800000/xNYL1OR4G_IrLein0ZQqkQ/0w9EIL31KuzIjeVtpL0IGNuksWDIWLKm8tz2JVzn7fNQKkZxvkTs-D5FiVuE7tyLpOOoBJT7XZyN82CxWwbd1r06T-5shIzERkBWcO_dxJI0eA-rHW62CzPEvH6GGa51FzedJcIXMtaOa3iIXAkXTg/Os3gZ35cjp1eZlqigPeVnLI7ZgLKN-TXs44wwICEjWU",
+              "width": 108,
+              "height": 36
+            },
+            "large": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756180800000/ueJEuzFOxz-UNfFgN6QYUA/V9lVtqwl5qnsGQyxhRd5CelsUQsT8T19AfvmzPvpxSoRfonEvvuhTfBxK8dkfdaYpyhyiUYsUd1fwFytDWWk_ZFnqp52gS-tZtxN5Os4TTACCVt9F_ENe4zS4JSotSw1LeeF2W3aBLFVEuLloOtzPA/b_dWVNm-RbaURBOjjYqoOzIRo0CAsOh88UMbkJ3uTLc",
+              "width": 416,
+              "height": 139
+            },
+            "full": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756180800000/I0i3ZBOnjGhoTsXTVp7paw/YFMK_huO8l8s06HBmpL98zQI8pa9olT36PP9rSlPokhlw19i9FfLUELrn4INr2omyEa4qqnIEoAf0zuue_2XvBzfRxwHmt7XpIiCuuhPXbwnTnO0UXFkWTtDMgRUBfbb1R9X6U4QKDWy-KOuIA7_Jw/wulk2hoh4Q7_wX3_ruzw_5oNC-mYIlUO-GOofnSC9UU",
+              "width": 416,
+              "height": 139
+            }
+          }
+        },
+        "description": "'상악동 거상술'을 동반한 뼈이식술을 먼저 시행"
+      }
+    ],
+    "question6_result": "안정적으로 식립된 임플란트와 주변 치아와의 조화를 통해 환자분은 자연치아와 거의 동일한 저작 기능을 회복했습니다. 무너졌던 교합이 정상화되면서 음식물 섭취의 질이 높아졌을 뿐만 아니라, 얼굴의 균형도 개선되어 환자분의 만족도가 매우 높았습니다.",
+    "question7_result_images": [
+      {
+        "filename": {
+          "id": "attj6BdxFpZjQpB6o",
+          "width": 590,
+          "height": 313,
+          "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756180800000/lK3TcpIfZ1ndX0e1PZHVYw/72iNpvBfHDyqzdntxBBhkxJMg-EtYqWz7wnRTXtJ1HSxWOH9Id-QtJC0NryBUSGed-REek0sIHuPB49PfP7bnNN-JRaBSX8Hn-bS4YmaciMSCr-9jWmqrQNJtc01lGKVcrH2SsEX9QjGBEhNqXpZNLp91rEyp27rEr4AfML6zWI/0jxc-JE_lKxfXIFafk6I4rlevQrdhOh6lJcwDJzGt2k",
+          "filename": "recitOSncYZmMmQ8k_3.JPG",
+          "size": 44335,
+          "type": "image/jpeg",
+          "thumbnails": {
+            "small": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756180800000/svEOxinxi6P9s1GF981adQ/eMcNzQVZhJRr6VbsnpSf6wBQFlI8q762ejfnkhut0L2BMDtIHdnw8gR7N3BEtZp8bbHoLB9comMmtufV6ifHIr7BWT5sr-9o7ero6PUS_SjPv3jd119RidfeQdatL3eyXNlXvFXYQFJF7SnHDPLbvQ/a5JtdjwZiDl1eWr3CXKk3sltPQYgH_LJVMghSV9vs9E",
+              "width": 67,
+              "height": 36
+            },
+            "large": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756180800000/DDvncjontaEIIxfiHru7qw/LbP8j4AM82XLeszAV5R3ttOIoWh-gXtxQAEeYiQ5JkaOAqA78iLUmLh0H2T2Rnzwn_jgdSztPWKXqHREEUQgKGDkhxAxGL5Hgvo40B1nYbXVb61ydc9w7Aypz6Iagl25FHM8hK10WBA2e2jgwt7BPQ/HYaLcujFNt0eOgodPlU7yOsInX042b9o4Gv3x-yiuUs",
+              "width": 590,
+              "height": 313
+            },
+            "full": {
+              "url": "https://v5.airtableusercontent.com/v3/u/44/44/1756180800000/7W5qCLfxUmxUnJ7CwQY-dQ/QncWtwZH_4ZI61ofe6ETPdxhuAP2vz5qtQsMrHmLgq8sAaaeR2S3zWXoKXJR8kBbzzAjywhCaEQlPnWdRONM8_QVQLybbp1ex164NJnBqvL2u1GKXafMz1-rdJu9X0keAi1_vU9MZJnGktkNE8eY8g/Qqdi8D4VwXs2by092u4zRadZP0U1GTxi4jF89y9DmDo",
+              "width": 590,
+              "height": 313
+            }
+          }
+        },
+        "description": "주변 치아와의 조화를 통해 환자분은 자연치아와 거의 동일한 저작 기능을 회복"
+      }
+    ],
+    "question8_extra": "치아 상실을 방치하면 주변 치아까지 영향을 미치고 치료가 복잡해질 수 있습니다. 임플란트는 단순히 빠진 치아를 대체하는 것을 넘어, 전체적인 구강 건강의 균형을 되찾는 중요한 치료입니다. 정기적인 검진과 своевременное(timely) 치료의 중요성을 강조하고 싶습니다.",
+    "include_tooth_numbers": false,
+    "tooth_numbers": [],
+    "persona_candidates": [],
+    "representative_persona": "",
+    "city": "경기",
+    "district": "화성",
+    "region_phrase": "경기 화성",
+    "case_id": "case_내이튼치과의원_20250826_105616",
+    "clinical_context": {
+      "normalized": {
+        "symptoms": [
+          "오른쪽",
+          "어금니",
+          "2개가",
+          "빠진",
+          "상태로",
+          "수년간",
+          "방치하여",
+          "내원하셨습니다",
+          "치아가",
+          "없는",
+          "공간으로",
+          "주변",
+          "치아들이",
+          "기울어져",
+          "있었고",
+          "잇몸뼈도",
+          "상당히",
+          "흡수되어",
+          "임플란트",
+          "식립을",
+          "위한",
+          "충분한",
+          "공간과",
+          "지지",
+          "기반이",
+          "부족한",
+          "상태였습니다",
+          "식사",
+          "불편함은",
+          "물론",
+          "안모의",
+          "비대칭까지",
+          "미세하게",
+          "진행되고",
+          "있었습니다",
+          "임플란트는",
+          "상실된",
+          "치아의",
+          "기능적",
+          "심미적"
+        ],
+        "procedures": [
+          "오른쪽",
+          "어금니",
+          "2개가",
+          "빠진",
+          "상태로",
+          "수년간",
+          "방치하여",
+          "내원하셨습니다",
+          "치아가",
+          "없는",
+          "공간으로",
+          "주변",
+          "치아들이",
+          "기울어져",
+          "있었고",
+          "잇몸뼈도",
+          "상당히",
+          "흡수되어",
+          "임플란트",
+          "식립을",
+          "위한",
+          "충분한",
+          "공간과",
+          "지지",
+          "기반이",
+          "부족한",
+          "상태였습니다",
+          "식사",
+          "불편함은",
+          "물론",
+          "안모의",
+          "비대칭까지",
+          "미세하게",
+          "진행되고",
+          "있었습니다"
+        ],
+        "treatments": [
+          "부족한",
+          "잇몸뼈를",
+          "보강하기",
+          "위해",
+          "상악동",
+          "거상술",
+          "동반한",
+          "뼈이식술을",
+          "먼저",
+          "시행했습니다",
+          "튼튼한",
+          "기반을",
+          "마련한",
+          "컴퓨터",
+          "분석을",
+          "통해",
+          "정확한",
+          "위치와",
+          "각도를",
+          "계산하여",
+          "임플란트를",
+          "식립했습니다",
+          "또한",
+          "기울어진",
+          "주변",
+          "치아를",
+          "바로잡기",
+          "위한",
+          "부분",
+          "교정",
+          "치료를",
+          "병행하여",
+          "전체적인",
+          "교합의",
+          "안정성을",
+          "높였습니다",
+          "안정적으로",
+          "식립된",
+          "임플란트와"
+        ],
+        "tooth_numbers": []
+      },
+      "category_scores": {
+        "신경치료": 0.6208,
+        "임플란트": 1.0,
+        "심미수복": 0.4275,
+        "충치치료": 0.3309,
+        "크라운보철": 0.4043,
+        "브릿지": 0.0394,
+        "소아치과": 0.0519,
+        "발치": 0.0823,
+        "보철": 0.068,
+        "미백": 0.0
+      },
+      "primary_category": "임플란트",
+      "secondary_categories": [
+        "신경치료",
+        "심미수복"
+      ],
+      "flow": [
+        "주호소: 오른쪽, 어금니, 2개가, 빠진, 상태로, 수년간, 방치하여, 내원하셨습니다, 치아가, 없는, 공간으로, 주변, 치아들이, 기울어져, 있었고, 잇몸뼈도, 상당히, 흡수되어, 임플란트, 식립을, 위한, 충분한, 공간과, 지지, 기반이, 부족한, 상태였습니다, 식사, 불편함은, 물론, 안모의, 비대칭까지, 미세하게, 진행되고, 있었습니다, 임플란트는, 상실된, 치아의, 기능적, 심미적",
+        "검사: 오른쪽, 어금니, 2개가, 빠진, 상태로, 수년간, 방치하여, 내원하셨습니다, 치아가, 없는, 공간으로, 주변, 치아들이, 기울어져, 있었고, 잇몸뼈도, 상당히, 흡수되어, 임플란트, 식립을, 위한, 충분한, 공간과, 지지, 기반이, 부족한, 상태였습니다, 식사, 불편함은, 물론, 안모의, 비대칭까지, 미세하게, 진행되고, 있었습니다",
+        "치료계획: 부족한, 잇몸뼈를, 보강하기, 위해, 상악동, 거상술, 동반한, 뼈이식술을, 먼저, 시행했습니다, 튼튼한, 기반을, 마련한, 컴퓨터, 분석을, 통해, 정확한, 위치와, 각도를, 계산하여, 임플란트를, 식립했습니다, 또한, 기울어진, 주변, 치아를, 바로잡기, 위한, 부분, 교정, 치료를, 병행하여, 전체적인, 교합의, 안정성을, 높였습니다, 안정적으로, 식립된, 임플란트와",
+        "예후/관리: 정기 검진 및 위생관리 안내"
+      ],
+      "top_matches": [
+        {
+          "score": 0.1597,
+          "symptom_text": "우측 아래 작은 어금니(45번 치아)가 파절되었고, 만성 치주염 및 치근단 병소가 동반되어 치아의 기능적, 구조적 보존이 어려운 상태였다.",
+          "procedure_text": "2025년 2월 11일 동탄역 치과에서 파절된 45번 치아와 주변 치조골의 수직적 흡수 및 치주염 소견을 확인하고, 발치 후 임플란트 치료가 필요하다고 판단했다.",
+          "treatment_text": "45번 치아를 발치하고 즉시 임플란트를 식립한 후, 약 3개월 뒤 최종 보철물을 장착하여 치료를 완료했다."
+        },
+        {
+          "score": 0.1405,
+          "symptom_text": "위아래 좌측 어금니 사이에 충치가 발생하여 염증과 골소실이 진행되었고, 치아가 많이 흔들리는 심한 동요감을 보였습니다.",
+          "procedure_text": "어금니 사이 충치 및 골소실 진단 후 발치가 불가피하다는 판단하에, 상악동과의 근접성을 고려하여 가이드 방식을 이용한 발치 즉시 임플란트 수술을 진행했습니다.",
+          "treatment_text": "가이드 수술을 통해 정확한 위치와 각도로 임플란트 픽스처를 식립하고, 교합을 고려하여 제작한 보철물로 수복하였습니다."
+        },
+        {
+          "score": 0.1321,
+          "symptom_text": "오른쪽 두 번째 큰 어금니(17번 치아)의 통증과 불편함, 신경치료 받았던 치아의 치근단 염증이 상악동까지 진행된 상태.",
+          "procedure_text": "40대 남성 환자의 어금니 통증을 호소하는 내원에 대한 CT 촬영을 통한 진단 및 상악동 거상술 동반 임플란트 식립 계획 수립.",
+          "treatment_text": "17번 치아 발치 후 3개월의 치유 기간 경과 후, Crestal 방식의 상악동 거상술과 골이식을 동반한 임플란트 식립 및 6개월 후 보철물 제작."
+        },
+        {
+          "score": 0.1254,
+          "symptom_text": "기존 임플란트 픽스처가 골밀도 저하로 인해 흔들리고 염증이 발생하여 탈락 위험에 처해 있었다.",
+          "procedure_text": "임플란트 재식립을 위한 정밀 검사(초진 촬영 및 CT 촬영)를 시행하고, 상악동 거상술(측방 접근법)을 이용한 뼈이식 및 임플란트 식립을 계획했다.",
+          "treatment_text": "측방 접근법을 이용한 상악동 거상술을 통해 골이식재를 충전하고 차폐막으로 감염을 방지한 후, 임플란트를 식립하고 골유착 기간 동안 임시 보철을 제공했다. 골유착 후 최종 보철물을 장착하고 정기 검진을 통해 장기적인 관리를 진행했다."
+        },
+        {
+          "score": 0.1193,
+          "symptom_text": "좌측 위아래 어금니 결손으로 인한 저작 기능 저하, 인접 치아 이동 및 기울어짐, 대합치 정출, 치조골 소실 위험.",
+          "procedure_text": "초진 상담 및 검사 후, 상악동 거상술을 이용한 임플란트 수술 및 3~6개월의 골유착 기간 확보 후 보철 수복, 1년 후 정기 검진.",
+          "treatment_text": "부족한 치조골을 상악동 거상술로 확보하여 임플란트를 식립하고, 골유착 기간 동안 금연, 금주, 구강 위생 관리를 통해 염증 및 출혈을 예방한 후 보철물을 장착."
+        }
+      ],
+      "recommended_treatments": [
+        {
+          "name": "45번 치아를 발치하고 즉시 임플란트를 식립한 후, 약 3개월 뒤 최종 보철물을 장착하여 치료를 완료했다.",
+          "score": 0.1597
+        },
+        {
+          "name": "가이드 수술을 통해 정확한 위치와 각도로 임플란트 픽스처를 식립하고, 교합을 고려하여 제작한 보철물로 수복하였습니다.",
+          "score": 0.1405
+        },
+        {
+          "name": "17번 치아 발치 후 3개월의 치유 기간 경과 후, Crestal 방식의 상악동 거상술과 골이식을 동반한 임플란트 식립 및 6개월 후 보철물 제작.",
+          "score": 0.1321
+        },
+        {
+          "name": "측방 접근법을 이용한 상악동 거상술을 통해 골이식재를 충전하고 차폐막으로 감염을 방지한 후, 임플란트를 식립하고 골유착 기간 동안 임시 보철을 제공했다. 골유착 후 최종 보철물을 장착하고 정기 검진을 통해 장기적인 관리를 진행했다.",
+          "score": 0.1254
+        },
+        {
+          "name": "부족한 치조골을 상악동 거상술로 확보하여 임플란트를 식립하고, 골유착 기간 동안 금연, 금주, 구강 위생 관리를 통해 염증 및 출혈을 예방한 후 보철물을 장착.",
+          "score": 0.1193
+        }
+      ]
+    },
+    "timestamp": "2025-08-26 10:56:16",
+    "created_at": "2025-08-26 10:56:16",
+    "updated_at": "2025-08-26 10:56:16",
+    "mode": "use",
+    "status": "temp"
+  }
+]

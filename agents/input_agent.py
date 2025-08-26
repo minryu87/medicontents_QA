@@ -395,18 +395,21 @@ class InputAgent:
         self,
         input_data: Optional[dict] = None,
         case_num: str = "1",
-        test_data_path: str = "app/test_data/test_input_onlook.json",
-        persona_csv_path: str = "app/test_data/persona_table.csv",
-        hospital_info_path: str = "app/test_data/test_hospital_info.json",
-        hospital_image_path: str = "app/test_data/hospital_image",
-        category_csv_path: str = "app/test_data/category_data.csv",
-        select_csv_path: str = "app/test_data/select_data.csv",
+        test_data_path: str = str(Path(os.environ.get('AGENTS_BASE_PATH', Path(__file__).parent)) / "utils" / "test_input_onlook.json"),
+        persona_csv_path: str = str(Path(os.environ.get('AGENTS_BASE_PATH', Path(__file__).parent)) / "utils" / "persona_table.csv"),
+        hospital_info_path: str = str(Path(os.environ.get('AGENTS_BASE_PATH', Path(__file__).parent)) / "utils" / "test_hospital_info.json"),
+        hospital_image_path: str = str(Path(os.environ.get('AGENTS_BASE_PATH', Path(__file__).parent)) / "utils" / "hospital_image"),
+        category_csv_path: str = str(Path(os.environ.get('AGENTS_BASE_PATH', Path(__file__).parent)) / "utils" / "category_data.csv"),
+        select_csv_path: str = str(Path(os.environ.get('AGENTS_BASE_PATH', Path(__file__).parent)) / "utils" / "select_data.csv"),
         cache_dir: str = "app/cache",
     ):
         self.case_num = case_num
         self.test_data_path = Path(test_data_path)
         self.input_data = input_data
 
+        print(f"DEBUG: persona_csv_path = {persona_csv_path}")
+        print(f"DEBUG: Path(__file__).parent = {Path(__file__).parent}")
+        print(f"DEBUG: Path(__file__).parent / 'utils' / 'persona_table.csv' = {Path(__file__).parent / 'utils' / 'persona_table.csv'}")
         self.persona_df = read_csv_kr(persona_csv_path)
         self.valid_categories = self.persona_df["카테고리"].unique().tolist()
 
@@ -696,8 +699,8 @@ class InputAgent:
     def process_uploaded_images(
         self,
         mapping: dict,
-        test_image_dir: Path = Path("app/test_data/test_image"),
-        hospital_image_dir: Path = Path("app/test_data/hospital_image"),
+        test_image_dir: Path = Path(__file__).parent / "utils" / "test_image",
+        hospital_image_dir: Path = Path(__file__).parent / "utils" / "hospital_image",
     ) -> None:
         """
         원본: test_data/test_image/원본파일
@@ -806,7 +809,7 @@ class InputAgent:
         if not filename:
             return None
         filename = Path(filename).name
-        search_dirs = search_dirs or [Path("app/test_data/test_image"), Path("app/images"), Path(".")]
+        search_dirs = search_dirs or [Path(__file__).parent / "utils" / "test_image", Path(__file__).parent / "utils" / "images", Path(".")]
         hits: List[Path] = []
         for root in search_dirs:
             if not Path(root).exists():
@@ -819,7 +822,7 @@ class InputAgent:
         hits.sort(key=lambda p: p.stat().st_mtime, reverse=True)
         return hits[0]
 
-    def _normalize_and_copy_image(self, filename: str, save_name: str, dest_dir: Path = Path("app/test_data/test_image"), suffix: str = "") -> str:
+    def _normalize_and_copy_image(self, filename: str, save_name: str, dest_dir: Path = Path(__file__).parent / "utils" / "test_image", suffix: str = "") -> str:
         src = self._find_source_image(filename)
         base, ext = os.path.splitext(Path(filename).name)
         safe_base = re.sub(r"[^가-힣A-Za-z0-9_-]+", "_", base).strip("_")
@@ -850,7 +853,7 @@ class InputAgent:
                 print("⚠️ 파일명이 비었습니다. 건너뜁니다.")
                 continue
             normalized_basename = self._normalize_and_copy_image(
-                filename=filename, save_name=save_name, dest_dir=Path("app/test_data/test_image"), suffix=""
+                filename=filename, save_name=save_name, dest_dir=Path(__file__).parent / "utils" / "test_image", suffix=""
             )
             pairs.append({"filename": normalized_basename, "description": description})
         return pairs

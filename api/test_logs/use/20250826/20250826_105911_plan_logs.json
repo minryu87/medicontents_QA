@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "mode": "use",
+    "timestamp": "20250826_105911",
+    "model": "models/gemini-1.5-flash",
+    "temperature": 0.7,
+    "max_output_tokens": 8192,
+    "success": false,
+    "error": "프롬프트 파일을 찾을 수 없습니다: app/test_prompt/plan_generation_prompt.txt"
+  },
+  "input": {
+    "source_log_path": "(provided dict)",
+    "case_id": "case_내이튼치과의원_20250826_105911"
+  },
+  "prompt": "",
+  "llm_raw": "",
+  "output_paths": {
+    "plan_path": "test_logs/use/20250826/20250826_105911_plan.json"
+  },
+  "plan_preview": {
+    "title_plan": {
+      "guidance": "지역+카테고리+핵심 키워드를 자연스럽게 포함(24~36자), 과장·단정·가격문구 금지",
+      "must_include_one_of": [
+        "{city}",
+        "{district}",
+        "{region_phrase}"
+      ],
+      "must_include": [],
+      "must_not_include": [
+        "{hospital_name}",
+        "가격",
+        "이벤트",
+        "전화번호"
+      ],
+      "tone": "전문적·친절, 결과 단정 대신 개인차 암시",
+      "hints": {
+        "category": "일반진료",
+        "region_examples": [
+          "경기",
+          "화성",
+          "경기 화성"
+        ]
+      }
+    },
+    "sections_order": [
+      "1_intro",
+      "2_visit",
+      "3_inspection",
+      "4_doctor_tip",
+      "5_treatment",
+      "6_check_point",
+      "7_conclusion"
+    ]
+  }
+}

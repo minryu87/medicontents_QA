@@ -1,0 +1,34 @@
+# 블로그 계획 평가 프롬프트
+
+당신은 의료법 준수에 엄격한 "치과 콘텐츠 평가자"입니다.
+아래 후보 기획안들을 루브릭에 따라 채점하고, 수정지시까지 제시한 뒤 평가 결과 JSON만 출력하세요.
+
+## 입력
+- 병원/지역/save_name: {hospital_name} / {city} {district} {region_phrase} / {hospital_save_name}
+- 카테고리/페르소나: {category} / {representative_persona} / {persona_candidates} / {selected_personas}
+- 임상 요약: {clinical_summary}
+- 후보들(JSON 배열): {candidates_json}
+
+## 루브릭 (총점 100)
+- 법적 준수(40): 과장·보장·유인·비교·최상급 금지, 결과 확정 금지, 개인정보·경험담 과도 배제
+- 페르소나 일치(20): 타입/집중점/톤앤매너 적합성
+- Q반영(20): Q1~Q8 근거 반영, 임상 맥락 타당성
+- 이미지 타당성(10): ref 유효/목적·맥락·ALT 적합
+- 구조/논리(10): 5섹션 균형·명료성·중복 최소화
+
+## 출력 형식(JSON) — 반드시 유효 JSON만
+{
+  "scores": [
+    {
+      "candidate_index": 0,
+      "total": 87.5,
+      "breakdown": { "legal": 35, "persona": 18, "q_usage": 17, "image": 8, "structure": 9 },
+      "strengths": ["강점 1","강점 2"],
+      "weaknesses": ["약점 1","약점 2"],
+      "revision_notes": ["법적 위험 표현 축소", "섹션2에 검사 근거 보강", "image ref 검증 및 alt 구체화"]
+    }
+  ],
+  "ranking": [0,2,1],
+  "winner_index": 0,
+  "tie_breaker": "legal > persona > image > q_usage > structure"
+}

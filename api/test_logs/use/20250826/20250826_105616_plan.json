@@ -1,0 +1,162 @@
+{
+  "meta": {
+    "mode": "use",
+    "timestamp": "20250826_105616",
+    "case_id": "case_내이튼치과의원_20250826_105616",
+    "source_log": "(provided dict)"
+  },
+  "context_vars": {
+    "hospital_name": "내이튼치과의원",
+    "save_name": "내이튼치과의원",
+    "city": "경기",
+    "district": "화성",
+    "region_phrase": "경기 화성",
+    "category": "일반진료",
+    "map_link": ""
+  },
+  "title_plan": {
+    "guidance": "지역+카테고리+핵심 키워드를 자연스럽게 포함(24~36자), 과장·단정·가격문구 금지",
+    "must_include_one_of": [
+      "{city}",
+      "{district}",
+      "{region_phrase}"
+    ],
+    "must_include": [],
+    "must_not_include": [
+      "{hospital_name}",
+      "가격",
+      "이벤트",
+      "전화번호"
+    ],
+    "tone": "전문적·친절, 결과 단정 대신 개인차 암시",
+    "hints": {
+      "category": "일반진료",
+      "region_examples": [
+        "경기",
+        "화성",
+        "경기 화성"
+      ]
+    }
+  },
+  "content_plan": {
+    "sections_order": [
+      "1_intro",
+      "2_visit",
+      "3_inspection",
+      "4_doctor_tip",
+      "5_treatment",
+      "6_check_point",
+      "7_conclusion"
+    ],
+    "sections": {
+      "1_intro": {
+        "subtitle": "왜 이 치료가 필요했나",
+        "summary": "[개념] 임플란트는 상실된 치아의 기능적, 심미적 회복을 위한 최적의 솔루션입니다. 특히, 여러 개의 치아가 빠진 경우, 전체적인 교합의 균형과 잇몸뼈의 건강까지 고려한 종합적인 치료 계획이 무엇보다 중요합니다. [증상] 오른쪽 위 어금니 2개가 빠진 상태로 수년간 방치하여 내원하셨습니다. 치아가 없는 공간으로 주변 치아들이 기울어져 있었고, 잇몸뼈도 상당히 흡수되어 임플란트 식립을 위한 충분한 공간과 지지 기반이 부족한 상태였습니다. 식사 시 불편함은 물론, 안모의 비대칭까지 미세하게 진행되고",
+        "write_instruction": "content1_intro_prompt.txt",
+        "must_include": [
+          "{region_phrase}"
+        ],
+        "may_include": [
+          "{category}"
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "2_visit": {
+        "subtitle": "내원 당시 상태와 상담 포인트",
+        "summary": "오른쪽 위 어금니 2개가 빠진 상태로 수년간 방치하여 내원하셨습니다. 치아가 없는 공간으로 주변 치아들이 기울어져 있었고, 잇몸뼈도 상당히 흡수되어 임플란트 식립을 위한 충분한 공간과 지지 기반이 부족한 상태였습니다. 식사 시 불편함은 물론, 안모의 비대칭까지 미세하게 진행되고 있었습니다. 초진 상담·생활 불편·통증 유발 상황",
+        "write_instruction": "content2_visit_prompt.txt",
+        "must_include": [],
+        "may_include": [
+          "{region_phrase}"
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "3_inspection": {
+        "subtitle": "진단/검사 포인트",
+        "summary": "P(진료): 치식:",
+        "write_instruction": "content3_inspection_prompt.txt",
+        "must_include": [],
+        "may_include": [
+          "{region_phrase}"
+        ],
+        "must_not_include": [],
+        "image_binding": [
+          {
+            "from": "question3_visit_images",
+            "limit": 1
+          }
+        ]
+      },
+      "4_doctor_tip": {
+        "subtitle": "치과의사 한마디(선택/주의/대안)",
+        "summary": "치아 상실을 방치하면 주변 치아까지 영향을 미치고 치료가 복잡해질 수 있습니다. 임플란트는 단순히 빠진 치아를 대체하는 것을 넘어, 전체적인 구강 건강의 균형을 되찾는 중요한 치료입니다. 정기적인 검진과 своевременное(timely) 치료의 중요성을 강조하고 싶습니다. 대체옵션·주의사항·과장 금지",
+        "write_instruction": "content4_doctor_tip_prompt.txt",
+        "must_include": [],
+        "may_include": [
+          "{hospital_name}"
+        ],
+        "must_not_include": [
+          "가격",
+          "이벤트"
+        ],
+        "image_binding": []
+      },
+      "5_treatment": {
+        "subtitle": "치료 과정과 재료 선택",
+        "summary": "부족한 잇몸뼈를 보강하기 위해 '상악동 거상술'을 동반한 뼈이식술을 먼저 시행했습니다. 튼튼한 기반을 마련한 후, 컴퓨터 분석을 통해 정확한 위치와 각도를 계산하여 임플란트를 식립했습니다. 또한, 기울어진 주변 치아를 바로잡기 위한 부분 교정 치료를 병행하여 전체적인 교합의 안정성을 높였습니다. 재료·횟수·내원수·감염관리",
+        "write_instruction": "content5_treatment_prompt.txt",
+        "must_include": [],
+        "may_include": [
+          "{category}"
+        ],
+        "must_not_include": [
+          "가격",
+          "무통증 단정"
+        ],
+        "image_binding": [
+          {
+            "from": "question5_therapy_images",
+            "limit": 1
+          }
+        ]
+      },
+      "6_check_point": {
+        "subtitle": "체크포인트 & 관리법",
+        "summary": "안정적으로 식립된 임플란트와 주변 치아와의 조화를 통해 환자분은 자연치아와 거의 동일한 저작 기능을 회복했습니다. 무너졌던 교합이 정상화되면서 음식물 섭취의 질이 높아졌을 뿐만 아니라, 얼굴의 균형도 개선되어 환자분의 만족도가 매우 높았습니다. 재내원 기준·통증 변화 모니터링·가정관리",
+        "write_instruction": "content6_check_point_prompt.txt",
+        "must_include": [],
+        "may_include": [
+          "{region_phrase}"
+        ],
+        "must_not_include": [
+          "과장표현"
+        ],
+        "image_binding": [
+          {
+            "from": "question7_result_images",
+            "limit": 1
+          }
+        ]
+      },
+      "7_conclusion": {
+        "subtitle": "결론과 다음 단계",
+        "summary": "핵심 요점 회수 정기검진/문의 안내(비상업적)",
+        "write_instruction": "content7_conclusion_prompt.txt",
+        "must_include": [
+          "{hospital_name}"
+        ],
+        "may_include": [
+          "{region_phrase}"
+        ],
+        "must_not_include": [
+          "가격",
+          "이벤트",
+          "전화번호 직기재"
+        ],
+        "image_binding": []
+      }
+    }
+  }
+}

@@ -43,8 +43,8 @@ from dotenv import load_dotenv
 # ===== 경로 기본 =====
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_LOG_DIR = ROOT / "app/test_logs" / "use"
-PROMPTS_DIR = ROOT / "app/test_prompt"
-DATA_DIR = ROOT / "app/test_data"
+PROMPTS_DIR = Path(os.environ.get('AGENTS_BASE_PATH', Path(__file__).parent)) / "utils" / "test_prompt"
+DATA_DIR = Path(__file__).parent / "utils"
 
 # ===== HTML 파싱 함수 =====
 def extract_title_and_content_from_html(html_file_path: str) -> tuple[str, str]:

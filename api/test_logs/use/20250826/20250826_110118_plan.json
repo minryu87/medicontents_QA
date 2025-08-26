@@ -1,0 +1,163 @@
+{
+  "title_plan": {
+    "guidance": "경기/화성/경기 화성 + 카테고리 + 핵심 키워드",
+    "must_include_one_of": [
+      "경기",
+      "화성",
+      "경기 화성"
+    ],
+    "must_include": [],
+    "must_not_include": [
+      "내이튼치과의원",
+      "가격",
+      "이벤트",
+      "전화번호",
+      "1등",
+      "최고",
+      "완치",
+      "보장"
+    ],
+    "tone": "전문적·친절한 의사 설명",
+    "hints": {
+      "category": "일반진료",
+      "region_examples": [
+        "화성시",
+        "화성",
+        "경기 화성"
+      ]
+    }
+  },
+  "content_plan": {
+    "sections_order": [
+      "1_intro",
+      "2_visit",
+      "3_inspection",
+      "4_doctor_tip",
+      "5_treatment",
+      "6_check_point",
+      "7_conclusion"
+    ],
+    "sections": {
+      "1_intro": {
+        "subtitle": "치아 상실, 방치하면 어떻게 될까요?",
+        "summary": "치아 상실은 단순히 한 개의 치아만 잃는 것이 아닙니다. 주변 치아의 쓰러짐, 잇몸뼈 흡수 등 심각한 문제를 야기할 수 있습니다. 조기에 진단받고 적절한 치료를 받는 것이 중요합니다.",
+        "write_instruction": "300~500자, 전문적이고 친절한 톤으로 치아 상실 방치의 위험성을 설명합니다. 과장, 비교, 보장 표현은 금지합니다.",
+        "must_include": [],
+        "may_include": [
+          "일반진료"
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "2_visit": {
+        "subtitle": "경기 화성 지역 환자분의 사례",
+        "summary": "10년 이상 방치된 어금니 상실로 인해 주변 치아 기울어짐, 위쪽 치아 아래로 내려옴, 심각한 잇몸뼈 흡수가 발생한 환자분의 사례를 소개합니다.",
+        "write_instruction": "300~500자, 전문적이고 친절한 톤으로 환자의 상태를 설명합니다. 과장, 비교, 보장 표현은 금지합니다.",
+        "must_include": [],
+        "may_include": [
+          "경기 화성"
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "3_inspection": {
+        "subtitle": "정밀 검사 및 진단",
+        "summary": "3D CT 촬영을 통해 잇몸뼈 흡수 정도, 주변 치아 상태 등을 정밀하게 확인하여 환자에게 최적의 치료 계획을 수립했습니다.",
+        "write_instruction": "300~500자, 전문적이고 친절한 톤으로 검사 과정과 결과를 설명합니다. 과장, 비교, 보장 표현은 금지합니다.",
+        "must_include": [
+          "3D CT 촬영"
+        ],
+        "may_include": [],
+        "must_not_include": [],
+        "image_binding": [
+          {
+            "from": "question3_visit_images",
+            "limit": 1
+          }
+        ]
+      },
+      "4_doctor_tip": {
+        "subtitle": "의사의 조언: 조기 진단과 적절한 치료의 중요성",
+        "summary": "치아 상실은 방치할수록 치료의 어려움과 비용이 증가합니다. 조기에 진단받고 적절한 치료를 받는 것이 중요하며, 본원에서는 환자에게 최적의 치료 계획을 제시합니다.",
+        "write_instruction": "300~500자, 전문적이고 친절한 톤으로 의사의 조언을 전달합니다. 과장, 비교, 보장 표현은 금지합니다.",
+        "must_include": [],
+        "may_include": [],
+        "must_not_include": [
+          "가격",
+          "이벤트"
+        ],
+        "image_binding": []
+      },
+      "5_treatment": {
+        "subtitle": "치료 과정: 부분 교정, 골유도재생술, 임플란트 식립",
+        "summary": "쓰러진 주변 치아를 바로 세우기 위한 부분 교정, 부족한 잇몸뼈를 재건하기 위한 골유도재생술, 디지털 가이드 시스템을 이용한 정확한 임플란트 식립 과정을 설명합니다.",
+        "write_instruction": "300~500자, 전문적이고 친절한 톤으로 치료 과정을 자세히 설명합니다. 과장, 비교, 보장 표현은 금지합니다.",
+        "must_include": [
+          "부분 교정",
+          "골유도재생술",
+          "임플란트 식립",
+          "디지털 가이드 시스템"
+        ],
+        "may_include": [
+          "일반진료"
+        ],
+        "must_not_include": [
+          "가격",
+          "무통증 단정"
+        ],
+        "image_binding": [
+          {
+            "from": "question5_therapy_images",
+            "limit": 1
+          }
+        ]
+      },
+      "6_check_point": {
+        "subtitle": "치료 후 주의사항",
+        "summary": "치료 후 주의사항 및 정기적인 검진의 중요성을 설명합니다.",
+        "write_instruction": "300~500자, 전문적이고 친절한 톤으로 치료 후 주의사항을 설명합니다. 과장, 비교, 보장 표현은 금지합니다.",
+        "must_include": [],
+        "may_include": [
+          "경기 화성"
+        ],
+        "must_not_include": [
+          "과장표현"
+        ],
+        "image_binding": [
+          {
+            "from": "question7_result_images",
+            "limit": 1
+          }
+        ]
+      },
+      "7_conclusion": {
+        "subtitle": "마무리",
+        "summary": "치아 상실로 고민이신 분들에게 도움이 되는 정보를 제공하고, 본원의 전문성을 간략하게 강조합니다.  상담을 통해 편안한 치료 계획을 세워보시길 바랍니다.",
+        "write_instruction": "300~500자, 전문적이고 친절한 톤으로 글을 마무리합니다. 과장, 비교, 보장 표현은 금지합니다. 전화번호는 직접적으로 기재하지 않습니다.",
+        "must_include": [],
+        "may_include": [],
+        "must_not_include": [
+          "가격",
+          "이벤트",
+          "전화번호 직기재"
+        ],
+        "image_binding": []
+      }
+    }
+  },
+  "context_vars": {
+    "hospital_name": "내이튼치과의원",
+    "save_name": "내이튼치과의원",
+    "city": "경기",
+    "district": "화성",
+    "region_phrase": "경기 화성",
+    "category": "일반진료",
+    "map_link": ""
+  },
+  "meta": {
+    "mode": "use",
+    "timestamp": "20250826_110118",
+    "case_id": "case_내이튼치과의원_20250826_110107",
+    "source_log": "(provided dict)"
+  }
+}

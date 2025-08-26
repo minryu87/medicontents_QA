@@ -11,6 +11,9 @@ current_dir = Path(__file__).parent.parent.parent
 agents_path = current_dir / "agents"
 sys.path.append(str(agents_path))
 
+# agents 폴더의 절대 경로를 환경변수로 설정
+os.environ['AGENTS_BASE_PATH'] = str(agents_path)
+
 from dotenv import load_dotenv
 from pyairtable import Api
 

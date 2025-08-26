@@ -75,7 +75,7 @@ gemini_client = GeminiClient()
 # ===============
 # 경로/시간 유틸
 # ===============
-PROMPT_PATH = Path("app/test_prompt/plan_generation_prompt.txt")
+PROMPT_PATH = Path(os.environ.get('AGENTS_BASE_PATH', Path(__file__).parent)) / "utils" / "test_prompt" / "plan_generation_prompt.txt"
 
 def _today() -> str:
     return datetime.now().strftime("%Y%m%d")

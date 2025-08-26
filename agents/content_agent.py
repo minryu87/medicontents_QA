@@ -30,7 +30,7 @@ import google.generativeai as genai
 # =========================
 # 경로/시간 유틸 & JSON 헬퍼
 # =========================
-TEST_RESULT_PATH = Path("app/test_data/test_content_result.json")
+TEST_RESULT_PATH = Path(__file__).parent / "utils" / "test_content_result.json"
 
 def _today_str() -> str:
     return datetime.now().strftime("%Y%m%d")
@@ -260,13 +260,13 @@ def _latest_title(mode: str) -> Optional[Path]:
 # 프롬프트 로딩/치환
 # =========================
 PROMPTS = {
-    "1_intro":       Path("app/test_prompt/content1_intro_prompt.txt"),
-    "2_visit":       Path("app/test_prompt/content2_visit_prompt.txt"),
-    "3_inspection":  Path("app/test_prompt/content3_inspection_prompt.txt"),
-    "4_doctor_tip":  Path("app/test_prompt/content4_doctor_tip_prompt.txt"),
-    "5_treatment":   Path("app/test_prompt/content5_treatment_prompt.txt"),
-    "6_check_point": Path("app/test_prompt/content6_check_point_prompt.txt"),
-    "7_conclusion":  Path("app/test_prompt/content7_conclusion_prompt.txt"),
+    "1_intro":       Path(os.environ.get('AGENTS_BASE_PATH', Path(__file__).parent)) / "utils" / "test_prompt" / "content1_intro_prompt.txt",
+    "2_visit":       Path(os.environ.get('AGENTS_BASE_PATH', Path(__file__).parent)) / "utils" / "test_prompt" / "content2_visit_prompt.txt",
+    "3_inspection":  Path(os.environ.get('AGENTS_BASE_PATH', Path(__file__).parent)) / "utils" / "test_prompt" / "content3_inspection_prompt.txt",
+    "4_doctor_tip":  Path(os.environ.get('AGENTS_BASE_PATH', Path(__file__).parent)) / "utils" / "test_prompt" / "content4_doctor_tip_prompt.txt",
+    "5_treatment":   Path(os.environ.get('AGENTS_BASE_PATH', Path(__file__).parent)) / "utils" / "test_prompt" / "content5_treatment_prompt.txt",
+    "6_check_point": Path(os.environ.get('AGENTS_BASE_PATH', Path(__file__).parent)) / "utils" / "test_prompt" / "content6_check_point_prompt.txt",
+    "7_conclusion":  Path(os.environ.get('AGENTS_BASE_PATH', Path(__file__).parent)) / "utils" / "test_prompt" / "content7_conclusion_prompt.txt",
 }
 
 ### 디버그용 프롬프트 로딩
@@ -347,7 +347,7 @@ def _strip_quotes(s: str) -> str:
 
 # 동물 이미지 GIF
 import random
-GIF_DIR = Path("app/test_data/test_image/gif")
+GIF_DIR = Path(__file__).parent / "utils" / "test_image" / "gif"
 
 _EMOTICON_MARK_RE = re.compile(r"\((행복|슬픔|신남|화남|일반|마무리)\)")
 # 게시글 단위로 동물 고정 & 풀 캐시
@@ -628,7 +628,12 @@ def _resolve_images_for_section(plan_sec: Dict[str, Any], input_row: Dict[str, A
 
         for it in chosen:
             fn = it.get("filename", "")
-            path = (it.get("path") or f"app/test_data/test_image/{fn}")
+            # filename이 dict인 경우 처리
+            if isinstance(fn, dict):
+                fn = fn.get("filename", "")
+            elif not isinstance(fn, str):
+                fn = str(fn)
+            path = (it.get("path") or str(Path(__file__).parent / "utils" / "test_image" / fn))
             entry = {
                 "filename": fn,
                 "path": path,

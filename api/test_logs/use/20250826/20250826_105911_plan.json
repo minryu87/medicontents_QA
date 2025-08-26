@@ -1,0 +1,162 @@
+{
+  "meta": {
+    "mode": "use",
+    "timestamp": "20250826_105911",
+    "case_id": "case_내이튼치과의원_20250826_105911",
+    "source_log": "(provided dict)"
+  },
+  "context_vars": {
+    "hospital_name": "내이튼치과의원",
+    "save_name": "내이튼치과의원",
+    "city": "경기",
+    "district": "화성",
+    "region_phrase": "경기 화성",
+    "category": "일반진료",
+    "map_link": ""
+  },
+  "title_plan": {
+    "guidance": "지역+카테고리+핵심 키워드를 자연스럽게 포함(24~36자), 과장·단정·가격문구 금지",
+    "must_include_one_of": [
+      "{city}",
+      "{district}",
+      "{region_phrase}"
+    ],
+    "must_include": [],
+    "must_not_include": [
+      "{hospital_name}",
+      "가격",
+      "이벤트",
+      "전화번호"
+    ],
+    "tone": "전문적·친절, 결과 단정 대신 개인차 암시",
+    "hints": {
+      "category": "일반진료",
+      "region_examples": [
+        "경기",
+        "화성",
+        "경기 화성"
+      ]
+    }
+  },
+  "content_plan": {
+    "sections_order": [
+      "1_intro",
+      "2_visit",
+      "3_inspection",
+      "4_doctor_tip",
+      "5_treatment",
+      "6_check_point",
+      "7_conclusion"
+    ],
+    "sections": {
+      "1_intro": {
+        "subtitle": "왜 이 치료가 필요했나",
+        "summary": "[개념] 임플란트는 단순히 빠진 치아를 대체하는 것을 넘어, 주변 치아의 변형과 잇몸뼈 소실을 막는 '예방적 치료'의 개념을 포함합니다. 방치 기간이 길어질수록 치료는 더 복잡해지고 어려워지므로, 치아 상실 시 빠른 진단과 상담이 중요합니다. [증상] 50대 남성 환자로, 10년 전 아래 어금니를 발치한 후 오랫동안 방치한 상태였습니다. 내원 당시, 빠진 치아 공간으로 양옆의 치아가 쓰러져 있었고, 위쪽 어금니는 아래로 내려와 교합이 완전히 무너진 상태였습니다. 3D CT 촬영 결과, 예상대로 잇",
+        "write_instruction": "content1_intro_prompt.txt",
+        "must_include": [
+          "{region_phrase}"
+        ],
+        "may_include": [
+          "{category}"
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "2_visit": {
+        "subtitle": "내원 당시 상태와 상담 포인트",
+        "summary": "50대 남성 환자로, 10년 전 아래 어금니를 발치한 후 오랫동안 방치한 상태였습니다. 내원 당시, 빠진 치아 공간으로 양옆의 치아가 쓰러져 있었고, 위쪽 어금니는 아래로 내려와 교합이 완전히 무너진 상태였습니다. 3D CT 촬영 결과, 예상대로 잇몸뼈가 심하게 흡수되어 임플란트 식립이 불가능한 상태였으며, 환자분은 과거 치과 치료에 대한 트라우마로 수술 자체에 큰 두려움을 갖고 계셨습니다. 초진 상담·생활 불편·통증 유발 상황",
+        "write_instruction": "content2_visit_prompt.txt",
+        "must_include": [],
+        "may_include": [
+          "{region_phrase}"
+        ],
+        "must_not_include": [],
+        "image_binding": []
+      },
+      "3_inspection": {
+        "subtitle": "진단/검사 포인트",
+        "summary": "P(진료): 치식:",
+        "write_instruction": "content3_inspection_prompt.txt",
+        "must_include": [],
+        "may_include": [
+          "{region_phrase}"
+        ],
+        "must_not_include": [],
+        "image_binding": [
+          {
+            "from": "question3_visit_images",
+            "limit": 1
+          }
+        ]
+      },
+      "4_doctor_tip": {
+        "subtitle": "치과의사 한마디(선택/주의/대안)",
+        "summary": "임플란트, 치료 시기를 놓쳤다고 생각하거나 수술이 두려워 망설이고 계신가요? 첨단 디지털 장비와 풍부한 임상 경험을 바탕으로, 뼈가 부족하거나 다른 전신 질환이 있는 고난도 케이스도 안정적인 결과를 만들어내고 있습니다. 늦었다고 생각할 때가 가장 빠른 때입니다. 용기를 내어 내원하시면, 잃어버린 웃음과 건강을 되찾아 드리겠습니다. 대체옵션·주의사항·과장 금지",
+        "write_instruction": "content4_doctor_tip_prompt.txt",
+        "must_include": [],
+        "may_include": [
+          "{hospital_name}"
+        ],
+        "must_not_include": [
+          "가격",
+          "이벤트"
+        ],
+        "image_binding": []
+      },
+      "5_treatment": {
+        "subtitle": "치료 과정과 재료 선택",
+        "summary": "무너진 교합과 부족한 잇몸뼈를 해결하기 위해 '선(先) 뼈이식, 후(後) 임플란트'의 단계적 치료 계획을 수립했습니다. 정밀 3D CT 데이터를 기반으로 한 컴퓨터 분석 가이드 수술을 통해 정확한 위치에 뼈이식을 시행하여 부작용을 최소화했습니다. 또한, 환자분의 불안감을 해소하기 위해 '의식하 진정요법(수면 임플란트)'을 병행하여 편안하고 안전하게 수술받으실 수 있도록 전 과정을 세심하게 케어했습니다. 재료·횟수·내원수·감염관리",
+        "write_instruction": "content5_treatment_prompt.txt",
+        "must_include": [],
+        "may_include": [
+          "{category}"
+        ],
+        "must_not_include": [
+          "가격",
+          "무통증 단정"
+        ],
+        "image_binding": [
+          {
+            "from": "question5_therapy_images",
+            "limit": 1
+          }
+        ]
+      },
+      "6_check_point": {
+        "subtitle": "체크포인트 & 관리법",
+        "summary": "성공적인 뼈이식 후, 계획된 위치에 임플란트가 안정적으로 식립되었습니다. 최종 보철물은 주변 치아와 자연스럽게 어우러지도록 색상과 모양을 정밀하게 제작하여 심미성을 높였습니다. 환자분께서는 이제 반대편으로만 씹던 불편함에서 벗어나, 양쪽으로 음식을 골고루 씹을 수 있게 되었다며 식사의 즐거움을 되찾았다고 크게 만족하셨습니다. 무너졌던 전체적인 교합의 균형까지 회복되었습니다. 재내원 기준·통증 변화 모니터링·가정관리",
+        "write_instruction": "content6_check_point_prompt.txt",
+        "must_include": [],
+        "may_include": [
+          "{region_phrase}"
+        ],
+        "must_not_include": [
+          "과장표현"
+        ],
+        "image_binding": [
+          {
+            "from": "question7_result_images",
+            "limit": 1
+          }
+        ]
+      },
+      "7_conclusion": {
+        "subtitle": "결론과 다음 단계",
+        "summary": "핵심 요점 회수 정기검진/문의 안내(비상업적)",
+        "write_instruction": "content7_conclusion_prompt.txt",
+        "must_include": [
+          "{hospital_name}"
+        ],
+        "may_include": [
+          "{region_phrase}"
+        ],
+        "must_not_include": [
+          "가격",
+          "이벤트",
+          "전화번호 직기재"
+        ],
+        "image_binding": []
+      }
+    }
+  }
+}

@@ -37,8 +37,8 @@ genai.configure(api_key=GEMINI_API_KEY)
 # -----------------------
 # 경로 유틸
 # -----------------------
-GEN_PROMPT_PATH = Path("app/test_prompt/title_generation_prompt.txt")
-EVAL_PROMPT_PATH = Path("app/test_prompt/title_evaluation_prompt.txt")
+GEN_PROMPT_PATH = Path(os.environ.get('AGENTS_BASE_PATH', Path(__file__).parent)) / "utils" / "test_prompt" / "title_generation_prompt.txt"
+EVAL_PROMPT_PATH = Path(os.environ.get('AGENTS_BASE_PATH', Path(__file__).parent)) / "utils" / "test_prompt" / "title_evaluation_prompt.txt"
 
 DEF_MODE = "use"
 
