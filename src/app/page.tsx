@@ -374,11 +374,10 @@ export default function Home() {
     const handlePostIdCreated = async (postId: string, startTime: number) => {
         addLog(`🔧 Post ID ${postId}에 대한 추가 처리 시작...`);
         
-        // 진행 상황 업데이트
+        // 진행 상황 업데이트 - total은 변경하지 않고 current만 증가
         setAutoProgress(prev => ({ 
             ...prev, 
-            current: prev.current + 1,
-            total: Math.max(prev.total, prev.current + 1)
+            current: prev.current + 1
         }));
         
         // Post ID를 Airtable에서 확인
@@ -702,10 +701,10 @@ export default function Home() {
                             trackedPostIds.push(postId);
                             addLog(`🆔 새로운 Post ID 발견: ${postId}`);
                             
-                            // 새로운 Post ID 발견 시 current 업데이트
+                            // 새로운 Post ID 발견 시 current 업데이트 (total을 초과하지 않도록)
                             setAutoProgress(prev => ({
                                 ...prev,
-                                current: Math.max(prev.current, trackedPostIds.length + 1)
+                                current: Math.min(trackedPostIds.length, prev.total)
                             }));
                         }
                     });
@@ -764,10 +763,10 @@ export default function Home() {
                                         } else if (postDataStatus === '처리 중') {
                                             addLog(`📊 Post ID ${postId} Agent 작업 진행 중...`);
                                             
-                                            // 진행 중인 작업으로 current 업데이트
+                                            // 진행 중인 작업으로 current 업데이트 (total을 초과하지 않도록)
                                             setAutoProgress(prev => ({
                                                 ...prev,
-                                                current: Math.max(prev.current, trackedPostIds.length)
+                                                current: Math.min(trackedPostIds.length, prev.total)
                                             }));
                                         } else {
                                             addLog(`📊 Post ID ${postId} Post Data Status: ${postDataStatus}`);
@@ -793,6 +792,9 @@ export default function Home() {
                             ...prev,
                             isCompleted: true
                         }));
+                        
+                        // autoProcessing 상태도 완료로 변경
+                        setAutoProcessing(false);
                         return;
                     }
                     
