@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, ChangeEvent, useEffect } from 'react';
-import { Upload, Send, FileText, CheckCircle, XCircle, X, RefreshCw, Play, Info } from 'lucide-react';
+import { Upload, Send, FileText, CheckCircle, XCircle, X, RefreshCw, Play, Info, Power } from 'lucide-react';
 
     // Airtable 설정
     const AIRTABLE_API_KEY = 'pat6S8lzX8deRFTKC.0e92c4403cdc7878f8e61f815260852d4518a0b46fa3de2350e5e91f4f0f6af9';
@@ -842,6 +842,51 @@ export default function Home() {
     };
 
     // 래덤 데이터 불러오기
+    // 재시작 함수
+    const handleRestart = async () => {
+        if (!confirm('백엔드 서버를 재시작하시겠습니까? 이 작업은 약 30초 정도 소요됩니다.')) {
+            return;
+        }
+        
+        try {
+            addLog('🔄 백엔드 재시작 요청 중...');
+            
+            const response = await fetch(`${API_BASE_URL}/api/restart`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                addLog('✅ 백엔드 재시작 성공!');
+                addLog(`🕐 재시작 시간: ${new Date(result.restart_time).toLocaleString()}`);
+                
+                // 30초 후 서버 상태 확인
+                setTimeout(async () => {
+                    try {
+                        const healthCheck = await fetch(`${API_BASE_URL}/api/health`);
+                        if (healthCheck.ok) {
+                            addLog('✅ 서버 상태 확인 완료 - 정상 작동 중');
+                        } else {
+                            addLog('⚠️ 서버 상태 확인 실패');
+                        }
+                    } catch (error) {
+                        addLog('⚠️ 서버 상태 확인 중 오류 발생');
+                    }
+                }, 30000);
+                
+            } else {
+                addLog(`❌ 백엔드 재시작 실패: ${result.message}`);
+            }
+            
+        } catch (error) {
+            addLog(`❌ 재시작 요청 중 오류: ${error}`);
+        }
+    };
+
     const loadRandomData = async () => {
         try {
             const response = await fetch(`${API_BASE_URL}/api/random-post-data`);
@@ -1359,13 +1404,23 @@ export default function Home() {
                         <div className="p-4">
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="text-lg font-semibold">완료된 포스팅 목록</h3>
-                                <button
-                                    onClick={loadCompletedPosts}
-                                    className="p-2 rounded-md hover:bg-gray-100"
-                                    disabled={isLoading}
-                                >
-                                    <RefreshCw size={16} className={isLoading ? 'animate-spin' : ''} />
-                                </button>
+                                <div className="flex items-center space-x-2">
+                                    <button
+                                        onClick={loadCompletedPosts}
+                                        className="p-2 rounded-md hover:bg-gray-100"
+                                        disabled={isLoading}
+                                    >
+                                        <RefreshCw size={16} className={isLoading ? 'animate-spin' : ''} />
+                                    </button>
+                                    <button
+                                        onClick={handleRestart}
+                                        className="px-3 py-2 rounded-md text-sm font-medium bg-red-100 text-red-700 hover:bg-red-200 flex items-center space-x-1"
+                                        title="백엔드 서버 재시작"
+                                    >
+                                        <Power size={14} />
+                                        <span>재시작</span>
+                                    </button>
+                                </div>
                             </div>
                             
                             {/* 검색 및 필터 영역 */}
