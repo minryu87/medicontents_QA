@@ -257,6 +257,22 @@ export default function Home() {
         }
     }, [activeTab]);
 
+    // 페이지 언로드 시 모든 폴링 중단
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            // 모든 setInterval 중단
+            for (let i = 1; i < 10000; i++) {
+                clearInterval(i);
+            }
+        };
+        
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
+
     // localStorage에서 검토자 목록 로드 (클라이언트 사이드에서만)
     useEffect(() => {
         try {
@@ -1151,6 +1167,7 @@ export default function Home() {
     // 폼 제출 핸들러
     const handleSubmit = async () => {
         let pollInterval: NodeJS.Timeout | undefined;
+        let statusPollInterval: NodeJS.Timeout | undefined;
         
         try {
             setIsProcessing(true);
@@ -1304,7 +1321,7 @@ export default function Home() {
                 let attempts = 0;
                 const maxAttempts = 24; // 2분 대기 (24회 × 5초)
                 
-                const statusPollInterval = setInterval(async () => {
+                statusPollInterval = setInterval(async () => {
                     attempts++;
                     
                     try {
@@ -1406,6 +1423,9 @@ export default function Home() {
             // 폴링 중지 (혹시 아직 실행 중이라면)
             if (typeof pollInterval !== 'undefined') {
                 clearInterval(pollInterval);
+            }
+            if (typeof statusPollInterval !== 'undefined') {
+                clearInterval(statusPollInterval);
             }
             setIsProcessing(false);
         }
