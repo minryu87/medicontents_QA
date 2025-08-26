@@ -1301,7 +1301,7 @@ export default function Home() {
                 addLog('AI Agent 작업 완료 대기 중...');
                 let isCompleted = false;
                 let attempts = 0;
-                const maxAttempts = 60; // 5분 대기
+                const maxAttempts = 24; // 2분 대기 (24회 × 5초)
                 
                 while (!isCompleted && attempts < maxAttempts) {
                     await new Promise(resolve => setTimeout(resolve, 5000)); // 5초 대기
@@ -1321,7 +1321,7 @@ export default function Home() {
                         if (postDataResponse.ok) {
                             const postData = await postDataResponse.json();
                             const postDataStatus = postData.records?.[0]?.fields?.Status || '';
-                            addLog(`Post Data Requests Status: ${postDataStatus}`);
+                            addLog(`📊 Post Data Requests Status: "${postDataStatus}"`);
                             
                             // Medicontent Posts 테이블에서 Status 확인
                             const medicontentResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts?filterByFormula={Post%20Id}='${postId}'`, {
@@ -1334,7 +1334,7 @@ export default function Home() {
                             if (medicontentResponse.ok) {
                                 const medicontentData = await medicontentResponse.json();
                                 const medicontentStatus = medicontentData.records?.[0]?.fields?.Status || '';
-                                addLog(`Medicontent Posts Status: ${medicontentStatus}`);
+                                addLog(`📊 Medicontent Posts Status: "${medicontentStatus}"`);
                                 
                                 // 두 테이블 모두 완료 상태인지 확인
                                 if (postDataStatus === '완료' && medicontentStatus === '작업 완료') {
@@ -1347,13 +1347,21 @@ export default function Home() {
                                     isCompleted = true;
                                 } else {
                                     addLog(`⏳ 작업 진행 중... (${attempts}/${maxAttempts})`);
-                                    addLog(`상태: Post Data=${postDataStatus}, Medicontent=${medicontentStatus}`);
+                                    addLog(`🔍 상태 비교: Post Data="${postDataStatus}" === "완료" && Medicontent="${medicontentStatus}" === "작업 완료"`);
+                                    
+                                    // 상태가 예상과 다른 경우 상세 정보 출력
+                                    if (postDataStatus !== '완료') {
+                                        addLog(`⚠️ Post Data Status가 "완료"가 아님: "${postDataStatus}"`);
+                                    }
+                                    if (medicontentStatus !== '작업 완료') {
+                                        addLog(`⚠️ Medicontent Status가 "작업 완료"가 아님: "${medicontentStatus}"`);
+                                    }
                                 }
                             } else {
-                                addLog(`Medicontent Posts 조회 실패: ${medicontentResponse.status}`);
+                                addLog(`❌ Medicontent Posts 조회 실패: ${medicontentResponse.status}`);
                             }
                         } else {
-                            addLog(`Post Data Requests 조회 실패: ${postDataResponse.status}`);
+                            addLog(`❌ Post Data Requests 조회 실패: ${postDataResponse.status}`);
                         }
                     } catch (error) {
                         addLog(`완료 확인 중 오류: ${error}`);
@@ -1362,6 +1370,7 @@ export default function Home() {
                 
                 if (!isCompleted) {
                     addLog('❌ 작업 완료 시간 초과');
+                    addLog('💡 수동으로 포스팅을 선택하여 HTML을 확인할 수 있습니다.');
                 }
             } else {
                 // 폴링 중지
