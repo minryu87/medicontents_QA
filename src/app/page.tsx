@@ -448,12 +448,27 @@ export default function Home() {
             
             addLog(`웹훅 호출 완료: ${autoFormData.count}개 포스팅 생성 요청`);
             
-            // 웹훅 응답 처리
-            if (webhookResult.success) {
-                addLog(`📡 웹훅 응답: ${webhookResult.message || '성공'}`);
-                
-                // 텍스트 응답인 경우 특별 처리
-                if (webhookResult.isTextResponse) {
+                            // 웹훅 응답 처리
+                if (webhookResult.success) {
+                    addLog(`📡 웹훅 응답: ${webhookResult.message || '성공'}`);
+                    
+                    // 웹훅 'success' 응답 감지
+                    if (webhookResult.message && webhookResult.message.toLowerCase().includes('success')) {
+                        addLog('✅ 웹훅 success 응답 감지 - 전체 완료로 판단');
+                        
+                        // 완료 후에도 진행 상황 표시 유지
+                        setAutoProgress(prev => ({
+                            ...prev,
+                            isCompleted: true
+                        }));
+                        
+                        // autoProcessing 상태도 완료로 변경
+                        setAutoProcessing(false);
+                        return;
+                    }
+                    
+                    // 텍스트 응답인 경우 특별 처리
+                    if (webhookResult.isTextResponse) {
                     addLog(`📝 텍스트 응답 처리 중...`);
                     
                     // 자동 생성 시작 메시지 처리
@@ -1292,6 +1307,33 @@ export default function Home() {
                 const agentData = await agentResponse.json();
                 addLog('AI Agent 실행 완료');
                 
+                // n8n-completion API 호출 감지
+                if (agentResponse.url && agentResponse.url.includes('/api/n8n-completion')) {
+                    addLog('✅ n8n-completion API 호출 감지 - 전체 완료로 판단');
+                    
+                    // 완료된 포스팅을 자동으로 선택하여 HTML 렌더링
+                    try {
+                        const medicontentResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts?filterByFormula={Post%20Id}='${postId}'`, {
+                            headers: {
+                                'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        
+                        if (medicontentResponse.ok) {
+                            const medicontentData = await medicontentResponse.json();
+                            if (medicontentData.records && medicontentData.records.length > 0) {
+                                setSelectedPost(medicontentData.records[0]);
+                                addLog('완료된 포스팅을 우측 패널에 표시합니다.');
+                            }
+                        }
+                    } catch (error) {
+                        addLog(`포스팅 선택 중 오류: ${error}`);
+                    }
+                    
+                    return;
+                }
+                
                 // 로그 처리
                 console.log('Agent 응답:', agentData);
                 
@@ -1367,25 +1409,27 @@ export default function Home() {
                                 const medicontentStatus = medicontentData.records?.[0]?.fields?.Status || '';
                                 addLog(`📊 Medicontent Posts Status: "${medicontentStatus}"`);
                                 
-                                // 두 테이블 모두 완료 상태인지 확인 (조건 완화)
-                                if (postDataStatus === '완료') {
-                                    addLog('✅ Post Data Requests 완료 확인됨');
+                                // 두 테이블 모두 완료 상태인지 확인 (기존 조건 유지)
+                                if (postDataStatus === '완료' && medicontentStatus === '작업 완료') {
+                                    addLog('✅ 모든 작업 완료 확인됨');
                                     
-                                    // Medicontent Posts도 확인하되, 완료 조건 완화
-                                    if (medicontentStatus === '작업 완료' || medicontentStatus === '완료') {
-                                        addLog('✅ Medicontent Posts도 완료 확인됨');
-                                        
-                                        // 완료된 포스팅을 자동으로 선택하여 HTML 렌더링
-                                        setSelectedPost(medicontentData.records[0]);
-                                        addLog('완료된 포스팅을 우측 패널에 표시합니다.');
-                                        
-                                        isCompleted = true;
-                                        clearInterval(statusPollInterval);
-                                    } else {
-                                        addLog(`⏳ Medicontent Posts Status: "${medicontentStatus}" - 대기 중...`);
-                                    }
+                                    // 완료된 포스팅을 자동으로 선택하여 HTML 렌더링
+                                    setSelectedPost(medicontentData.records[0]);
+                                    addLog('완료된 포스팅을 우측 패널에 표시합니다.');
+                                    
+                                    isCompleted = true;
+                                    clearInterval(statusPollInterval);
                                 } else {
-                                    addLog(`⏳ Post Data Requests Status: "${postDataStatus}" - 대기 중...`);
+                                    addLog(`⏳ 작업 진행 중... (${attempts}/${maxAttempts})`);
+                                    addLog(`🔍 상태 비교: Post Data="${postDataStatus}" === "완료" && Medicontent="${medicontentStatus}" === "작업 완료"`);
+                                    
+                                    // 상태가 예상과 다른 경우 상세 정보 출력
+                                    if (postDataStatus !== '완료') {
+                                        addLog(`⚠️ Post Data Status가 "완료"가 아님: "${postDataStatus}"`);
+                                    }
+                                    if (medicontentStatus !== '작업 완료') {
+                                        addLog(`⚠️ Medicontent Status가 "작업 완료"가 아님: "${medicontentStatus}"`);
+                                    }
                                 }
                             } else {
                                 addLog(`❌ Medicontent Posts 조회 실패: ${medicontentResponse.status}`);
