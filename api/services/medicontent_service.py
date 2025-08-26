@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import logging
+import aiohttp
 from datetime import datetime
 from typing import Dict, Any, Optional
 from pathlib import Path
@@ -46,6 +47,42 @@ def split_image_descriptions(text: str, count: int) -> list:
     for i in range(count):
         result.append(descriptions[i] if i < len(descriptions) else "")
     return result
+
+async def call_webhook(post_id: str, results: Dict[str, Any]):
+    """에이전트 작업 완료 후 웹훅 API 호출"""
+    webhook_url = "https://medisales-u45006.vm.elestio.app/webhook/6f545985-77e3-4ee9-8dbf-85ec1d408183"
+    
+    try:
+        payload = {
+            "post_id": post_id,
+            "status": "agent_completed",  # 에이전트 작업 완료 상태
+            "stage": "agent_processing_done",  # 현재 단계
+            "results": results,
+            "timestamp": datetime.now().isoformat(),
+            "next_stage": "html_conversion",  # 다음 단계
+            "workflow_id": "medicontent_autoblog_QA_manual"  # 워크플로우 식별자
+        }
+        
+        async with aiohttp.ClientSession() as session:
+            async with session.post(webhook_url, json=payload) as response:
+                if response.status == 200:
+                    response_data = await response.json()
+                    logger.info(f"웹훅 호출 성공: {post_id}, 응답: {response_data}")
+                    
+                    # n8n 응답에서 완료 상태 확인
+                    if response_data.get('status') == 'completed':
+                        logger.info(f"n8n 워크플로우 완료 확인: {post_id}")
+                        await handle_workflow_completion(post_id, response_data)
+                    
+                    return response_data
+                else:
+                    logger.warning(f"웹훅 호출 실패 (상태 코드: {response.status}): {post_id}")
+                    return None
+                    
+    except Exception as e:
+        logger.error(f"웹훅 호출 중 오류 발생: {str(e)}")
+        # 웹훅 호출 실패는 전체 프로세스를 중단시키지 않음
+        return None
 
 async def get_post_data_request(post_id: str) -> Optional[Dict[str, Any]]:
     """Post Data Requests 테이블에서 Post ID로 데이터를 조회합니다."""
@@ -255,6 +292,17 @@ async def process_post_data_request(post_id: str) -> Dict[str, Any]:
         
         # 9단계: Medicontent Posts 상태를 '리걸케어 작업 중'으로 업데이트
         await update_medicontent_post_status(post_id, '리걸케어 작업 중')
+        
+        # 10단계: 웹훅 API 호출
+        logger.info("Step 8: 웹훅 API 호출...")
+        webhook_response = await call_webhook(post_id, results)
+        
+        # 11단계: n8n 응답 확인 및 완료 처리
+        if webhook_response and webhook_response.get('status') == 'completed':
+            logger.info("n8n 워크플로우 완료 확인됨")
+            # 여기서 다음 작업을 진행할 수 있습니다
+        else:
+            logger.info("n8n 워크플로우 진행 중 또는 응답 대기 중")
         
         return {
             "status": "success",
