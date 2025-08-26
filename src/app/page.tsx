@@ -8,10 +8,7 @@ import { Upload, Send, FileText, CheckCircle, XCircle, X, RefreshCw, Play, Info 
     const AIRTABLE_BASE_ID = 'appa5Q0PYdL5VY3RK';
     
     // API 설정
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 
-        (process.env.NODE_ENV === 'production' 
-            ? 'https://medicontents-be-u45006.vm.elestio.app' 
-            : 'http://localhost:8000');
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://medicontents-be-u45006.vm.elestio.app';
 
 // 탭 타입 정의
 type TabType = 'review' | 'manual' | 'auto';
