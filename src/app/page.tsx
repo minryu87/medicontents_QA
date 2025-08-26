@@ -183,11 +183,25 @@ export default function Home() {
         etcReview: ''
     });
     const [isSavingQA, setIsSavingQA] = useState(false);
-    const [reviewerOptions, setReviewerOptions] = useState<string[]>([
-        'YB', 'Min', 'Hani', 'Hyuni', 'Naten'
-    ]);
+    const [savedFields, setSavedFields] = useState<Set<string>>(new Set());
+    const [reviewerOptions, setReviewerOptions] = useState<string[]>(() => {
+        // localStorage에서 저장된 검토자 목록 불러오기
+        const saved = localStorage.getItem('reviewerOptions');
+        if (saved) {
+            return JSON.parse(saved);
+        }
+        // 기본 검토자 목록
+        return ['YB', 'Min', 'Hani', 'Hyuni', 'Naten'];
+    });
     const [showNewReviewerInput, setShowNewReviewerInput] = useState(false);
     const [newReviewerName, setNewReviewerName] = useState('');
+    
+    // 검색 및 필터 상태
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'incomplete'>('all');
+    const [filterReviewer, setFilterReviewer] = useState<string>('');
+    const [filterContentScore, setFilterContentScore] = useState<string>('');
+    const [filterLegalScore, setFilterLegalScore] = useState<string>('');
     
     // 폼 데이터 상태
     const [formData, setFormData] = useState<FormData>({
@@ -208,7 +222,12 @@ export default function Home() {
     // 신규 검토자 추가
     const addNewReviewer = () => {
         if (newReviewerName.trim() && !reviewerOptions.includes(newReviewerName.trim())) {
-            setReviewerOptions(prev => [...prev, newReviewerName.trim()].sort());
+            const newOptions = [...reviewerOptions, newReviewerName.trim()].sort();
+            setReviewerOptions(newOptions);
+            
+            // localStorage에 저장
+            localStorage.setItem('reviewerOptions', JSON.stringify(newOptions));
+            
             setQaData(prev => ({ ...prev, reviewer: newReviewerName.trim() }));
             setNewReviewerName('');
             setShowNewReviewerInput(false);
@@ -267,10 +286,22 @@ export default function Home() {
             
             await updatePostQA(selectedPost.id, updateFields);
             
-            // 목록 새로고침
-            await loadCompletedPosts();
+            // 저장된 필드 표시
+            setSavedFields(prev => {
+                const newSet = new Set(prev);
+                newSet.add(type);
+                return newSet;
+            });
             
-            alert('저장되었습니다.');
+            // 3초 후 저장 완료 표시 제거
+            setTimeout(() => {
+                setSavedFields(prev => {
+                    const newSet = new Set(prev);
+                    newSet.delete(type);
+                    return newSet;
+                });
+            }, 3000);
+            
         } catch (error) {
             console.error('QA 데이터 저장 실패:', error);
             alert('저장에 실패했습니다.');
@@ -282,6 +313,7 @@ export default function Home() {
     // 포스팅 선택 핸들러
     const handlePostSelect = (post: any) => {
         setSelectedPost(post);
+        setSavedFields(new Set()); // 저장 상태 초기화
         
         // 선택된 포스팅을 상단으로 스크롤
         const postElement = document.getElementById(`post-${post.id}`);
@@ -291,12 +323,67 @@ export default function Home() {
     };
 
     // 점수에 따른 색상 반환
-    const getScoreColor = (contentScore: number, legalScore: number) => {
+    const getScoreColor = (contentScore: number, legalScore: number, hasQA: boolean) => {
+        // QA가 완료되지 않은 경우 기본 색상
+        if (!hasQA) return 'bg-white border-gray-200';
+        
+        // QA가 완료된 경우 점수에 따른 색상
         if (contentScore <= 1 || legalScore <= 1) return 'bg-red-50 border-red-200';
         if (contentScore <= 3 || legalScore <= 3) return 'bg-yellow-50 border-yellow-200';
         if (contentScore >= 4 && legalScore >= 4) return 'bg-green-50 border-green-200';
         return 'bg-white border-gray-200';
     };
+
+    // 필터링된 포스팅 목록
+    const filteredPosts = completedPosts.filter(post => {
+        const fields = post.fields;
+        const postId = fields['Post Id'] || '';
+        const title = fields.Title || '';
+        const hasQA = fields.QA_yn || false;
+        const reviewer = fields.QA_by || '';
+        const contentScore = fields.QA_content_score || 0;
+        const legalScore = fields.QA_legal_score || 0;
+        
+        // 검색어 필터
+        const matchesSearch = searchTerm === '' || 
+            postId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            title.toLowerCase().includes(searchTerm.toLowerCase());
+        
+        // 상태 필터
+        let matchesStatus = true;
+        if (filterStatus === 'completed') {
+            matchesStatus = hasQA;
+        } else if (filterStatus === 'incomplete') {
+            matchesStatus = !hasQA;
+        }
+        
+        // 검토자 필터
+        const matchesReviewer = filterReviewer === '' || reviewer === filterReviewer;
+        
+        // 컨텐츠 점수 필터
+        let matchesContentScore = true;
+        if (filterContentScore) {
+            const [min, max] = filterContentScore.split('-').map(Number);
+            if (max) {
+                matchesContentScore = contentScore >= min && contentScore <= max;
+            } else {
+                matchesContentScore = contentScore >= min;
+            }
+        }
+        
+        // 의료법 점수 필터
+        let matchesLegalScore = true;
+        if (filterLegalScore) {
+            const [min, max] = filterLegalScore.split('-').map(Number);
+            if (max) {
+                matchesLegalScore = legalScore >= min && legalScore <= max;
+            } else {
+                matchesLegalScore = legalScore >= min;
+            }
+        }
+        
+        return matchesSearch && matchesStatus && matchesReviewer && matchesContentScore && matchesLegalScore;
+    });
 
     const loadCompletedPosts = async () => {
         try {
@@ -484,23 +571,111 @@ export default function Home() {
                                 </button>
                             </div>
                             
+                            {/* 검색 및 필터 영역 */}
+                            <div className="mb-6 space-y-4">
+                                {/* 검색 */}
+                                <div>
+                                    <input
+                                        type="text"
+                                        placeholder="Post ID 또는 제목으로 검색..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        className="w-full p-2 border border-gray-300 rounded-md"
+                                    />
+                                </div>
+                                
+                                {/* 필터 */}
+                                <div className="grid grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            QA 상태
+                                        </label>
+                                        <select
+                                            value={filterStatus}
+                                            onChange={(e) => setFilterStatus(e.target.value as 'all' | 'completed' | 'incomplete')}
+                                            className="w-full p-2 border border-gray-300 rounded-md"
+                                        >
+                                            <option value="all">전체</option>
+                                            <option value="completed">QA 완료</option>
+                                            <option value="incomplete">QA 미완료</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            검토자
+                                        </label>
+                                        <select
+                                            value={filterReviewer}
+                                            onChange={(e) => setFilterReviewer(e.target.value)}
+                                            className="w-full p-2 border border-gray-300 rounded-md"
+                                        >
+                                            <option value="">전체</option>
+                                            {reviewerOptions.map((reviewer) => (
+                                                <option key={reviewer} value={reviewer}>
+                                                    {reviewer}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                {/* 점수 필터 */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            컨텐츠 점수
+                                        </label>
+                                        <select
+                                            value={filterContentScore}
+                                            onChange={(e) => setFilterContentScore(e.target.value)}
+                                            className="w-full p-2 border border-gray-300 rounded-md"
+                                        >
+                                            <option value="">전체</option>
+                                            <option value="1">1점</option>
+                                            <option value="2">2점</option>
+                                            <option value="3">3점</option>
+                                            <option value="4">4점</option>
+                                            <option value="5">5점</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            의료법 점수
+                                        </label>
+                                        <select
+                                            value={filterLegalScore}
+                                            onChange={(e) => setFilterLegalScore(e.target.value)}
+                                            className="w-full p-2 border border-gray-300 rounded-md"
+                                        >
+                                            <option value="">전체</option>
+                                            <option value="1">1점</option>
+                                            <option value="2">2점</option>
+                                            <option value="3">3점</option>
+                                            <option value="4">4점</option>
+                                            <option value="5">5점</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             {isLoading ? (
                                 <div className="text-center py-8">
                                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
                                     <p className="mt-2 text-gray-500">로딩 중...</p>
                                 </div>
-                            ) : completedPosts.length === 0 ? (
+                            ) : filteredPosts.length === 0 ? (
                                 <div className="text-center py-8 text-gray-500">
                                     <FileText size={48} className="mx-auto mb-4" />
-                                    <p>완료된 포스팅이 없습니다.</p>
+                                    <p>{completedPosts.length === 0 ? '완료된 포스팅이 없습니다.' : '검색 결과가 없습니다.'}</p>
                                 </div>
                             ) : (
                                 <div className="space-y-2">
-                                    {completedPosts.map((post) => {
+                                    {filteredPosts.map((post) => {
                                         const fields = post.fields;
                                         const contentScore = fields.QA_content_score || 0;
                                         const legalScore = fields.QA_legal_score || 0;
-                                        const scoreColor = getScoreColor(contentScore, legalScore);
+                                        const hasQA = fields.QA_yn || false;
+                                        const scoreColor = getScoreColor(contentScore, legalScore, hasQA);
                                         
                                         return (
                                             <div
@@ -515,8 +690,13 @@ export default function Home() {
                                             >
                                                 <div className="flex justify-between items-start">
                                                     <div className="flex-1">
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <span className="text-xs font-mono bg-gray-100 px-2 py-1 rounded text-gray-600">
+                                                                {fields['Post Id']}
+                                                            </span>
+                                                        </div>
                                                         <h4 className="font-medium truncate">
-                                                            {fields.Title || fields['Post Id']}
+                                                            {fields.Title || '제목 없음'}
                                                         </h4>
                                                         <p className="text-sm text-gray-500 mt-1">
                                                             {fields['Treatment Type']} • {fields.Status}
@@ -554,7 +734,12 @@ export default function Home() {
                                                 {/* 선택된 포스팅의 QA 검토 폼 */}
                                                 {selectedPost?.id === post.id && (
                                                     <div className="mt-4 pt-4 border-t border-gray-200">
-                                                        <h5 className="font-medium mb-3">QA 검토</h5>
+                                                        <div className="flex items-center justify-between mb-3">
+                                                            <h5 className="font-medium">QA 검토</h5>
+                                                            <span className="text-xs font-mono bg-blue-100 px-2 py-1 rounded text-blue-600">
+                                                                {fields['Post Id']}
+                                                            </span>
+                                                        </div>
                                                         
                                                         {/* 검토자 선택 */}
                                                         <div className="mb-4">
@@ -584,13 +769,17 @@ export default function Home() {
                                                                             + 신규 입력
                                                                         </option>
                                                                     </select>
-                                                                    <button
-                                                                        onClick={() => saveQAData('reviewer')}
-                                                                        disabled={isSavingQA || !qaData.reviewer}
-                                                                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400"
-                                                                    >
-                                                                        저장
-                                                                    </button>
+                                                                                                                                    <button
+                                                                    onClick={() => saveQAData('reviewer')}
+                                                                    disabled={isSavingQA || !qaData.reviewer}
+                                                                    className={`px-4 py-2 rounded transition-colors ${
+                                                                        savedFields.has('reviewer')
+                                                                            ? 'bg-green-500 text-white hover:bg-green-600'
+                                                                            : 'bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-400'
+                                                                    }`}
+                                                                >
+                                                                    {savedFields.has('reviewer') ? '저장완료' : '저장'}
+                                                                </button>
                                                                 </div>
                                                                 
                                                                 {/* 신규 검토자 입력 */}
@@ -660,9 +849,13 @@ export default function Home() {
                                                                     <button
                                                                         onClick={() => saveQAData('content')}
                                                                         disabled={isSavingQA || (!qaData.contentReview && qaData.contentScore === 0)}
-                                                                        className="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 disabled:bg-gray-400"
+                                                                        className={`px-3 py-1 text-white text-xs rounded transition-colors ${
+                                                                            savedFields.has('content')
+                                                                                ? 'bg-green-500 hover:bg-green-600'
+                                                                                : 'bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400'
+                                                                        }`}
                                                                     >
-                                                                        저장
+                                                                        {savedFields.has('content') ? '저장완료' : '저장'}
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -699,9 +892,13 @@ export default function Home() {
                                                                     <button
                                                                         onClick={() => saveQAData('legal')}
                                                                         disabled={isSavingQA || (!qaData.legalReview && qaData.legalScore === 0)}
-                                                                        className="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 disabled:bg-gray-400"
+                                                                        className={`px-3 py-1 text-white text-xs rounded transition-colors ${
+                                                                            savedFields.has('legal')
+                                                                                ? 'bg-green-500 hover:bg-green-600'
+                                                                                : 'bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400'
+                                                                        }`}
                                                                     >
-                                                                        저장
+                                                                        {savedFields.has('legal') ? '저장완료' : '저장'}
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -724,9 +921,13 @@ export default function Home() {
                                                                     <button
                                                                         onClick={() => saveQAData('etc')}
                                                                         disabled={isSavingQA || !qaData.etcReview}
-                                                                        className="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 disabled:bg-gray-400"
+                                                                        className={`px-3 py-1 text-white text-xs rounded transition-colors ${
+                                                                            savedFields.has('etc')
+                                                                                ? 'bg-green-500 hover:bg-green-600'
+                                                                                : 'bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400'
+                                                                        }`}
                                                                     >
-                                                                        저장
+                                                                        {savedFields.has('etc') ? '저장완료' : '저장'}
                                                                     </button>
                                                                 </div>
                                                             </div>
