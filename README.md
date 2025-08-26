@@ -74,6 +74,10 @@ python main.py
 
 ### Frontend (.env.local)
 ```
+# API 설정
+NEXT_PUBLIC_API_URL=https://medicontents-qa-u45006.vm.elestio.app
+
+# Airtable 설정
 AIRTABLE_API_KEY=pat6S8lzX8deRFTKC.0e92c4403cdc7878f8e61f815260852d4518a0b46fa3de2350e5e91f4f0f6af9
 AIRTABLE_BASE_ID=appa5Q0PYdL5VY3RK
 ```
@@ -249,10 +253,22 @@ docker run -p 3000:3000 medicontents-qa
 3. 자동 빌드 및 배포
 
 ### 환경 변수 설정 (배포 시)
-- `AIRTABLE_API_KEY`: Airtable API 키
-- `AIRTABLE_BASE_ID`: Airtable Base ID
-- `GEMINI_API_KEY`: Gemini API 키 (백엔드)
-- `AGENTS_BASE_PATH`: Agent 파일 경로 (백엔드)
+
+#### 프론트엔드 (medicontents_QA)
+- `NEXT_PUBLIC_API_URL`: https://medicontents-be-u45006.vm.elestio.app
+- `AIRTABLE_API_KEY`: pat6S8lzX8deRFTKC.0e92c4403cdc7878f8e61f815260852d4518a0b46fa3de2350e5e91f4f0f6af9
+- `AIRTABLE_BASE_ID`: appa5Q0PYdL5VY3RK
+
+#### 백엔드 (medicontents_BE)
+- `AIRTABLE_API_KEY`: pat6S8lzX8deRFTKC.0e92c4403cdc7878f8e61f815260852d4518a0b46fa3de2350e5e91f4f0f6af9
+- `AIRTABLE_BASE_ID`: appa5Q0PYdL5VY3RK
+- `GEMINI_API_KEY`: your_actual_gemini_api_key_here
+- `AGENTS_BASE_PATH`: /app/agents
+
+### 배포 시 주의사항
+1. **백엔드 API 별도 배포 필요**: FastAPI 백엔드는 별도로 배포해야 함
+2. **CORS 설정**: 백엔드에서 프론트엔드 도메인 허용 필요
+3. **환경 변수**: Elestio에서 환경 변수 설정 필요
 
 ## 파일 구조
 

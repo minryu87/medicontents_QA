@@ -3,9 +3,15 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import { Upload, Send, FileText, CheckCircle, XCircle, X, RefreshCw, Play, Info } from 'lucide-react';
 
-// Airtable 설정
-const AIRTABLE_API_KEY = 'pat6S8lzX8deRFTKC.0e92c4403cdc7878f8e61f815260852d4518a0b46fa3de2350e5e91f4f0f6af9';
-const AIRTABLE_BASE_ID = 'appa5Q0PYdL5VY3RK';
+    // Airtable 설정
+    const AIRTABLE_API_KEY = 'pat6S8lzX8deRFTKC.0e92c4403cdc7878f8e61f815260852d4518a0b46fa3de2350e5e91f4f0f6af9';
+    const AIRTABLE_BASE_ID = 'appa5Q0PYdL5VY3RK';
+    
+    // API 설정
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 
+        (process.env.NODE_ENV === 'production' 
+            ? 'https://medicontents-be-u45006.vm.elestio.app' 
+            : 'http://localhost:8000');
 
 // 탭 타입 정의
 type TabType = 'review' | 'manual' | 'auto';
@@ -473,7 +479,7 @@ export default function Home() {
                                             const postId = post.fields['Post ID'];
                                             if (postId) {
                                                 try {
-                                                    const logResponse = await fetch(`http://localhost:8000/api/get-logs/${postId}`);
+                                                    const logResponse = await fetch(`${API_BASE_URL}/api/get-logs/${postId}`);
                                                     if (logResponse.ok) {
                                                         const logData = await logResponse.json();
                                                         if (logData.logs && logData.logs.length > 0) {
@@ -841,7 +847,7 @@ export default function Home() {
     // 래덤 데이터 불러오기
     const loadRandomData = async () => {
         try {
-            const response = await fetch('http://localhost:8000/api/random-post-data');
+            const response = await fetch(`${API_BASE_URL}/api/random-post-data`);
             if (response.ok) {
                 const data = await response.json();
                 if (data.status === 'success' && data.data) {
@@ -1176,7 +1182,7 @@ export default function Home() {
             const startLogPolling = () => {
                 const pollInterval = setInterval(async () => {
                     try {
-                        const logResponse = await fetch(`http://localhost:8000/api/get-logs/${postId}`);
+                                                                        const logResponse = await fetch(`${API_BASE_URL}/api/get-logs/${postId}`);
                         if (logResponse.ok) {
                             const logData = await logResponse.json();
                             if (logData.logs && logData.logs.length > 0) {
@@ -1198,7 +1204,7 @@ export default function Home() {
             
             const pollInterval = startLogPolling();
             
-            const agentResponse = await fetch('http://localhost:8000/api/process-post', {
+            const agentResponse = await fetch(`${API_BASE_URL}/api/process-post`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -1261,7 +1267,7 @@ export default function Home() {
                     
                     try {
                         addLog(`n8n 완료 확인 시도 ${attempts}/${maxAttempts}...`);
-                        const completionResponse = await fetch(`http://localhost:8000/api/n8n-completion`, {
+                        const completionResponse = await fetch(`${API_BASE_URL}/api/n8n-completion`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
