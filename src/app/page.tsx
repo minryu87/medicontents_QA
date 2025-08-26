@@ -491,11 +491,15 @@ export default function Home() {
                                         for (const post of newPosts) {
                                             const postId = post.fields['Post ID'];
                                             if (postId) {
+                                                addLog(`🔍 Post ID ${postId} 로그 확인 중...`);
+                                                
                                                 try {
                                                     const logResponse = await fetch(`${API_BASE_URL}/api/get-logs/${postId}`);
                                                     if (logResponse.ok) {
                                                         const logData = await logResponse.json();
                                                         if (logData.logs && logData.logs.length > 0) {
+                                                            addLog(`📝 Post ID ${postId}에서 ${logData.logs.length}개의 로그 발견`);
+                                                            
                                                             // 새로운 로그만 처리 (중복 방지)
                                                             const newLogs = logData.logs.filter((log: any) => {
                                                                 const logKey = `${postId}_${log.timestamp}_${log.message}`;
@@ -505,6 +509,10 @@ export default function Home() {
                                                                 processedLogs.add(logKey);
                                                                 return true;
                                                             });
+                                                            
+                                                            if (newLogs.length > 0) {
+                                                                addLog(`🆕 Post ID ${postId}에서 ${newLogs.length}개의 새 로그 발견`);
+                                                            }
                                                             
                                                             // 새로운 로그들을 추가 (Agent 작업 진행 상황만)
                                                             newLogs.forEach((log: any) => {
@@ -517,10 +525,14 @@ export default function Home() {
                                                                     }
                                                                 }
                                                             });
+                                                        } else {
+                                                            addLog(`📭 Post ID ${postId}에서 로그가 없습니다.`);
                                                         }
+                                                    } else {
+                                                        addLog(`❌ Post ID ${postId} 로그 조회 실패: ${logResponse.status}`);
                                                     }
                                                 } catch (error) {
-                                                    // 개별 Post ID 로그 폴링 실패는 무시
+                                                    addLog(`❌ Post ID ${postId} 로그 폴링 오류: ${error}`);
                                                 }
                                             }
                                         }
@@ -2241,28 +2253,64 @@ export default function Home() {
                                 <p className="text-xs text-gray-500 mt-2">1-100개까지 생성 가능합니다. (10개 단위로 슬라이더 조정 가능)</p>
                             </div>
 
-                            {/* 자동 생성 버튼 */}
-                            <button
-                                onClick={handleAutoGeneration}
-                                disabled={autoProcessing}
-                                className={`w-full py-3 px-4 rounded-md font-medium transition-colors ${
-                                    autoProcessing
-                                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                        : 'bg-blue-500 text-white hover:bg-blue-600'
-                                }`}
-                            >
-                                {autoProcessing ? (
-                                    <>
-                                        <RefreshCw className="inline-block w-4 h-4 mr-2 animate-spin" />
-                                        자동 생성 중...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Play className="inline-block w-4 h-4 mr-2" />
-                                        자동 생성하기
-                                    </>
-                                )}
-                            </button>
+                            {/* 자동 생성 버튼들 */}
+                            <div className="space-y-2">
+                                <button
+                                    onClick={handleAutoGeneration}
+                                    disabled={autoProcessing}
+                                    className={`w-full py-3 px-4 rounded-md font-medium transition-colors ${
+                                        autoProcessing
+                                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                            : 'bg-blue-500 text-white hover:bg-blue-600'
+                                    }`}
+                                >
+                                    {autoProcessing ? (
+                                        <>
+                                            <RefreshCw className="inline-block w-4 h-4 mr-2 animate-spin" />
+                                            자동 생성 중...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Play className="inline-block w-4 h-4 mr-2" />
+                                            자동 생성하기
+                                        </>
+                                    )}
+                                </button>
+                                
+                                <button
+                                    onClick={async () => {
+                                        const postId = prompt('테스트할 Post ID를 입력하세요 (예: QA_xxxxx):');
+                                        if (postId) {
+                                            addLog(`🧪 Post ID ${postId} 수동 에이전트 호출 테스트...`);
+                                            try {
+                                                const response = await fetch(`${API_BASE_URL}/api/process-post`, {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({
+                                                        post_id: postId
+                                                    })
+                                                });
+                                                
+                                                if (response.ok) {
+                                                    const result = await response.json();
+                                                    addLog(`✅ 수동 에이전트 호출 성공: ${JSON.stringify(result)}`);
+                                                } else {
+                                                    const errorText = await response.text();
+                                                    addLog(`❌ 수동 에이전트 호출 실패: ${response.status} - ${errorText}`);
+                                                }
+                                            } catch (error) {
+                                                addLog(`❌ 수동 에이전트 호출 오류: ${error}`);
+                                            }
+                                        }
+                                    }}
+                                    className="w-full bg-orange-600 text-white py-2 px-4 rounded-md hover:bg-orange-700 flex items-center justify-center space-x-2"
+                                >
+                                    <Info size={16} />
+                                    <span>수동 에이전트 테스트</span>
+                                </button>
+                            </div>
 
                             {/* 진행 상황 표시 */}
                             {autoProcessing && (
