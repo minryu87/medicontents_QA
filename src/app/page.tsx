@@ -1367,27 +1367,25 @@ export default function Home() {
                                 const medicontentStatus = medicontentData.records?.[0]?.fields?.Status || '';
                                 addLog(`📊 Medicontent Posts Status: "${medicontentStatus}"`);
                                 
-                                // 두 테이블 모두 완료 상태인지 확인
-                                if (postDataStatus === '완료' && medicontentStatus === '작업 완료') {
-                                    addLog('✅ 모든 작업 완료 확인됨');
+                                // 두 테이블 모두 완료 상태인지 확인 (조건 완화)
+                                if (postDataStatus === '완료') {
+                                    addLog('✅ Post Data Requests 완료 확인됨');
                                     
-                                    // 완료된 포스팅을 자동으로 선택하여 HTML 렌더링
-                                    setSelectedPost(medicontentData.records[0]);
-                                    addLog('완료된 포스팅을 우측 패널에 표시합니다.');
-                                    
-                                    isCompleted = true;
-                                    clearInterval(statusPollInterval);
+                                    // Medicontent Posts도 확인하되, 완료 조건 완화
+                                    if (medicontentStatus === '작업 완료' || medicontentStatus === '완료') {
+                                        addLog('✅ Medicontent Posts도 완료 확인됨');
+                                        
+                                        // 완료된 포스팅을 자동으로 선택하여 HTML 렌더링
+                                        setSelectedPost(medicontentData.records[0]);
+                                        addLog('완료된 포스팅을 우측 패널에 표시합니다.');
+                                        
+                                        isCompleted = true;
+                                        clearInterval(statusPollInterval);
+                                    } else {
+                                        addLog(`⏳ Medicontent Posts Status: "${medicontentStatus}" - 대기 중...`);
+                                    }
                                 } else {
-                                    addLog(`⏳ 작업 진행 중... (${attempts}/${maxAttempts})`);
-                                    addLog(`🔍 상태 비교: Post Data="${postDataStatus}" === "완료" && Medicontent="${medicontentStatus}" === "작업 완료"`);
-                                    
-                                    // 상태가 예상과 다른 경우 상세 정보 출력
-                                    if (postDataStatus !== '완료') {
-                                        addLog(`⚠️ Post Data Status가 "완료"가 아님: "${postDataStatus}"`);
-                                    }
-                                    if (medicontentStatus !== '작업 완료') {
-                                        addLog(`⚠️ Medicontent Status가 "작업 완료"가 아님: "${medicontentStatus}"`);
-                                    }
+                                    addLog(`⏳ Post Data Requests Status: "${postDataStatus}" - 대기 중...`);
                                 }
                             } else {
                                 addLog(`❌ Medicontent Posts 조회 실패: ${medicontentResponse.status}`);
