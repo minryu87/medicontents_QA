@@ -1201,10 +1201,12 @@ export default function Home() {
             setIsProcessing(true);
             setLogs([]);
             addLog('포스팅 생성 시작...');
+            console.log('🚀 [1] 생성 시작 탐지됨');
             
             const postId = generatePostId();
             setCurrentPostId(postId);
             addLog(`Post ID 생성: ${postId}`);
+            console.log('🆔 [2] Post ID 탐지됨:', postId);
 
             // 1. Medicontent Posts 테이블에 데이터 생성
             addLog('Medicontent Posts 테이블에 데이터 생성 중...');
@@ -1264,6 +1266,7 @@ export default function Home() {
 
             // 4. Agent 실행
             addLog('AI Agent 실행 시작...');
+            console.log('🤖 [3] 에이전트 시작 탐지됨');
             
             // 실시간 로그 폴링 시작
             const startLogPolling = () => {
@@ -1305,11 +1308,13 @@ export default function Home() {
                 
                 const agentData = await agentResponse.json();
                 addLog('AI Agent 실행 완료');
+                console.log('✅ [4] 에이전트 종료 탐지됨:', agentData);
                 
                 // Agent 응답에서 완료 상태 확인
                 if (agentData.status === 'success') {
                     addLog('✅ Agent 완료 상태 감지 - 전체 완료로 판단');
                     addLog(`📊 Agent 응답: status=${agentData.status}, post_id=${agentData.post_id}`);
+                    console.log('🎯 [5] 렌더링 시도 시작 - Agent 완료 상태 감지됨');
                     
                     // 완료된 포스팅을 자동으로 선택하여 HTML 렌더링
                     try {
@@ -1335,9 +1340,11 @@ export default function Home() {
                                 addLog('완료된 포스팅을 우측 패널에 표시합니다.');
                                 
                                 // 디버깅: selectedPost 상태 확인
-                                console.log('selectedPost 업데이트:', postRecord);
+                                console.log('🎯 [5] 렌더링 완료 - selectedPost 업데이트됨:', postRecord);
+                                console.log('🎯 [5] 렌더링 완료 - selectedPost.fields.Content 존재:', !!postRecord.fields.Content);
                             } else {
                                 addLog('⚠️ Airtable에서 포스팅 레코드를 찾을 수 없습니다.');
+                                console.log('❌ [5] 렌더링 실패 - Airtable에서 레코드를 찾을 수 없음');
                             }
                         } else {
                             addLog(`❌ Airtable 조회 실패: ${medicontentResponse.status}`);
