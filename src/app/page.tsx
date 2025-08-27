@@ -2502,16 +2502,29 @@ export default function Home() {
                                             wordWrap: 'break-word'
                                         }}
                                         dangerouslySetInnerHTML={{ 
-                                            __html: selectedPost.fields.Content.replace(
-                                                /<img[^>]+src="([^"]*)"[^>]*>/gi,
-                                                (match: string, src: string) => {
-                                                    // 상대 경로나 로컬 경로인 경우 기본 이미지로 대체
-                                                    if (src.startsWith('/') || src.startsWith('./') || src.startsWith('../') || !src.startsWith('http')) {
-                                                        return match.replace(src, 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5YWFhYSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlPC90ZXh0Pjwvc3ZnPg==');
+                                            __html: selectedPost.fields.Content
+                                                .replace(
+                                                    /<img[^>]+src="([^"]*)"[^>]*>/gi,
+                                                    (match: string, src: string) => {
+                                                        // 상대 경로나 로컬 경로인 경우 기본 이미지로 대체
+                                                        if (src.startsWith('/') || src.startsWith('./') || src.startsWith('../') || !src.startsWith('http')) {
+                                                            return match.replace(src, 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5YWFhYSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlPC90ZXh0Pjwvc3ZnPg==');
+                                                        }
+                                                        return match;
                                                     }
-                                                    return match;
-                                                }
-                                            )
+                                                )
+                                                .replace(
+                                                    /body\s*\{[^}]*max-width:\s*768px[^}]*\}/gi,
+                                                    'body { font-family: \'Noto Sans KR\', sans-serif; color: #222; line-height: 1.62; margin: 0; padding: 24px 20px; }'
+                                                )
+                                                .replace(
+                                                    /max-width:\s*768px/gi,
+                                                    'max-width: 100%'
+                                                )
+                                                .replace(
+                                                    /margin:\s*0\s+auto/gi,
+                                                    'margin: 0'
+                                                )
                                         }}
                                     />
                                 ) : (
