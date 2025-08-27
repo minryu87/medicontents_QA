@@ -1304,84 +1304,102 @@ export default function Home() {
                     addLog(`📊 Agent 응답: status=${agentData.status}, post_id=${agentData.post_id}`);
                     console.log('⏳ Agent 완료됨 - 웹훅 감지 대기 중');
                     
-                    // 웹훅 감지 로직만 활성화
-                    addLog('🔍 웹훅 응답 감지 대기 중...');
-                    let attempts = 0;
-                    const maxAttempts = 30; // 1분 대기 (30회 × 2초)
+                    // 웹훅 호출 및 응답 감지 로직
+                    addLog('🔍 n8n 웹훅 호출 중...');
                     
-                    const webhookPollInterval = setInterval(async () => {
-                        attempts++;
+                    try {
+                        // 1. 웹훅 한 번 호출
+                        const webhookResponse = await fetch(`https://medisales-u45006.vm.elestio.app/webhook/6f545985-77e3-4ee9-8dbf-85ec1d408183`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                post_id: postId
+                            })
+                        });
                         
-                        try {
-                            addLog(`웹훅 감지 시도 ${attempts}/${maxAttempts}...`);
+                        if (webhookResponse.ok) {
+                            addLog('✅ n8n 웹훅 호출 성공');
                             
-                            // 웹훅 응답 확인 (간단한 방식)
-                            const webhookResponse = await fetch(`https://medisales-u45006.vm.elestio.app/webhook/6f545985-77e3-4ee9-8dbf-85ec1d408183`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    post_id: postId,
-                                    action: 'check_status'
-                                })
-                            });
+                            // 2. 웹훅 응답 확인 (정기적으로)
+                            let attempts = 0;
+                            const maxAttempts = 30; // 1분 대기 (30회 × 2초)
                             
-                            if (webhookResponse.ok) {
-                                const webhookData = await webhookResponse.text();
-                                addLog(`웹훅 응답: ${webhookData}`);
+                            const webhookPollInterval = setInterval(async () => {
+                                attempts++;
                                 
-                                if (webhookData.includes('finished')) {
-                                    addLog('✅ 웹훅 finished 응답 감지됨!');
-                                    console.log('🎯 [5] 렌더링 시도 시작 - 웹훅 finished 응답 감지됨');
+                                try {
+                                    addLog(`웹훅 응답 확인 시도 ${attempts}/${maxAttempts}...`);
                                     
-                                    // 즉시 완료 처리
-                                    try {
-                                        addLog('🔍 Airtable에서 완료된 포스팅 조회 중...');
-                                        const medicontentResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts?filterByFormula={Post%20Id}='${postId}'`, {
-                                            headers: {
-                                                'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-                                                'Content-Type': 'application/json'
-                                            }
-                                        });
+                                    // 웹훅 응답 확인 (GET 요청으로 상태 확인)
+                                    const statusResponse = await fetch(`https://medisales-u45006.vm.elestio.app/webhook/6f545985-77e3-4ee9-8dbf-85ec1d408183/status?post_id=${postId}`, {
+                                        method: 'GET'
+                                    });
+                                    
+                                    if (statusResponse.ok) {
+                                        const statusData = await statusResponse.text();
+                                        addLog(`웹훅 상태: ${statusData}`);
                                         
-                                        if (medicontentResponse.ok) {
-                                            const medicontentData = await medicontentResponse.json();
-                                            if (medicontentData.records && medicontentData.records.length > 0) {
-                                                const postRecord = medicontentData.records[0];
-                                                setSelectedPost(postRecord);
-                                                addLog('✅ selectedPost 상태 업데이트 완료');
-                                                addLog('완료된 포스팅을 우측 패널에 표시합니다.');
+                                        if (statusData.includes('finished')) {
+                                            addLog('✅ 웹훅 finished 응답 감지됨!');
+                                            console.log('🎯 [5] 렌더링 시도 시작 - 웹훅 finished 응답 감지됨');
+                                            
+                                            // 즉시 완료 처리
+                                            try {
+                                                addLog('🔍 Airtable에서 완료된 포스팅 조회 중...');
+                                                const medicontentResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts?filterByFormula={Post%20Id}='${postId}'`, {
+                                                    headers: {
+                                                        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+                                                        'Content-Type': 'application/json'
+                                                    }
+                                                });
                                                 
-                                                console.log('🎯 [5] 렌더링 완료 - selectedPost 업데이트됨:', postRecord);
-                                                console.log('🎯 [5] 렌더링 완료 - selectedPost.fields.Content 존재:', !!postRecord.fields.Content);
-                                                
-                                                clearInterval(webhookPollInterval);
-                                                return;
+                                                if (medicontentResponse.ok) {
+                                                    const medicontentData = await medicontentResponse.json();
+                                                    if (medicontentData.records && medicontentData.records.length > 0) {
+                                                        const postRecord = medicontentData.records[0];
+                                                        setSelectedPost(postRecord);
+                                                        addLog('✅ selectedPost 상태 업데이트 완료');
+                                                        addLog('완료된 포스팅을 우측 패널에 표시합니다.');
+                                                        
+                                                        console.log('🎯 [5] 렌더링 완료 - selectedPost 업데이트됨:', postRecord);
+                                                        console.log('🎯 [5] 렌더링 완료 - selectedPost.fields.Content 존재:', !!postRecord.fields.Content);
+                                                        
+                                                        clearInterval(webhookPollInterval);
+                                                        return;
+                                                    }
+                                                }
+                                            } catch (error) {
+                                                addLog(`❌ 즉시 완료 처리 중 오류: ${error}`);
                                             }
                                         }
-                                    } catch (error) {
-                                        addLog(`❌ 즉시 완료 처리 중 오류: ${error}`);
+                                    }
+                                    
+                                    // 타임아웃 체크
+                                    if (attempts >= maxAttempts) {
+                                        addLog('❌ 웹훅 응답 타임아웃');
+                                        clearInterval(webhookPollInterval);
+                                    }
+                                    
+                                } catch (error) {
+                                    addLog(`웹훅 상태 확인 중 오류: ${error}`);
+                                    attempts++;
+                                    
+                                    if (attempts >= maxAttempts) {
+                                        addLog('❌ 웹훅 응답 타임아웃');
+                                        clearInterval(webhookPollInterval);
                                     }
                                 }
-                            }
+                            }, 2000); // 2초마다 확인
                             
-                            // 타임아웃 체크
-                            if (attempts >= maxAttempts) {
-                                addLog('❌ 웹훅 감지 타임아웃');
-                                clearInterval(webhookPollInterval);
-                            }
-                            
-                        } catch (error) {
-                            addLog(`웹훅 감지 중 오류: ${error}`);
-                            attempts++;
-                            
-                            if (attempts >= maxAttempts) {
-                                addLog('❌ 웹훅 감지 타임아웃');
-                                clearInterval(webhookPollInterval);
-                            }
+                        } else {
+                            addLog(`❌ n8n 웹훅 호출 실패: ${webhookResponse.status}`);
                         }
-                    }, 2000); // 2초마다 확인
+                        
+                    } catch (error) {
+                        addLog(`❌ n8n 웹훅 호출 중 오류: ${error}`);
+                    }
                 }
                 
                 // 로그 처리
