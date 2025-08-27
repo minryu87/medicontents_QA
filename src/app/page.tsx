@@ -1287,6 +1287,7 @@ export default function Home() {
                     // 백엔드 로그 폴링 시작 (INFO:main: 로그만 출력)
                     let attempts = 0;
                     const maxAttempts = 300; // 10분 대기 (300회 × 2초)
+                    let processedLogs = new Set(); // 중복 로그 방지
                     
                     addLog(`🚀 Agent 실행 시작: ${agentData.message || '처리 중...'}`);
                     
@@ -1299,18 +1300,21 @@ export default function Home() {
                             if (logResponse.ok) {
                                 const logData = await logResponse.json();
                                 if (logData.logs && logData.logs.length > 0) {
-                                    // INFO:main: 로그만 출력
-                                    logData.logs.forEach((log: any) => {
+                                    // 로그를 최신순으로 정렬 (최신이 위에 오도록)
+                                    const sortedLogs = logData.logs.sort((a: any, b: any) => 
+                                        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+                                    );
+                                    
+                                    // INFO:main: 로그만 출력 (중복 방지)
+                                    sortedLogs.forEach((log: any) => {
                                         if (log.message && log.message.startsWith('INFO:main:')) {
-                                            addLog(log.message);
+                                            const logKey = `${log.timestamp}-${log.message}`;
+                                            if (!processedLogs.has(logKey)) {
+                                                processedLogs.add(logKey);
+                                                addLog(log.message);
+                                            }
                                         }
                                     });
-                                    
-                                    // 디버깅: 받은 로그 개수와 내용 확인
-                                    addLog(`📋 받은 로그 개수: ${logData.logs.length}`);
-                                    if (logData.logs.length > 0) {
-                                        addLog(`📋 첫 번째 로그: ${logData.logs[0].message}`);
-                                    }
                                 }
                             }
                             
