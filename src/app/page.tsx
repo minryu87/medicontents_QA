@@ -1305,9 +1305,24 @@ export default function Home() {
                                         new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
                                     );
                                     
-                                    // INFO:main: 로그만 출력 (중복 방지)
+                                    // 핵심 진행 로그만 출력 (중복 방지)
                                     sortedLogs.forEach((log: any) => {
-                                        if (log.message && log.message.startsWith('INFO:main:')) {
+                                        if (log.message && (
+                                            // Step 1~8 로그
+                                            log.message.includes('Step 1:') ||
+                                            log.message.includes('Step 2:') ||
+                                            log.message.includes('Step 3:') ||
+                                            log.message.includes('Step 4:') ||
+                                            log.message.includes('Step 5:') ||
+                                            log.message.includes('Step 6:') ||
+                                            log.message.includes('Step 7:') ||
+                                            log.message.includes('Step 8:') ||
+                                            // n8n 완료 관련 로그
+                                            log.message.includes('n8n 완료 요청 수신') ||
+                                            log.message.includes('후속 작업 완료') ||
+                                            // 처리 시작 로그
+                                            log.message.includes('Post ID') && log.message.includes('에 대한 처리 시작')
+                                        )) {
                                             const logKey = `${log.timestamp}-${log.message}`;
                                             if (!processedLogs.has(logKey)) {
                                                 processedLogs.add(logKey);
