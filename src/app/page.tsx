@@ -77,7 +77,7 @@ const getCompletedPosts = async (): Promise<any[]> => {
 
 // 포스팅 업데이트 (QA 검토 정보 저장)
 const updatePostQA = async (postId: string, qaData: any): Promise<any> => {
-    console.log('업데이트할 데이터:', { postId, qaData });
+            // console.log('업데이트할 데이터:', { postId, qaData });
     
     const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts`, {
         method: 'PATCH',
@@ -139,7 +139,7 @@ const uploadImageToAirtable = async (file: File, recordId: string, fieldName: st
         }
 
         const result = await response.json();
-        console.log('이미지 업로드 성공:', result);
+        // console.log('이미지 업로드 성공:', result);
         return result.id;
     } catch (error) {
         console.error('이미지 업로드 오류:', error);
@@ -341,15 +341,15 @@ export default function Home() {
             if (response.ok) {
                 // 응답 텍스트를 먼저 확인
                 const responseText = await response.text();
-                console.log('웹훅 응답 텍스트:', responseText);
+                // console.log('웹훅 응답 텍스트:', responseText);
                 
                 // JSON 응답 파싱 시도
                 try {
                     const result = JSON.parse(responseText);
-                    console.log('웹훅 응답 파싱 성공:', result);
+                    // console.log('웹훅 응답 파싱 성공:', result);
                     return result;
                 } catch (jsonError) {
-                    console.log('웹훅 응답이 JSON이 아님, 텍스트 응답으로 처리');
+                    // console.log('웹훅 응답이 JSON이 아님, 텍스트 응답으로 처리');
                     
                     // 텍스트 응답을 JSON 형태로 변환
                     return {
