@@ -1268,7 +1268,7 @@ export default function Home() {
             addLog('AI Agent 실행 시작...');
             console.log('🤖 [3] 에이전트 시작 탐지됨');
             
-            // 실시간 로그 폴링 시작
+            // 실시간 로그 폴링 시작 (비활성화)
             const startLogPolling = () => {
                 const pollInterval = setInterval(async () => {
                     try {
@@ -1276,7 +1276,8 @@ export default function Home() {
                         if (logResponse.ok) {
                             const logData = await logResponse.json();
                             if (logData.logs && logData.logs.length > 0) {
-                                // 새로운 로그들을 간단한 로그에도 추가
+                                // 새로운 로그들을 간단한 로그에도 추가 (비활성화)
+                                /*
                                 logData.logs.forEach((log: any) => {
                                     if (log.level === 'INFO' || log.level === 'ERROR' || log.level === 'WARNING') {
                                         addLog(`[${log.level}] ${log.message}`);
@@ -1357,6 +1358,7 @@ export default function Home() {
                                         }
                                     }
                                 });
+                                */
                             }
                         }
                     } catch (error) {
