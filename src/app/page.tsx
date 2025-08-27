@@ -1305,23 +1305,42 @@ export default function Home() {
                                         new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
                                     );
                                     
-                                    // 핵심 진행 로그만 출력 (중복 방지)
+                                    // 규칙화된 키워드 기반 로그 필터링 (중복 방지)
                                     sortedLogs.forEach((log: any) => {
                                         if (log.message && (
-                                            // Step 1~8 로그
-                                            log.message.includes('Step 1:') ||
-                                            log.message.includes('Step 2:') ||
-                                            log.message.includes('Step 3:') ||
-                                            log.message.includes('Step 4:') ||
-                                            log.message.includes('Step 5:') ||
-                                            log.message.includes('Step 6:') ||
-                                            log.message.includes('Step 7:') ||
-                                            log.message.includes('Step 8:') ||
-                                            // n8n 완료 관련 로그
-                                            log.message.includes('n8n 완료 요청 수신') ||
-                                            log.message.includes('후속 작업 완료') ||
-                                            // 처리 시작 로그
-                                            log.message.includes('Post ID') && log.message.includes('에 대한 처리 시작')
+                                            // Step 로그 (1~8)
+                                            log.message.includes('Step 1: Post ID') ||
+                                            log.message.includes('Step 2: 상태를') ||
+                                            log.message.includes('Step 3: InputAgent 실행') ||
+                                            log.message.includes('Step 4: PlanAgent 실행') ||
+                                            log.message.includes('Step 5: TitleAgent 실행') ||
+                                            log.message.includes('Step 6: ContentAgent 실행') ||
+                                            log.message.includes('Step 7: 결과를 Airtable에 저장') ||
+                                            log.message.includes('Step 8: 웹훅 API 호출') ||
+                                            // 상태 업데이트 로그
+                                            log.message.includes('상태 업데이트 완료:') ||
+                                            log.message.includes('Medicontent Posts 상태 업데이트 완료:') ||
+                                            // 성공/완료 로그
+                                            log.message.includes('✅ Gemini 계획 생성 성공') ||
+                                            log.message.includes('✅ plan 저장:') ||
+                                            log.message.includes('✅ Title 저장:') ||
+                                            log.message.includes('✅ Content 저장:') ||
+                                            log.message.includes('🌐 HTML 저장:') ||
+                                            log.message.includes('HTML 변환 완료:') ||
+                                            log.message.includes('텍스트 생성 완료!') ||
+                                            // n8n 관련 로그
+                                            log.message.includes('n8n 완료 요청 수신:') ||
+                                            log.message.includes('요청 데이터:') ||
+                                            log.message.includes('전체 워크플로우 완료 확인:') ||
+                                            log.message.includes('후속 작업 시작:') ||
+                                            log.message.includes('완료 로그:') ||
+                                            log.message.includes('후속 작업 완료:') ||
+                                            // 기타 중요 로그
+                                            log.message.includes('Post ID') && log.message.includes('에 대한 처리 시작') ||
+                                            log.message.includes('웹훅 호출 시작:') ||
+                                            log.message.includes('n8n 워크플로우 진행 중 또는 응답 대기 중') ||
+                                            log.message.includes('프롬프트 로딩:') ||
+                                            log.message.includes('Hospital 테이블 조회 실패:')
                                         )) {
                                             const logKey = `${log.timestamp}-${log.message}`;
                                             if (!processedLogs.has(logKey)) {
