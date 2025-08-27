@@ -1300,92 +1300,88 @@ export default function Home() {
                 console.log('🔍 Agent 응답 분석 시작:', agentData.status);
                 
                 if (agentData.status === 'success') {
-                    addLog('✅ Agent 작업 완료 - 후속 작업 대기 중...');
+                    addLog('✅ Agent 작업 완료 - 웹훅 감지 대기 중...');
                     addLog(`📊 Agent 응답: status=${agentData.status}, post_id=${agentData.post_id}`);
-                    console.log('⏳ Agent 완료됨 - 전체 작업 완료 대기 중');
+                    console.log('⏳ Agent 완료됨 - 웹훅 감지 대기 중');
                     
-                    // n8n-completion API 호출 대기 시작
-                    addLog('🔍 n8n-completion API 호출 대기 중...');
-                    let n8nCompletionDetected = false;
+                    // 웹훅 감지 로직만 활성화
+                    addLog('🔍 웹훅 응답 감지 대기 중...');
                     let attempts = 0;
                     const maxAttempts = 30; // 1분 대기 (30회 × 2초)
                     
-                    const n8nPollInterval = setInterval(async () => {
+                    const webhookPollInterval = setInterval(async () => {
                         attempts++;
                         
                         try {
-                            addLog(`n8n-completion 확인 시도 ${attempts}/${maxAttempts}...`);
+                            addLog(`웹훅 감지 시도 ${attempts}/${maxAttempts}...`);
                             
-                            // 로그에서 n8n-completion API 호출 확인
-                            const logResponse = await fetch(`${API_BASE_URL}/api/get-logs/${postId}`);
-                            if (logResponse.ok) {
-                                const logData = await logResponse.json();
-                                if (logData.logs && logData.logs.length > 0) {
-                                    // 최근 로그들에서 n8n-completion 호출 확인
-                                    const recentLogs = logData.logs.slice(-10); // 최근 10개 로그만 확인
-                                    for (const log of recentLogs) {
-                                        if (log.message.includes('n8n 완료 요청 수신') || 
-                                            log.message.includes('후속 작업 완료') ||
-                                            log.message.includes('/api/n8n-completion')) {
-                                            
-                                            addLog('✅ n8n-completion API 호출 감지됨!');
-                                            console.log('🎯 [5] 렌더링 시도 시작 - n8n-completion API 호출 감지됨');
-                                            n8nCompletionDetected = true;
-                                            
-                                            // 즉시 완료 처리
-                                            try {
-                                                addLog('🔍 Airtable에서 완료된 포스팅 조회 중...');
-                                                const medicontentResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts?filterByFormula={Post%20Id}='${postId}'`, {
-                                                    headers: {
-                                                        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-                                                        'Content-Type': 'application/json'
-                                                    }
-                                                });
-                                                
-                                                if (medicontentResponse.ok) {
-                                                    const medicontentData = await medicontentResponse.json();
-                                                    if (medicontentData.records && medicontentData.records.length > 0) {
-                                                        const postRecord = medicontentData.records[0];
-                                                        setSelectedPost(postRecord);
-                                                        addLog('✅ selectedPost 상태 업데이트 완료');
-                                                        addLog('완료된 포스팅을 우측 패널에 표시합니다.');
-                                                        
-                                                        console.log('🎯 [5] 렌더링 완료 - selectedPost 업데이트됨:', postRecord);
-                                                        console.log('🎯 [5] 렌더링 완료 - selectedPost.fields.Content 존재:', !!postRecord.fields.Content);
-                                                        
-                                                        clearInterval(n8nPollInterval);
-                                                        return;
-                                                    }
-                                                }
-                                            } catch (error) {
-                                                addLog(`❌ 즉시 완료 처리 중 오류: ${error}`);
+                            // 웹훅 응답 확인 (간단한 방식)
+                            const webhookResponse = await fetch(`https://medisales-u45006.vm.elestio.app/webhook/6f545985-77e3-4ee9-8dbf-85ec1d408183`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    post_id: postId,
+                                    action: 'check_status'
+                                })
+                            });
+                            
+                            if (webhookResponse.ok) {
+                                const webhookData = await webhookResponse.text();
+                                addLog(`웹훅 응답: ${webhookData}`);
+                                
+                                if (webhookData.includes('finished')) {
+                                    addLog('✅ 웹훅 finished 응답 감지됨!');
+                                    console.log('🎯 [5] 렌더링 시도 시작 - 웹훅 finished 응답 감지됨');
+                                    
+                                    // 즉시 완료 처리
+                                    try {
+                                        addLog('🔍 Airtable에서 완료된 포스팅 조회 중...');
+                                        const medicontentResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts?filterByFormula={Post%20Id}='${postId}'`, {
+                                            headers: {
+                                                'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+                                                'Content-Type': 'application/json'
                                             }
-                                            
-                                            break;
+                                        });
+                                        
+                                        if (medicontentResponse.ok) {
+                                            const medicontentData = await medicontentResponse.json();
+                                            if (medicontentData.records && medicontentData.records.length > 0) {
+                                                const postRecord = medicontentData.records[0];
+                                                setSelectedPost(postRecord);
+                                                addLog('✅ selectedPost 상태 업데이트 완료');
+                                                addLog('완료된 포스팅을 우측 패널에 표시합니다.');
+                                                
+                                                console.log('🎯 [5] 렌더링 완료 - selectedPost 업데이트됨:', postRecord);
+                                                console.log('🎯 [5] 렌더링 완료 - selectedPost.fields.Content 존재:', !!postRecord.fields.Content);
+                                                
+                                                clearInterval(webhookPollInterval);
+                                                return;
+                                            }
                                         }
+                                    } catch (error) {
+                                        addLog(`❌ 즉시 완료 처리 중 오류: ${error}`);
                                     }
                                 }
                             }
                             
                             // 타임아웃 체크
                             if (attempts >= maxAttempts) {
-                                addLog('❌ n8n-completion API 호출 타임아웃');
-                                addLog('💡 Airtable 모니터링 방식으로 전환합니다.');
-                                clearInterval(n8nPollInterval);
+                                addLog('❌ 웹훅 감지 타임아웃');
+                                clearInterval(webhookPollInterval);
                             }
                             
                         } catch (error) {
-                            addLog(`n8n-completion 확인 중 오류: ${error}`);
+                            addLog(`웹훅 감지 중 오류: ${error}`);
                             attempts++;
                             
                             if (attempts >= maxAttempts) {
-                                addLog('❌ n8n-completion API 호출 타임아웃');
-                                clearInterval(n8nPollInterval);
+                                addLog('❌ 웹훅 감지 타임아웃');
+                                clearInterval(webhookPollInterval);
                             }
                         }
                     }, 2000); // 2초마다 확인
-                    
-                    // Agent 완료 후 전체 작업 완료 대기 (Airtable 모니터링 방식으로 진행)
                 }
                 
                 // 로그 처리
@@ -1424,98 +1420,8 @@ export default function Home() {
                     }
                 }
                 
-                // 5. Airtable 모니터링 방식으로 변경 (자동 생성과 동일)
-                addLog('AI Agent 작업 완료 대기 중...');
-                const monitoringStartTime = new Date();
-                let isCompleted = false;
-                let attempts = 0;
-                const maxAttempts = 24; // 2분 대기 (24회 × 5초)
-                
-                statusPollInterval = setInterval(async () => {
-                    attempts++;
-                    
-                    try {
-                        addLog(`완료 확인 시도 ${attempts}/${maxAttempts}...`);
-                        
-                        // Post Data Requests 테이블에서 Status 확인
-                        const postDataResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Post%20Data%20Requests?filterByFormula={Post%20ID}='${postId}'`, {
-                            headers: {
-                                'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-                                'Content-Type': 'application/json'
-                            }
-                        });
-                        
-                        if (postDataResponse.ok) {
-                            const postData = await postDataResponse.json();
-                            const postDataStatus = postData.records?.[0]?.fields?.Status || '';
-                            addLog(`📊 Post Data Requests Status: "${postDataStatus}"`);
-                            
-                            // Medicontent Posts 테이블에서 Status 확인
-                            const medicontentResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts?filterByFormula={Post%20Id}='${postId}'`, {
-                                headers: {
-                                    'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-                                    'Content-Type': 'application/json'
-                                }
-                            });
-                            
-                            if (medicontentResponse.ok) {
-                                const medicontentData = await medicontentResponse.json();
-                                const medicontentStatus = medicontentData.records?.[0]?.fields?.Status || '';
-                                addLog(`📊 Medicontent Posts Status: "${medicontentStatus}"`);
-                                
-                                // 두 테이블 모두 완료 상태인지 확인 (기존 조건 유지)
-                                if (postDataStatus === '완료' && medicontentStatus === '작업 완료') {
-                                    addLog('✅ 모든 작업 완료 확인됨');
-                                    console.log('🎯 [5] 렌더링 시도 시작 - 전체 작업 완료 감지됨');
-                                    
-                                    // 완료된 포스팅을 자동으로 선택하여 HTML 렌더링
-                                    const postRecord = medicontentData.records[0];
-                                    setSelectedPost(postRecord);
-                                    addLog('✅ selectedPost 상태 업데이트 완료');
-                                    addLog('완료된 포스팅을 우측 패널에 표시합니다.');
-                                    
-                                    // 디버깅: selectedPost 상태 확인
-                                    console.log('🎯 [5] 렌더링 완료 - selectedPost 업데이트됨:', postRecord);
-                                    console.log('🎯 [5] 렌더링 완료 - selectedPost.fields.Content 존재:', !!postRecord.fields.Content);
-                                    
-                                    isCompleted = true;
-                                    clearInterval(statusPollInterval);
-                                } else {
-                                    addLog(`⏳ 작업 진행 중... (${attempts}/${maxAttempts})`);
-                                    addLog(`🔍 상태 비교: Post Data="${postDataStatus}" === "완료" && Medicontent="${medicontentStatus}" === "작업 완료"`);
-                                    
-                                    // 상태가 예상과 다른 경우 상세 정보 출력
-                                    if (postDataStatus !== '완료') {
-                                        addLog(`⚠️ Post Data Status가 "완료"가 아님: "${postDataStatus}"`);
-                                    }
-                                    if (medicontentStatus !== '작업 완료') {
-                                        addLog(`⚠️ Medicontent Status가 "작업 완료"가 아님: "${medicontentStatus}"`);
-                                    }
-                                }
-                            } else {
-                                addLog(`❌ Medicontent Posts 조회 실패: ${medicontentResponse.status}`);
-                            }
-                        } else {
-                            addLog(`❌ Post Data Requests 조회 실패: ${postDataResponse.status}`);
-                        }
-                        
-                        // 타임아웃 체크
-                        if (attempts >= maxAttempts) {
-                            addLog('❌ 작업 완료 시간 초과');
-                            addLog('💡 수동으로 포스팅을 선택하여 HTML을 확인할 수 있습니다.');
-                            clearInterval(statusPollInterval);
-                        }
-                        
-                    } catch (error) {
-                        addLog(`완료 확인 중 오류: ${error}`);
-                        attempts++;
-                        
-                        if (attempts >= maxAttempts) {
-                            addLog('❌ 작업 완료 시간 초과');
-                            clearInterval(statusPollInterval);
-                        }
-                    }
-                }, 5000); // 5초마다 확인
+                // 5. Airtable 모니터링 방식 (비활성화)
+                addLog('Airtable 모니터링 비활성화됨 - 웹훅 감지만 사용');
             } else {
                 // 폴링 중지
                 clearInterval(pollInterval);
