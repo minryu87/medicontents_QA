@@ -1311,6 +1311,8 @@ export default function Home() {
                 console.log('✅ [4] 에이전트 종료 탐지됨:', agentData);
                 
                 // Agent 응답에서 완료 상태 확인
+                console.log('🔍 Agent 응답 분석 시작:', agentData.status);
+                
                 if (agentData.status === 'success') {
                     addLog('✅ Agent 완료 상태 감지 - 전체 완료로 판단');
                     addLog(`📊 Agent 응답: status=${agentData.status}, post_id=${agentData.post_id}`);
