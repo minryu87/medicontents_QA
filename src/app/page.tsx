@@ -1393,6 +1393,87 @@ export default function Home() {
                     addLog(`📊 Agent 응답: status=${agentData.status}, post_id=${agentData.post_id}`);
                     console.log('⏳ Agent 완료됨 - 전체 작업 완료 대기 중');
                     
+                    // n8n-completion API 호출 대기 시작
+                    addLog('🔍 n8n-completion API 호출 대기 중...');
+                    let n8nCompletionDetected = false;
+                    let attempts = 0;
+                    const maxAttempts = 30; // 1분 대기 (30회 × 2초)
+                    
+                    const n8nPollInterval = setInterval(async () => {
+                        attempts++;
+                        
+                        try {
+                            addLog(`n8n-completion 확인 시도 ${attempts}/${maxAttempts}...`);
+                            
+                            // 로그에서 n8n-completion API 호출 확인
+                            const logResponse = await fetch(`${API_BASE_URL}/api/get-logs/${postId}`);
+                            if (logResponse.ok) {
+                                const logData = await logResponse.json();
+                                if (logData.logs && logData.logs.length > 0) {
+                                    // 최근 로그들에서 n8n-completion 호출 확인
+                                    const recentLogs = logData.logs.slice(-10); // 최근 10개 로그만 확인
+                                    for (const log of recentLogs) {
+                                        if (log.message.includes('n8n 완료 요청 수신') || 
+                                            log.message.includes('후속 작업 완료') ||
+                                            log.message.includes('/api/n8n-completion')) {
+                                            
+                                            addLog('✅ n8n-completion API 호출 감지됨!');
+                                            console.log('🎯 [5] 렌더링 시도 시작 - n8n-completion API 호출 감지됨');
+                                            n8nCompletionDetected = true;
+                                            
+                                            // 즉시 완료 처리
+                                            try {
+                                                addLog('🔍 Airtable에서 완료된 포스팅 조회 중...');
+                                                const medicontentResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts?filterByFormula={Post%20Id}='${postId}'`, {
+                                                    headers: {
+                                                        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+                                                        'Content-Type': 'application/json'
+                                                    }
+                                                });
+                                                
+                                                if (medicontentResponse.ok) {
+                                                    const medicontentData = await medicontentResponse.json();
+                                                    if (medicontentData.records && medicontentData.records.length > 0) {
+                                                        const postRecord = medicontentData.records[0];
+                                                        setSelectedPost(postRecord);
+                                                        addLog('✅ selectedPost 상태 업데이트 완료');
+                                                        addLog('완료된 포스팅을 우측 패널에 표시합니다.');
+                                                        
+                                                        console.log('🎯 [5] 렌더링 완료 - selectedPost 업데이트됨:', postRecord);
+                                                        console.log('🎯 [5] 렌더링 완료 - selectedPost.fields.Content 존재:', !!postRecord.fields.Content);
+                                                        
+                                                        clearInterval(n8nPollInterval);
+                                                        return;
+                                                    }
+                                                }
+                                            } catch (error) {
+                                                addLog(`❌ 즉시 완료 처리 중 오류: ${error}`);
+                                            }
+                                            
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            // 타임아웃 체크
+                            if (attempts >= maxAttempts) {
+                                addLog('❌ n8n-completion API 호출 타임아웃');
+                                addLog('💡 Airtable 모니터링 방식으로 전환합니다.');
+                                clearInterval(n8nPollInterval);
+                            }
+                            
+                        } catch (error) {
+                            addLog(`n8n-completion 확인 중 오류: ${error}`);
+                            attempts++;
+                            
+                            if (attempts >= maxAttempts) {
+                                addLog('❌ n8n-completion API 호출 타임아웃');
+                                clearInterval(n8nPollInterval);
+                            }
+                        }
+                    }, 2000); // 2초마다 확인
+                    
                     // Agent 완료 후 전체 작업 완료 대기 (Airtable 모니터링 방식으로 진행)
                 }
                 
