@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, ChangeEvent, useEffect } from 'react';
-import { Upload, Send, FileText, CheckCircle, XCircle, X, RefreshCw, Play, Info, Power } from 'lucide-react';
+import { Upload, Send, FileText, CheckCircle, XCircle, X, RefreshCw, Play, Info, Power, BarChart3 } from 'lucide-react';
 
     // Airtable 설정
     const AIRTABLE_API_KEY = 'pat6S8lzX8deRFTKC.0e92c4403cdc7878f8e61f815260852d4518a0b46fa3de2350e5e91f4f0f6af9';
@@ -61,6 +61,23 @@ const createPostDataRequest = async (requestData: any): Promise<any> => {
 // 완료된 포스팅 목록 조회
 const getCompletedPosts = async (): Promise<any[]> => {
     const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts?filterByFormula={Status}="작업 완료"&sort[0][field]=Updated At&sort[0][direction]=desc`, {
+        headers: {
+            'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+            'Content-Type': 'application/json'
+        }
+    });
+    
+    if (!response.ok) {
+        throw new Error(`Airtable API 오류: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data.records;
+};
+
+// Post Reviews 데이터 조회
+const getPostReviews = async (): Promise<any[]> => {
+    const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Post%20Reviews-Grid%20view`, {
         headers: {
             'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
             'Content-Type': 'application/json'
@@ -176,11 +193,14 @@ interface QAData {
 export default function Home() {
     const [activeTab, setActiveTab] = useState<TabType>('review');
     const [completedPosts, setCompletedPosts] = useState<any[]>([]);
+    const [postReviews, setPostReviews] = useState<any[]>([]);
     const [selectedPost, setSelectedPost] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [logs, setLogs] = useState<string[]>([]);
     const [currentPostId, setCurrentPostId] = useState<string>('');
     const [isProcessing, setIsProcessing] = useState(false);
+    const [showEvaluationModal, setShowEvaluationModal] = useState(false);
+    const [selectedEvaluation, setSelectedEvaluation] = useState<any>(null);
     
     // QA 검토 관련 상태
     const [qaData, setQaData] = useState<QAData>({
@@ -1094,19 +1114,92 @@ export default function Home() {
     };
 
     // 점수에 따른 색상 반환
-    const getScoreColor = (contentScore: number, legalScore: number, hasQA: boolean) => {
-        // QA가 완료되지 않은 경우 기본 색상
-        if (!hasQA) return 'bg-white border-gray-200';
-        
-        // QA가 완료된 경우 점수에 따른 색상
-        if (contentScore <= 1 || legalScore <= 1) return 'bg-red-50 border-red-200';
-        if (contentScore <= 3 || legalScore <= 3) return 'bg-yellow-50 border-yellow-200';
-        if (contentScore >= 4 && legalScore >= 4) return 'bg-green-50 border-green-200';
-        return 'bg-white border-gray-200';
-    };
+const getScoreColor = (contentScore: number, legalScore: number, hasQA: boolean) => {
+    // QA가 완료되지 않은 경우 기본 색상
+    if (!hasQA) return 'bg-white border-gray-200';
+    
+    // QA가 완료된 경우 점수에 따른 색상
+    if (contentScore <= 1 || legalScore <= 1) return 'bg-red-50 border-red-200';
+    if (contentScore <= 3 || legalScore <= 3) return 'bg-yellow-50 border-yellow-200';
+    if (contentScore >= 4 && legalScore >= 4) return 'bg-green-50 border-green-200';
+    return 'bg-white border-gray-200';
+};
+
+// SEO 점수에 따른 색상 반환
+const getSeoScoreColor = (score: number) => {
+    if (score >= 90) return 'text-green-600';
+    if (score >= 80) return 'text-blue-600';
+    if (score >= 70) return 'text-yellow-600';
+    return 'text-red-600';
+};
+
+// Legal 점수에 따른 색상 반환 (낮을수록 좋음)
+const getLegalScoreColor = (score: number) => {
+    if (score <= 3) return 'text-green-600';
+    if (score <= 7) return 'text-yellow-600';
+    if (score <= 10) return 'text-orange-600';
+    return 'text-red-600';
+};
+
+// SEO 등급 반환
+const getSeoGrade = (score: number) => {
+    if (score >= 90) return 'A';
+    if (score >= 80) return 'B';
+    if (score >= 70) return 'C';
+    return 'D';
+};
+
+// Legal 준수 수준 반환
+const getLegalLevel = (score: number) => {
+    if (score <= 3) return '우수';
+    if (score <= 7) return '양호';
+    if (score <= 10) return '주의';
+    return '위험';
+};
+
+// 전체 등급 반환
+const getOverallGrade = (evaluation: any) => {
+    const seoScore = evaluation.seoScore || 0;
+    const legalScore = evaluation.legalScore || 0;
+    
+    // SEO는 높을수록 좋고, Legal은 낮을수록 좋음
+    const seoGrade = getSeoGrade(seoScore);
+    const legalGrade = legalScore <= 3 ? 'A' : legalScore <= 7 ? 'B' : legalScore <= 10 ? 'C' : 'D';
+    
+    // 두 등급을 종합하여 전체 등급 결정
+    if (seoGrade === 'A' && legalGrade === 'A') return 'A';
+    if ((seoGrade === 'A' || seoGrade === 'B') && (legalGrade === 'A' || legalGrade === 'B')) return 'B';
+    if ((seoGrade === 'A' || seoGrade === 'B' || seoGrade === 'C') && (legalGrade === 'A' || legalGrade === 'B' || legalGrade === 'C')) return 'C';
+    return 'D';
+};
+
+// 등급에 따른 색상 반환
+const getGradeColor = (grade: string) => {
+    switch (grade) {
+        case 'A': return 'bg-green-100 text-green-800';
+        case 'B': return 'bg-blue-100 text-blue-800';
+        case 'C': return 'bg-yellow-100 text-yellow-800';
+        case 'D': return 'bg-red-100 text-red-800';
+        default: return 'bg-gray-100 text-gray-800';
+    }
+};
+
+    // 포스팅과 평가 데이터 통합
+    const integratedPosts = completedPosts.map(post => {
+        const review = postReviews.find(review => review.fields['Post ID'] === post.fields['Post Id']);
+        return {
+            ...post,
+            seoScore: review?.fields['SEO Score'] || 0,
+            legalScore: review?.fields['Legal Score'] || 0,
+            seoChecklist: review?.fields['SEO Checklist'] ? JSON.parse(review.fields['SEO Checklist']) : [],
+            legalChecklist: review?.fields['Legal Checklist'] ? JSON.parse(review.fields['Legal Checklist']) : [],
+            reviewedAt: review?.fields['Reviewed At'],
+            reviewer: review?.fields['Reviewer']
+        };
+    });
 
     // 필터링된 포스팅 목록
-    const filteredPosts = completedPosts.filter(post => {
+    const filteredPosts = integratedPosts.filter(post => {
         const fields = post.fields;
         const postId = fields['Post Id'] || '';
         const title = fields.Title || '';
@@ -1159,8 +1252,12 @@ export default function Home() {
     const loadCompletedPosts = async () => {
         try {
             setIsLoading(true);
-            const posts = await getCompletedPosts();
+            const [posts, reviews] = await Promise.all([
+                getCompletedPosts(),
+                getPostReviews()
+            ]);
             setCompletedPosts(posts);
+            setPostReviews(reviews);
         } catch (error) {
             console.error('포스팅 목록 로드 실패:', error);
         } finally {
@@ -1595,6 +1692,17 @@ export default function Home() {
                                                                     의료법: {legalScore}점
                                                                 </div>
                                                             )}
+                                                            {/* SEO/Legal Score 표시 */}
+                                                            {post.seoScore > 0 && (
+                                                                <div className={`px-2 py-1 rounded text-xs font-medium ${getSeoScoreColor(post.seoScore)}`}>
+                                                                    SEO: {post.seoScore}점
+                                                                </div>
+                                                            )}
+                                                            {post.legalScore > 0 && (
+                                                                <div className={`px-2 py-1 rounded text-xs font-medium ${getLegalScoreColor(post.legalScore)}`}>
+                                                                    Legal: {post.legalScore}점
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1608,6 +1716,33 @@ export default function Home() {
                                                                 {fields['Post Id']}
                                                             </span>
                                                         </div>
+                                                        
+                                                        {/* SEO/Legal Score 정보 */}
+                                                        {(post.seoScore > 0 || post.legalScore > 0) && (
+                                                            <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                                                                <h6 className="text-sm font-medium text-gray-700 mb-2">평가 점수</h6>
+                                                                <div className="grid grid-cols-2 gap-4">
+                                                                    {post.seoScore > 0 && (
+                                                                        <div className="text-center">
+                                                                            <div className={`text-lg font-bold ${getSeoScoreColor(post.seoScore)}`}>
+                                                                                {post.seoScore}/100
+                                                                            </div>
+                                                                            <div className="text-xs text-gray-500">SEO Score</div>
+                                                                            <div className="text-xs text-gray-400">등급: {getSeoGrade(post.seoScore)}</div>
+                                                                        </div>
+                                                                    )}
+                                                                    {post.legalScore > 0 && (
+                                                                        <div className="text-center">
+                                                                            <div className={`text-lg font-bold ${getLegalScoreColor(post.legalScore)}`}>
+                                                                                {post.legalScore}/15
+                                                                            </div>
+                                                                            <div className="text-xs text-gray-500">Legal Score</div>
+                                                                            <div className="text-xs text-gray-400">준수: {getLegalLevel(post.legalScore)}</div>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        )}
                                                         
                                                         {/* 검토자 선택 */}
                                                         <div className="mb-4">
@@ -2313,6 +2448,123 @@ export default function Home() {
         }
     };
 
+    // 평가 결과 모달 컴포넌트
+    const EvaluationModal = ({ isOpen, onClose, evaluation }: { isOpen: boolean; onClose: () => void; evaluation: any }) => {
+        if (!isOpen || !evaluation) return null;
+
+        return (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+                    <div className="flex items-center justify-between p-6 border-b">
+                        <h3 className="text-xl font-semibold">평가 결과 상세</h3>
+                        <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg">
+                            <X size={20} />
+                        </button>
+                    </div>
+                    
+                    {/* 상단 요약 정보 */}
+                    <div className="p-6 border-b">
+                        <div className="grid grid-cols-3 gap-6">
+                            <div className="text-center">
+                                <h4 className="text-lg font-medium text-gray-700">SEO Score</h4>
+                                <div className={`text-3xl font-bold ${getSeoScoreColor(evaluation.seoScore)}`}>
+                                    {evaluation.seoScore}/100
+                                </div>
+                                <div className="text-sm text-gray-500">등급: {getSeoGrade(evaluation.seoScore)}</div>
+                            </div>
+                            <div className="text-center">
+                                <h4 className="text-lg font-medium text-gray-700">Legal Score</h4>
+                                <div className={`text-3xl font-bold ${getLegalScoreColor(evaluation.legalScore)}`}>
+                                    {evaluation.legalScore}/15
+                                </div>
+                                <div className="text-sm text-gray-500">준수 수준: {getLegalLevel(evaluation.legalScore)}</div>
+                            </div>
+                            <div className="text-center">
+                                <h4 className="text-lg font-medium text-gray-700">전체 평가</h4>
+                                <div className="text-3xl font-bold text-purple-600">
+                                    {getOverallGrade(evaluation)}
+                                </div>
+                                <div className="text-sm text-gray-500">종합 등급</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {/* SEO Checklist 표 */}
+                    <div className="p-6">
+                        <h4 className="text-lg font-semibold mb-4">SEO Checklist</h4>
+                        <div className="overflow-x-auto">
+                            <table className="w-full border-collapse border border-gray-300">
+                                <thead>
+                                    <tr className="bg-gray-50">
+                                        <th className="border border-gray-300 p-2 text-left">항목</th>
+                                        <th className="border border-gray-300 p-2 text-center">임계값</th>
+                                        <th className="border border-gray-300 p-2 text-center">점수</th>
+                                        <th className="border border-gray-300 p-2 text-center">등급</th>
+                                        <th className="border border-gray-300 p-2 text-center">통과</th>
+                                        <th className="border border-gray-300 p-2 text-center">실제값</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {evaluation.seoChecklist.map((item: any, index: number) => (
+                                        <tr key={index}>
+                                            <td className="border border-gray-300 p-2">{item.name}</td>
+                                            <td className="border border-gray-300 p-2 text-center">{item.threshold}</td>
+                                            <td className="border border-gray-300 p-2 text-center">{item.final_score}</td>
+                                            <td className="border border-gray-300 p-2 text-center">
+                                                <span className={`px-2 py-1 rounded text-xs font-medium ${getGradeColor(item.grade)}`}>
+                                                    {item.grade}
+                                                </span>
+                                            </td>
+                                            <td className="border border-gray-300 p-2 text-center">
+                                                <span className={`px-2 py-1 rounded text-xs font-medium ${item.pass_status === 'O' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                                    {item.pass_status}
+                                                </span>
+                                            </td>
+                                            <td className="border border-gray-300 p-2 text-center">{item.actual_value}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    {/* Legal Checklist 표 */}
+                    <div className="p-6 border-t">
+                        <h4 className="text-lg font-semibold mb-4">Legal Checklist</h4>
+                        <div className="overflow-x-auto">
+                            <table className="w-full border-collapse border border-gray-300">
+                                <thead>
+                                    <tr className="bg-gray-50">
+                                        <th className="border border-gray-300 p-2 text-left">항목</th>
+                                        <th className="border border-gray-300 p-2 text-center">임계값</th>
+                                        <th className="border border-gray-300 p-2 text-center">점수</th>
+                                        <th className="border border-gray-300 p-2 text-center">준수 수준</th>
+                                        <th className="border border-gray-300 p-2 text-center">위반 상태</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {evaluation.legalChecklist.map((item: any, index: number) => (
+                                        <tr key={index}>
+                                            <td className="border border-gray-300 p-2">{item.name}</td>
+                                            <td className="border border-gray-300 p-2 text-center">{item.threshold}</td>
+                                            <td className="border border-gray-300 p-2 text-center">{item.final_score}</td>
+                                            <td className="border border-gray-300 p-2 text-center">{item.compliance_level}</td>
+                                            <td className="border border-gray-300 p-2 text-center">
+                                                <span className={`px-2 py-1 rounded text-xs font-medium ${item.violation_status === '적합' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                                    {item.violation_status}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div className="min-h-screen bg-gray-50">
             <div 
@@ -2473,7 +2725,7 @@ export default function Home() {
                         </div>
                     ) : selectedPost ? (
                         // 완료된 포스팅 HTML 렌더링 (수동 생성 완료 후)
-                        <div className="flex-1 overflow-auto">
+                        <div className="flex-1 overflow-auto relative">
                             <div className="p-4">
                                 <div className="flex items-center justify-between mb-4">
                                     <h3 className="text-lg font-semibold">
@@ -2493,6 +2745,25 @@ export default function Home() {
                                         )}
                                     </div>
                                 </div>
+                                
+                                {/* 평가 결과 확인 버튼 (플로팅) */}
+                                {selectedPost.seoScore > 0 && (
+                                    <button
+                                        onClick={() => {
+                                            setSelectedEvaluation({
+                                                seoScore: selectedPost.seoScore,
+                                                legalScore: selectedPost.legalScore,
+                                                seoChecklist: selectedPost.seoChecklist,
+                                                legalChecklist: selectedPost.legalChecklist
+                                            });
+                                            setShowEvaluationModal(true);
+                                        }}
+                                        className="fixed bottom-6 right-6 bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg shadow-lg flex items-center space-x-2 z-40 transition-colors"
+                                    >
+                                        <BarChart3 size={20} />
+                                        <span>평가 결과 확인하기</span>
+                                    </button>
+                                )}
                                 {selectedPost.fields.Content ? (
                                     <div 
                                         className="prose max-w-none"
@@ -2547,6 +2818,13 @@ export default function Home() {
                     )}
                 </div>
             </div>
+            
+            {/* 평가 결과 모달 */}
+            <EvaluationModal 
+                isOpen={showEvaluationModal}
+                onClose={() => setShowEvaluationModal(false)}
+                evaluation={selectedEvaluation}
+            />
         </div>
     );
 }

@@ -1,0 +1,721 @@
+﻿Post ID,SEO Score,Legal Score,SEO Checklist,Legal Checklist,Reviewed At,Reviewer
+post_V1.01-20250827001,94,3,"[
+  {
+    ""name"": ""제목 글자수 (공백 포함)"",
+    ""threshold"": 8,
+    ""final_score"": 12,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 25
+  },
+  {
+    ""name"": ""제목 글자수 (공백 제외)"",
+    ""threshold"": 8,
+    ""final_score"": 12,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 19
+  },
+  {
+    ""name"": ""본문 글자수 (공백 포함)"",
+    ""threshold"": 10,
+    ""final_score"": 15,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 2371
+  },
+  {
+    ""name"": ""본문 글자수 (공백 제외)"",
+    ""threshold"": 10,
+    ""final_score"": 15,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 1948
+  },
+  {
+    ""name"": ""총 형태소 개수"",
+    ""threshold"": 6,
+    ""final_score"": 10,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 957
+  },
+  {
+    ""name"": ""총 음절 개수"",
+    ""threshold"": 6,
+    ""final_score"": 10,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 1725
+  },
+  {
+    ""name"": ""총 단어 개수"",
+    ""threshold"": 6,
+    ""final_score"": 10,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 442
+  },
+  {
+    ""name"": ""어뷰징 단어 개수"",
+    ""threshold"": 4,
+    ""final_score"": 8,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 1
+  },
+  {
+    ""name"": ""본문 이미지"",
+    ""threshold"": 4,
+    ""final_score"": 2,
+    ""grade"": ""D"",
+    ""pass_status"": ""X"",
+    ""actual_value"": 0
+  }
+]","[
+  {
+    ""name"": ""허위·과장 표현"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""객관적 표현만 사용"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""치료경험담"",
+    ""threshold"": 3,
+    ""final_score"": 2,
+    ""compliance_level"": ""일반적인 후기 수준"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""비급여 진료비 할인"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""가격 관련 내용 없음"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""사전심의 미이행"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""심의번호 표시 또는 심의 면제 대상"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""치료 전후 사진"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""전후 사진 없음"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""전문의 허위 표시"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""적절한 자격 표시"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""환자 유인·알선"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""유인 행위 없음"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""비의료인 의료광고"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""의료인이 작성한 광고"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""객관적 근거 부족"",
+    ""threshold"": 4,
+    ""final_score"": 0,
+    ""compliance_level"": ""충분한 근거 제시"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""비교 광고"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""비교 내용 없음"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""기사형 광고"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""일반 광고 형태"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""부작용 정보 누락"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""충분한 정보 제공"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""인증·보증 허위표시"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""공식 인증만 표시"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""가격 정보 오표시"",
+    ""threshold"": 4,
+    ""final_score"": 0,
+    ""compliance_level"": ""정확한 가격 정보"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""연락처 정보 오류"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""정확한 정보"",
+    ""violation_status"": ""적합""
+  }
+]",2025-08-27 17:39,리걸케어
+post_V1.01-20250827003,91,10,"[
+  {
+    ""name"": ""제목 글자수 (공백 포함)"",
+    ""threshold"": 8,
+    ""final_score"": 12,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 25
+  },
+  {
+    ""name"": ""제목 글자수 (공백 제외)"",
+    ""threshold"": 8,
+    ""final_score"": 12,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 20
+  },
+  {
+    ""name"": ""본문 글자수 (공백 포함)"",
+    ""threshold"": 10,
+    ""final_score"": 15,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 2576
+  },
+  {
+    ""name"": ""본문 글자수 (공백 제외)"",
+    ""threshold"": 10,
+    ""final_score"": 12,
+    ""grade"": ""B"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 2090
+  },
+  {
+    ""name"": ""총 형태소 개수"",
+    ""threshold"": 6,
+    ""final_score"": 10,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 1083
+  },
+  {
+    ""name"": ""총 음절 개수"",
+    ""threshold"": 6,
+    ""final_score"": 10,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 1844
+  },
+  {
+    ""name"": ""총 단어 개수"",
+    ""threshold"": 6,
+    ""final_score"": 10,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 511
+  },
+  {
+    ""name"": ""어뷰징 단어 개수"",
+    ""threshold"": 4,
+    ""final_score"": 8,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 6
+  },
+  {
+    ""name"": ""본문 이미지"",
+    ""threshold"": 4,
+    ""final_score"": 2,
+    ""grade"": ""D"",
+    ""pass_status"": ""X"",
+    ""actual_value"": 0
+  }
+]","[
+  {
+    ""name"": ""허위·과장 표현"",
+    ""threshold"": 2,
+    ""final_score"": 2,
+    ""compliance_level"": ""경미한 과장 표현"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""치료경험담"",
+    ""threshold"": 3,
+    ""final_score"": 3,
+    ""compliance_level"": ""일반적인 후기 수준"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""비급여 진료비 할인"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""가격 관련 내용 없음"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""사전심의 미이행"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""심의번호 표시 또는 심의 면제 대상"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""치료 전후 사진"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""전후 사진 없음"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""전문의 허위 표시"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""적절한 자격 표시"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""환자 유인·알선"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""유인 행위 없음"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""비의료인 의료광고"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""의료인이 작성한 광고"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""객관적 근거 부족"",
+    ""threshold"": 4,
+    ""final_score"": 0,
+    ""compliance_level"": ""충분한 근거 제시"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""비교 광고"",
+    ""threshold"": 2,
+    ""final_score"": 2,
+    ""compliance_level"": ""간접적 비교"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""기사형 광고"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""일반 광고 형태"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""부작용 정보 누락"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""충분한 정보 제공"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""인증·보증 허위표시"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""공식 인증만 표시"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""가격 정보 오표시"",
+    ""threshold"": 4,
+    ""final_score"": 0,
+    ""compliance_level"": ""정확한 가격 정보"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""연락처 정보 오류"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""정확한 정보"",
+    ""violation_status"": ""적합""
+  }
+]",2025-08-27 17:56,리걸케어
+QA-V1.01-20250827-002,100,7,"[
+  {
+    ""name"": ""제목 글자수 (공백 포함)"",
+    ""threshold"": 8,
+    ""final_score"": 12,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 35
+  },
+  {
+    ""name"": ""제목 글자수 (공백 제외)"",
+    ""threshold"": 8,
+    ""final_score"": 12,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 28
+  },
+  {
+    ""name"": ""본문 글자수 (공백 포함)"",
+    ""threshold"": 10,
+    ""final_score"": 15,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 2415
+  },
+  {
+    ""name"": ""본문 글자수 (공백 제외)"",
+    ""threshold"": 10,
+    ""final_score"": 15,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 1985
+  },
+  {
+    ""name"": ""총 형태소 개수"",
+    ""threshold"": 6,
+    ""final_score"": 10,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 985
+  },
+  {
+    ""name"": ""총 음절 개수"",
+    ""threshold"": 6,
+    ""final_score"": 10,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 1745
+  },
+  {
+    ""name"": ""총 단어 개수"",
+    ""threshold"": 6,
+    ""final_score"": 10,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 452
+  },
+  {
+    ""name"": ""어뷰징 단어 개수"",
+    ""threshold"": 4,
+    ""final_score"": 8,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 0
+  },
+  {
+    ""name"": ""본문 이미지"",
+    ""threshold"": 4,
+    ""final_score"": 8,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 4
+  }
+]","[
+  {
+    ""name"": ""허위·과장 표현"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""객관적 표현만 사용"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""치료경험담"",
+    ""threshold"": 3,
+    ""final_score"": 2,
+    ""compliance_level"": ""일반적인 후기 수준"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""비급여 진료비 할인"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""가격 관련 내용 없음"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""사전심의 미이행"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""심의번호 표시 또는 심의 면제 대상"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""치료 전후 사진"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""전후 사진 없음"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""전문의 허위 표시"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""적절한 자격 표시"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""환자 유인·알선"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""유인 행위 없음"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""비의료인 의료광고"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""의료인이 작성한 광고"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""객관적 근거 부족"",
+    ""threshold"": 4,
+    ""final_score"": 0,
+    ""compliance_level"": ""충분한 근거 제시"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""비교 광고"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""비교 내용 없음"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""기사형 광고"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""일반 광고 형태"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""부작용 정보 누락"",
+    ""threshold"": 3,
+    ""final_score"": 3,
+    ""compliance_level"": ""중요 정보 누락"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""인증·보증 허위표시"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""공식 인증만 표시"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""가격 정보 오표시"",
+    ""threshold"": 4,
+    ""final_score"": 0,
+    ""compliance_level"": ""정확한 가격 정보"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""연락처 정보 오류"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""정확한 정보"",
+    ""violation_status"": ""적합""
+  }
+]",2025-08-27 18:07,리걸케어
+post_V1.01-20250827004,94,0,"[
+  {
+    ""name"": ""제목 글자수 (공백 포함)"",
+    ""threshold"": 8,
+    ""final_score"": 12,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 31
+  },
+  {
+    ""name"": ""제목 글자수 (공백 제외)"",
+    ""threshold"": 8,
+    ""final_score"": 12,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 24
+  },
+  {
+    ""name"": ""본문 글자수 (공백 포함)"",
+    ""threshold"": 10,
+    ""final_score"": 15,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 1812
+  },
+  {
+    ""name"": ""본문 글자수 (공백 제외)"",
+    ""threshold"": 10,
+    ""final_score"": 15,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 1455
+  },
+  {
+    ""name"": ""총 형태소 개수"",
+    ""threshold"": 6,
+    ""final_score"": 10,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 809
+  },
+  {
+    ""name"": ""총 음절 개수"",
+    ""threshold"": 6,
+    ""final_score"": 10,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 1294
+  },
+  {
+    ""name"": ""총 단어 개수"",
+    ""threshold"": 6,
+    ""final_score"": 10,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 368
+  },
+  {
+    ""name"": ""어뷰징 단어 개수"",
+    ""threshold"": 4,
+    ""final_score"": 8,
+    ""grade"": ""A"",
+    ""pass_status"": ""O"",
+    ""actual_value"": 6
+  },
+  {
+    ""name"": ""본문 이미지"",
+    ""threshold"": 4,
+    ""final_score"": 2,
+    ""grade"": ""D"",
+    ""pass_status"": ""X"",
+    ""actual_value"": 0
+  }
+]","[
+  {
+    ""name"": ""허위·과장 표현"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""객관적 표현만 사용"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""치료경험담"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""치료경험담 없음"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""비급여 진료비 할인"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""가격 관련 내용 없음"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""사전심의 미이행"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""심의번호 표시 또는 심의 면제 대상"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""치료 전후 사진"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""전후 사진 없음"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""전문의 허위 표시"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""적절한 자격 표시"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""환자 유인·알선"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""유인 행위 없음"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""비의료인 의료광고"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""의료인이 작성한 광고"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""객관적 근거 부족"",
+    ""threshold"": 4,
+    ""final_score"": 0,
+    ""compliance_level"": ""충분한 근거 제시"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""비교 광고"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""비교 내용 없음"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""기사형 광고"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""일반 광고 형태"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""부작용 정보 누락"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""충분한 정보 제공"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""인증·보증 허위표시"",
+    ""threshold"": 2,
+    ""final_score"": 0,
+    ""compliance_level"": ""공식 인증만 표시"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""가격 정보 오표시"",
+    ""threshold"": 4,
+    ""final_score"": 0,
+    ""compliance_level"": ""정확한 가격 정보"",
+    ""violation_status"": ""적합""
+  },
+  {
+    ""name"": ""연락처 정보 오류"",
+    ""threshold"": 3,
+    ""final_score"": 0,
+    ""compliance_level"": ""정확한 정보"",
+    ""violation_status"": ""적합""
+  }
+]",2025-08-27 18:14,리걸케어
