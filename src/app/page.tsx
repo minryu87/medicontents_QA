@@ -1303,6 +1303,12 @@ export default function Home() {
                                             addLog(log.message);
                                         }
                                     });
+                                    
+                                    // 디버깅: 받은 로그 개수와 내용 확인
+                                    addLog(`📋 받은 로그 개수: ${logData.logs.length}`);
+                                    if (logData.logs.length > 0) {
+                                        addLog(`📋 첫 번째 로그: ${logData.logs[0].message}`);
+                                    }
                                 }
                             }
                             
