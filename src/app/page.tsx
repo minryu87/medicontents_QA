@@ -1282,11 +1282,13 @@ export default function Home() {
                 
                 const agentData = await agentResponse.json();
                 
-                // Agent 응답에서 완료 상태 확인
-                if (agentData.status === 'success') {
+                // Agent 응답에서 상태 확인
+                if (agentData.status === 'success' || agentData.status === 'processing') {
                     // 백엔드 로그 폴링 시작 (INFO:main: 로그만 출력)
                     let attempts = 0;
-                    const maxAttempts = 60; // 2분 대기 (60회 × 2초)
+                    const maxAttempts = 300; // 10분 대기 (300회 × 2초)
+                    
+                    addLog(`🚀 Agent 실행 시작: ${agentData.message || '처리 중...'}`);
                     
                     const logPollInterval = setInterval(async () => {
                         attempts++;
@@ -1315,6 +1317,7 @@ export default function Home() {
                             // 타임아웃 체크
                             if (attempts >= maxAttempts) {
                                 clearInterval(logPollInterval);
+                                addLog(`⏰ 로그 폴링 타임아웃 (${maxAttempts * 2}초)`);
                             }
                             
                         } catch (error) {
@@ -1322,6 +1325,7 @@ export default function Home() {
                             
                             if (attempts >= maxAttempts) {
                                 clearInterval(logPollInterval);
+                                addLog(`❌ 로그 폴링 오류: ${error}`);
                             }
                         }
                     }, 2000); // 2초마다 확인
@@ -1341,7 +1345,7 @@ export default function Home() {
             if (typeof pollInterval !== 'undefined') {
                 clearInterval(pollInterval);
             }
-            setIsProcessing(false);
+            // setIsProcessing(false) 제거 - 로그 폴링이 완료될 때까지 유지
         }
     };
 
