@@ -1280,9 +1280,10 @@ export default function Home() {
                                 logData.logs.forEach((log: any) => {
                                     if (log.level === 'INFO' || log.level === 'ERROR' || log.level === 'WARNING') {
                                         addLog(`[${log.level}] ${log.message}`);
+                                        console.log('📋 로그 메시지 확인:', log.message);
                                         
                                         // n8n-completion API 호출 감지
-                                        if (log.message.includes('/api/n8n-completion')) {
+                                        if (log.message.includes('/api/n8n-completion') || log.message.includes('n8n 완료 요청 수신') || log.message.includes('후속 작업 완료')) {
                                             addLog('✅ n8n-completion API 호출 감지 - 전체 완료로 판단');
                                             console.log('🎯 [5] 렌더링 시도 시작 - n8n-completion API 호출 감지됨');
                                             
