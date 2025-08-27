@@ -77,7 +77,7 @@ const getCompletedPosts = async (): Promise<any[]> => {
 
 // Post Reviews 데이터 조회
 const getPostReviews = async (): Promise<any[]> => {
-    const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Post%20Reviews-Grid%20view`, {
+    const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Post%20Reviews`, {
         headers: {
             'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
             'Content-Type': 'application/json'
