@@ -51,15 +51,17 @@ npm run dev
 3. 브라우저에서 `http://localhost:3000` 접속
 
 ### Backend (FastAPI)
+백엔드는 별도 프로젝트 `medicontents_BE`로 분리되어 있습니다.
+
 1. Python 의존성 설치:
 ```bash
-cd api
+cd medicontents_BE
 pip install -r requirements.txt
 ```
 
 2. FastAPI 서버 실행:
 ```bash
-cd api
+cd medicontents_BE
 python main.py
 ```
 
@@ -87,7 +89,7 @@ AIRTABLE_BASE_ID=appa5Q0PYdL5VY3RK
 AIRTABLE_API_KEY=pat6S8lzX8deRFTKC.0e92c4403cdc7878f8e61f815260852d4518a0b46fa3de2350e5e91f4f0f6af9
 AIRTABLE_BASE_ID=appa5Q0PYdL5VY3RK
 GEMINI_API_KEY=your_gemini_api_key_here
-AGENTS_BASE_PATH=/path/to/agents/directory
+AGENTS_BASE_PATH=/app/agents
 ```
 
 ## 데이터 구조
@@ -192,31 +194,50 @@ agents/
 
 - 이미지 업로드 기능은 Airtable에 직접 업로드됩니다
 - Agent 처리는 백그라운드에서 비동기적으로 실행됩니다
-- 포스팅 생성 후 자동으로 Agent 처리가 시작됩니다
+- 포스팅 생성 후 n8n 웹훅을 통해 Agent 처리가 시작됩니다
 - 수동으로 Agent 실행도 가능합니다
 - 실시간 로그 폴링으로 Agent 진행 상황을 모니터링합니다
+- 백엔드는 별도 프로젝트로 분리되어 있어 별도 배포가 필요합니다
 
 ## 프로세스 흐름
 
 ### 수동 생성 프로세스
 1. **포스팅 생성**: 사용자가 폼을 작성하고 '생성하기' 버튼 클릭
 2. **Airtable 저장**: Medicontent Posts 및 Post Data Requests 테이블에 데이터 저장
-3. **Agent 처리 시작**: Post ID를 사용하여 `/api/process-post` API 호출
-4. **AI Agent 실행**: InputAgent → PlanAgent → TitleAgent → ContentAgent → EvaluationAgent 순서로 실행
-5. **결과 저장**: 생성된 Title, Content, Plan, Evaluation을 Post Data Requests 테이블에 저장
-6. **n8n 워크플로우**: Agent 완료 후 n8n이 Post Data Requests의 Content를 HTML로 변환하여 Medicontent Posts 테이블에 저장
-7. **상태 업데이트**: Medicontent Posts 테이블의 Status를 '작업 완료'로 변경
+3. **n8n 웹훅 호출**: `/webhook/6f545985-77e3-4ee9-8dbf-85ec1d408183` 호출
+4. **n8n → 백엔드**: n8n이 `/api/process-post` API 호출하여 Agent 실행
+5. **AI Agent 실행**: InputAgent → PlanAgent → TitleAgent → ContentAgent → EvaluationAgent 순서로 실행
+6. **결과 저장**: 생성된 Title, Content, Plan, Evaluation을 Post Data Requests 테이블에 저장
+7. **n8n 웹훅 호출**: Agent 완료 후 n8n이 `/webhook/6f545985-77e3-4ee9-8dbf-85ec1d408183` 호출하여 HTML 변환
+8. **HTML 변환**: n8n이 Post Data Requests의 Content를 HTML로 변환하여 Medicontent Posts 테이블에 저장
+9. **완료 통지**: n8n이 `/api/n8n-completion` API 호출하여 완료 상태 전달
+10. **상태 업데이트**: Medicontent Posts 테이블의 Status를 '작업 완료'로 변경
 
 ### 자동 생성 프로세스
-1. **웹훅 호출**: n8n 웹훅에 진료 유형과 개수 전송
+1. **웹훅 호출**: `/webhook/f9cb5f6a-a22b-4141-8e6a-69373d0301d1`에 진료 유형과 개수 전송
 2. **Post ID 생성**: n8n에서 여러 개의 Post ID 생성
 3. **초기 데이터 생성**: Medicontent Posts 및 Post Data Requests 테이블에 초기 데이터 저장
-4. **Agent 호출**: 각 Post ID에 대해 `/api/process-post` API 호출
+4. **n8n → 백엔드**: 각 Post ID에 대해 `/api/process-post` API 호출
 5. **Agent 실행**: 각 Post ID별로 Agent 체인 실행
-6. **n8n 후속 처리**: Agent 완료 후 n8n이 HTML 변환 및 최종 저장
-7. **완료 감지**: Airtable Status 모니터링으로 완료 상태 추적
+6. **n8n 웹훅 호출**: Agent 완료 후 n8n이 `/webhook/6f545985-77e3-4ee9-8dbf-85ec1d408183` 호출하여 HTML 변환
+7. **HTML 변환**: n8n이 Post Data Requests의 Content를 HTML로 변환하여 Medicontent Posts 테이블에 저장
+8. **완료 통지**: n8n이 `/api/n8n-completion` API 호출하여 완료 상태 전달
+9. **완료 감지**: Airtable Status 모니터링으로 완료 상태 추적
 
 ## n8n 웹훅 설정
+
+### 수동 생성 웹훅
+```
+URL: https://medisales-u45006.vm.elestio.app/webhook/6f545985-77e3-4ee9-8dbf-85ec1d408183
+Method: POST
+Content-Type: application/json
+
+Body:
+{
+  "post_id": "QA_xxxxx",
+  "workflow_id": "medicontent_autoblog_QA_manual"
+}
+```
 
 ### 자동 생성 웹훅
 ```
@@ -266,9 +287,10 @@ docker run -p 3000:3000 medicontents-qa
 - `AGENTS_BASE_PATH`: /app/agents
 
 ### 배포 시 주의사항
-1. **백엔드 API 별도 배포 필요**: FastAPI 백엔드는 별도로 배포해야 함
+1. **백엔드 API 별도 배포 필요**: FastAPI 백엔드는 별도 프로젝트로 배포해야 함
 2. **CORS 설정**: 백엔드에서 프론트엔드 도메인 허용 필요
 3. **환경 변수**: Elestio에서 환경 변수 설정 필요
+4. **Agent 파일**: 백엔드 프로젝트에 agents 폴더 포함 필요
 
 ## 파일 구조
 
@@ -278,15 +300,22 @@ medicontents_QA/
 │   └── app/
 │       ├── page.tsx          # 메인 페이지 (포스팅 생성/검토)
 │       └── globals.css       # 전역 스타일
-├── api/
-│   ├── main.py              # FastAPI 메인 서버
-│   ├── services/
-│   │   └── medicontent_service.py  # Airtable 연동 서비스
-│   └── requirements.txt     # Python 의존성
-├── agents/                  # AI Agent 파일들
 ├── public/                  # 정적 파일 (Docker 배포용)
 ├── Dockerfile              # Docker 설정
 ├── .dockerignore           # Docker 제외 파일
 ├── package.json            # Node.js 의존성
 └── README.md               # 프로젝트 문서
+```
+
+### 백엔드 파일 구조 (별도 프로젝트: medicontents_BE)
+```
+medicontents_BE/
+├── main.py                 # FastAPI 메인 서버
+├── services/
+│   └── medicontent_service.py  # Airtable 연동 서비스
+├── agents/                 # AI Agent 파일들
+├── requirements.txt        # Python 의존성
+├── Dockerfile             # Docker 설정
+├── .dockerignore          # Docker 제외 파일
+└── README.md              # 백엔드 프로젝트 문서
 ```
