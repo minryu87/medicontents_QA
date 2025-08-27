@@ -1346,6 +1346,30 @@ export default function Home() {
                                             if (!processedLogs.has(logKey)) {
                                                 processedLogs.add(logKey);
                                                 addLog(log.message);
+                                                
+                                                // 완료 감지: "후속 작업 완료" 로그 확인
+                                                if (log.message.includes('후속 작업 완료:')) {
+                                                    addLog('🎉 모든 작업이 완료되었습니다!');
+                                                    
+                                                    // 로그 폴링 중지
+                                                    clearInterval(logPollInterval);
+                                                    
+                                                    // UI 상태 변경
+                                                    setIsProcessing(false);
+                                                    
+                                                    // HTML 렌더링을 위해 선택된 포스트 설정
+                                                    setSelectedPost({
+                                                        post_id: postId,
+                                                        title: `생성된 포스팅 - ${postId}`,
+                                                        content: 'HTML 렌더링을 위해 준비 중...'
+                                                    });
+                                                    
+                                                    // 잠시 후 HTML 렌더링 시도 (기존 로직 사용)
+                                                    setTimeout(() => {
+                                                        // Airtable에서 완료된 포스팅 조회
+                                                        loadCompletedPosts();
+                                                    }, 1000);
+                                                }
                                             }
                                         }
                                     });
