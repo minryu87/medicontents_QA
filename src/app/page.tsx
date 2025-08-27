@@ -1693,12 +1693,12 @@ const getGradeColor = (grade: string) => {
                                                                 </div>
                                                             )}
                                                             {/* SEO/Legal Score 표시 */}
-                                                            {post.seoScore > 0 && (
+                                                            {post.seoScore >= 0 && (
                                                                 <div className={`px-2 py-1 rounded text-xs font-medium ${getSeoScoreColor(post.seoScore)}`}>
                                                                     SEO: {post.seoScore}점
                                                                 </div>
                                                             )}
-                                                            {post.legalScore > 0 && (
+                                                            {post.legalScore >= 0 && (
                                                                 <div className={`px-2 py-1 rounded text-xs font-medium ${getLegalScoreColor(post.legalScore)}`}>
                                                                     Legal: {post.legalScore}점
                                                                 </div>
@@ -1718,11 +1718,11 @@ const getGradeColor = (grade: string) => {
                                                         </div>
                                                         
                                                         {/* SEO/Legal Score 정보 */}
-                                                        {(post.seoScore > 0 || post.legalScore > 0) && (
+                                                        {(post.seoScore >= 0 || post.legalScore >= 0) && (
                                                             <div className="mb-4 p-3 bg-gray-50 rounded-lg">
                                                                 <h6 className="text-sm font-medium text-gray-700 mb-2">평가 점수</h6>
                                                                 <div className="grid grid-cols-2 gap-4">
-                                                                    {post.seoScore > 0 && (
+                                                                    {post.seoScore >= 0 && (
                                                                         <div className="text-center">
                                                                             <div className={`text-lg font-bold ${getSeoScoreColor(post.seoScore)}`}>
                                                                                 {post.seoScore}/100
@@ -1731,7 +1731,7 @@ const getGradeColor = (grade: string) => {
                                                                             <div className="text-xs text-gray-400">등급: {getSeoGrade(post.seoScore)}</div>
                                                                         </div>
                                                                     )}
-                                                                    {post.legalScore > 0 && (
+                                                                    {post.legalScore >= 0 && (
                                                                         <div className="text-center">
                                                                             <div className={`text-lg font-bold ${getLegalScoreColor(post.legalScore)}`}>
                                                                                 {post.legalScore}/15
@@ -2747,7 +2747,7 @@ const getGradeColor = (grade: string) => {
                                 </div>
                                 
                                 {/* 평가 결과 확인 버튼 (플로팅) */}
-                                {selectedPost.seoScore > 0 && (
+                                {selectedPost.seoScore >= 0 && (
                                     <button
                                         onClick={() => {
                                             setSelectedEvaluation({
