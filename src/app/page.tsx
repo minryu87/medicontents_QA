@@ -1318,10 +1318,10 @@ export default function Home() {
                                             })();
                                         }
                                         
-                                        // 웹훅 'success' 응답 감지
-                                        if (log.message.includes('success') && log.message.includes('완료')) {
-                                            addLog('✅ 웹훅 success 응답 감지 - 전체 완료로 판단');
-                                            console.log('🎯 [5] 렌더링 시도 시작 - 웹훅 success 응답 감지됨');
+                                        // 웹훅 'finished' 응답 감지
+                                        if (log.message.includes('finished')) {
+                                            addLog('✅ 웹훅 finished 응답 감지 - 전체 완료로 판단');
+                                            console.log('🎯 [5] 렌더링 시도 시작 - 웹훅 finished 응답 감지됨');
                                             
                                             // 즉시 완료 처리 (비동기 함수로 분리)
                                             (async () => {
