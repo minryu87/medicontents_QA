@@ -1200,16 +1200,11 @@ export default function Home() {
         try {
             setIsProcessing(true);
             setLogs([]);
-            addLog('포스팅 생성 시작...');
-            console.log('🚀 [1] 생성 시작 탐지됨');
             
             const postId = generatePostId();
             setCurrentPostId(postId);
-            addLog(`Post ID 생성: ${postId}`);
-            console.log('🆔 [2] Post ID 탐지됨:', postId);
 
             // 1. Medicontent Posts 테이블에 데이터 생성
-            addLog('Medicontent Posts 테이블에 데이터 생성 중...');
             const medicontentPostData = {
                 fields: {
                     'Post Id': postId,
@@ -1221,10 +1216,8 @@ export default function Home() {
             };
             
             const medicontentResult = await createMedicontentPost(medicontentPostData);
-            addLog('Medicontent Posts 생성 완료');
 
             // 2. Post Data Requests 테이블에 데이터 생성
-            addLog('Post Data Requests 테이블에 데이터 생성 중...');
             const postDataRequestData = {
                 fields: {
                     'Post ID': postId,
@@ -1245,10 +1238,8 @@ export default function Home() {
             
             const postDataRequestResult = await createPostDataRequest(postDataRequestData);
             const recordId = postDataRequestResult.id;
-            addLog('Post Data Requests 생성 완료');
 
             // 3. 이미지 업로드
-            addLog('이미지 업로드 시작...');
             const allImages = [
                 ...formData.beforeImages.map(file => ({ file, field: 'Before Images' })),
                 ...formData.processImages.map(file => ({ file, field: 'Process Images' })),
@@ -1258,15 +1249,12 @@ export default function Home() {
             for (const { file, field } of allImages) {
                 try {
                     await uploadImageToAirtable(file, recordId, field);
-                    addLog(`${field} 이미지 업로드 완료: ${file.name}`);
                 } catch (error) {
-                    addLog(`${field} 이미지 업로드 실패: ${file.name}`);
+                    // 이미지 업로드 실패 시 무시
                 }
             }
 
             // 4. Agent 실행
-            addLog('AI Agent 실행 시작...');
-            console.log('🤖 [3] 에이전트 시작 탐지됨');
             
             // 실시간 로그 폴링 시작 (완전 비활성화)
             const startLogPolling = () => {
@@ -1293,180 +1281,59 @@ export default function Home() {
                 clearInterval(pollInterval);
                 
                 const agentData = await agentResponse.json();
-                addLog('AI Agent 실행 완료');
-                console.log('✅ [4] 에이전트 종료 탐지됨:', agentData);
                 
                 // Agent 응답에서 완료 상태 확인
-                console.log('🔍 Agent 응답 분석 시작:', agentData.status);
-                
                 if (agentData.status === 'success') {
-                    addLog('✅ Agent 작업 완료 - 웹훅 감지 대기 중...');
-                    addLog(`📊 Agent 응답: status=${agentData.status}, post_id=${agentData.post_id}`);
-                    console.log('⏳ Agent 완료됨 - 웹훅 감지 대기 중');
+                    // 백엔드 로그 폴링 시작 (INFO:main: 로그만 출력)
+                    let attempts = 0;
+                    const maxAttempts = 60; // 2분 대기 (60회 × 2초)
                     
-                    // 웹훅 호출 및 응답 감지 로직
-                    addLog('🔍 n8n 웹훅 호출 중...');
-                    
-                    try {
-                        // 1. 웹훅 한 번 호출
-                        const webhookResponse = await fetch(`https://medisales-u45006.vm.elestio.app/webhook/6f545985-77e3-4ee9-8dbf-85ec1d408183`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                post_id: postId
-                            })
-                        });
+                    const logPollInterval = setInterval(async () => {
+                        attempts++;
                         
-                        if (webhookResponse.ok) {
-                            addLog('✅ n8n 웹훅 호출 성공');
-                            
-                            // 2. 웹훅 응답 확인 (정기적으로)
-                            let attempts = 0;
-                            const maxAttempts = 30; // 1분 대기 (30회 × 2초)
-                            
-                            const webhookPollInterval = setInterval(async () => {
-                                attempts++;
-                                
-                                try {
-                                    addLog(`웹훅 응답 확인 시도 ${attempts}/${maxAttempts}...`);
-                                    
-                                    // 웹훅 응답 확인 (GET 요청으로 상태 확인)
-                                    const statusResponse = await fetch(`https://medisales-u45006.vm.elestio.app/webhook/6f545985-77e3-4ee9-8dbf-85ec1d408183/status?post_id=${postId}`, {
-                                        method: 'GET'
-                                    });
-                                    
-                                    if (statusResponse.ok) {
-                                        const statusData = await statusResponse.text();
-                                        addLog(`웹훅 상태: ${statusData}`);
-                                        
-                                        if (statusData.includes('finished')) {
-                                            addLog('✅ 웹훅 finished 응답 감지됨!');
-                                            console.log('🎯 [5] 렌더링 시도 시작 - 웹훅 finished 응답 감지됨');
-                                            
-                                            // 즉시 완료 처리
-                                            try {
-                                                addLog('🔍 Airtable에서 완료된 포스팅 조회 중...');
-                                                const medicontentResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts?filterByFormula={Post%20Id}='${postId}'`, {
-                                                    headers: {
-                                                        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-                                                        'Content-Type': 'application/json'
-                                                    }
-                                                });
-                                                
-                                                if (medicontentResponse.ok) {
-                                                    const medicontentData = await medicontentResponse.json();
-                                                    if (medicontentData.records && medicontentData.records.length > 0) {
-                                                        const postRecord = medicontentData.records[0];
-                                                        setSelectedPost(postRecord);
-                                                        addLog('✅ selectedPost 상태 업데이트 완료');
-                                                        addLog('완료된 포스팅을 우측 패널에 표시합니다.');
-                                                        
-                                                        console.log('🎯 [5] 렌더링 완료 - selectedPost 업데이트됨:', postRecord);
-                                                        console.log('🎯 [5] 렌더링 완료 - selectedPost.fields.Content 존재:', !!postRecord.fields.Content);
-                                                        
-                                                        clearInterval(webhookPollInterval);
-                                                        return;
-                                                    }
-                                                }
-                                            } catch (error) {
-                                                addLog(`❌ 즉시 완료 처리 중 오류: ${error}`);
-                                            }
+                        try {
+                            // 백엔드 로그 확인
+                            const logResponse = await fetch(`${API_BASE_URL}/api/get-logs/${postId}`);
+                            if (logResponse.ok) {
+                                const logData = await logResponse.json();
+                                if (logData.logs && logData.logs.length > 0) {
+                                    // INFO:main: 로그만 출력
+                                    logData.logs.forEach((log: any) => {
+                                        if (log.message && log.message.startsWith('INFO:main:')) {
+                                            addLog(log.message);
                                         }
-                                    }
-                                    
-                                    // 타임아웃 체크
-                                    if (attempts >= maxAttempts) {
-                                        addLog('❌ 웹훅 응답 타임아웃');
-                                        clearInterval(webhookPollInterval);
-                                    }
-                                    
-                                } catch (error) {
-                                    addLog(`웹훅 상태 확인 중 오류: ${error}`);
-                                    attempts++;
-                                    
-                                    if (attempts >= maxAttempts) {
-                                        addLog('❌ 웹훅 응답 타임아웃');
-                                        clearInterval(webhookPollInterval);
-                                    }
+                                    });
                                 }
-                            }, 2000); // 2초마다 확인
+                            }
                             
-                        } else {
-                            addLog(`❌ n8n 웹훅 호출 실패: ${webhookResponse.status}`);
-                        }
-                        
-                    } catch (error) {
-                        addLog(`❌ n8n 웹훅 호출 중 오류: ${error}`);
-                    }
-                }
-                
-                // 로그 처리
-                console.log('Agent 응답:', agentData);
-                
-                if (agentData.logs && Array.isArray(agentData.logs)) {
-                    addLog(`상세 로그 ${agentData.logs.length}개 수신됨`);
-                    
-                    // 중요한 로그 메시지들을 간단한 로그에도 추가
-                    agentData.logs.forEach((log: any) => {
-                        if (log.level === 'INFO' || log.level === 'ERROR' || log.level === 'WARNING') {
-                            const message = log.message.replace(/^.*?:\s*/, ''); // 로거 이름 제거
-                            if (message.includes('Step') || message.includes('Agent') || message.includes('실행') || 
-                                message.includes('완료') || message.includes('오류') || message.includes('실패')) {
-                                addLog(`[${log.level}] ${message}`);
+                            // 타임아웃 체크
+                            if (attempts >= maxAttempts) {
+                                clearInterval(logPollInterval);
+                            }
+                            
+                        } catch (error) {
+                            attempts++;
+                            
+                            if (attempts >= maxAttempts) {
+                                clearInterval(logPollInterval);
                             }
                         }
-                    });
-                } else if (agentData.result && agentData.result.logs && Array.isArray(agentData.result.logs)) {
-                    addLog(`상세 로그 ${agentData.result.logs.length}개 수신됨 (result 내부)`);
-                    
-                    // 중요한 로그 메시지들을 간단한 로그에도 추가
-                    agentData.result.logs.forEach((log: any) => {
-                        if (log.level === 'INFO' || log.level === 'ERROR' || log.level === 'WARNING') {
-                            const message = log.message.replace(/^.*?:\s*/, ''); // 로거 이름 제거
-                            if (message.includes('Step') || message.includes('Agent') || message.includes('실행') || 
-                                message.includes('완료') || message.includes('오류') || message.includes('실패')) {
-                                addLog(`[${log.level}] ${message}`);
-                            }
-                        }
-                    });
-                } else {
-                    addLog(`Agent 응답 구조: ${Object.keys(agentData).join(', ')}`);
-                    if (agentData.result) {
-                        addLog(`Result 구조: ${Object.keys(agentData.result).join(', ')}`);
-                    }
+                    }, 2000); // 2초마다 확인
                 }
-                
-                // 5. Airtable 모니터링 방식 (비활성화)
-                addLog('Airtable 모니터링 비활성화됨 - 웹훅 감지만 사용');
             } else {
                 // 폴링 중지
                 clearInterval(pollInterval);
                 
                 const errorText = await agentResponse.text();
-                addLog(`AI Agent 실행 실패: ${agentResponse.status} - ${errorText}`);
-                
-                // 오류 응답에서 상세 로그 추출 시도
-                try {
-                    const errorData = JSON.parse(errorText);
-                    if (errorData.logs && Array.isArray(errorData.logs)) {
-                        addLog(`오류 상세 로그 ${errorData.logs.length}개 수신됨`);
-                    }
-                } catch (e) {
-                    // JSON 파싱 실패 시 무시
-                }
+                // 오류 로그는 출력하지 않음
             }
 
         } catch (error) {
-            addLog(`오류 발생: ${error}`);
+            // 오류 로그는 출력하지 않음
         } finally {
             // 폴링 중지 (혹시 아직 실행 중이라면)
             if (typeof pollInterval !== 'undefined') {
                 clearInterval(pollInterval);
-            }
-            if (typeof statusPollInterval !== 'undefined') {
-                clearInterval(statusPollInterval);
             }
             setIsProcessing(false);
         }
