@@ -1487,18 +1487,29 @@ const getGradeColor = (grade: string) => {
                                                     // UI 상태 변경
                                                     setIsProcessing(false);
                                                     
-                                                    // HTML 렌더링을 위해 선택된 포스트 설정
-                                                    setSelectedPost({
-                                                        post_id: postId,
-                                                        title: `생성된 포스팅 - ${postId}`,
-                                                        content: 'HTML 렌더링을 위해 준비 중...'
-                                                    });
-                                                    
-                                                    // 잠시 후 HTML 렌더링 시도 (기존 로직 사용)
-                                                    setTimeout(() => {
-                                                        // Airtable에서 완료된 포스팅 조회
-                                                        loadCompletedPosts();
-                                                    }, 1000);
+                                                    // Airtable에서 완료된 포스팅 조회 후 해당 포스트 선택
+                                                    setTimeout(async () => {
+                                                        try {
+                                                            // 완료된 포스팅 목록 새로고침
+                                                            await loadCompletedPosts();
+                                                            
+                                                            // 새로고침된 목록에서 해당 Post ID 찾기
+                                                            const updatedPosts = await getCompletedPosts();
+                                                            const completedPost = updatedPosts.find(post => 
+                                                                post.fields['Post Id'] === postId
+                                                            );
+                                                            
+                                                            if (completedPost) {
+                                                                // 완료된 포스트를 선택하여 HTML 렌더링
+                                                                setSelectedPost(completedPost);
+                                                                addLog(`✅ 포스팅 ${postId}가 성공적으로 생성되었습니다.`);
+                                                            } else {
+                                                                addLog(`⚠️ 포스팅 ${postId}를 찾을 수 없습니다. 잠시 후 다시 시도해주세요.`);
+                                                            }
+                                                        } catch (error) {
+                                                            addLog(`❌ 포스팅 조회 중 오류: ${error}`);
+                                                        }
+                                                    }, 2000); // 2초 대기 후 조회
                                                 }
                                             }
                                         }
