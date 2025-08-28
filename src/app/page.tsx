@@ -2786,6 +2786,8 @@ const getGradeColor = (grade: string) => {
                                         }}
                                         dangerouslySetInnerHTML={{ 
                                             __html: useMemo(() => {
+                                                if (!selectedPost.fields.Content) return '';
+                                                
                                                 return selectedPost.fields.Content
                                                     .replace(
                                                         /<img[^>]+src="([^"]*)"[^>]*>/gi,
@@ -2809,7 +2811,7 @@ const getGradeColor = (grade: string) => {
                                                         /margin:\s*0\s+auto/gi,
                                                         'margin: 0'
                                                     );
-                                            }, [selectedPost.fields.Content])
+                                            }, [selectedPost?.fields?.Content || ''])
                                         }}
                                     />
                                 ) : (
