@@ -94,7 +94,16 @@ const getPostReviews = async (): Promise<any[]> => {
 
 // 포스팅 업데이트 (QA 검토 정보 저장)
 const updatePostQA = async (postId: string, qaData: any): Promise<any> => {
-            // console.log('업데이트할 데이터:', { postId, qaData });
+    console.log('updatePostQA 호출:', { postId, qaData });
+    
+    const requestBody = {
+        records: [{
+            id: postId,
+            fields: qaData
+        }]
+    };
+    
+    console.log('Airtable API 요청:', requestBody);
     
     const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Medicontent%20Posts`, {
         method: 'PATCH',
@@ -102,21 +111,20 @@ const updatePostQA = async (postId: string, qaData: any): Promise<any> => {
             'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-            records: [{
-                id: postId,
-                fields: qaData
-            }]
-        })
+        body: JSON.stringify(requestBody)
     });
+    
+    console.log('Airtable API 응답 상태:', response.status);
     
     if (!response.ok) {
         const errorText = await response.text();
-        console.error('Airtable API 응답:', response.status, errorText);
+        console.error('Airtable API 오류 응답:', response.status, errorText);
         throw new Error(`Airtable API 오류: ${response.status} - ${errorText}`);
     }
     
-    return response.json();
+    const result = await response.json();
+    console.log('Airtable API 성공 응답:', result);
+    return result;
 };
 
 // 이미지 업로드 함수 - 실제 Airtable 업로드
@@ -1051,6 +1059,7 @@ export default function Home() {
         
         try {
             setIsSavingQA(true);
+            console.log('QA 데이터 저장 시작:', { type, selectedPost: selectedPost.id, qaData });
             
             const updateFields: any = {};
             
@@ -1075,7 +1084,10 @@ export default function Home() {
             const hasContent = qaData.reviewer || qaData.contentReview || qaData.legalReview || qaData.etcReview;
             updateFields.QA_yn = Boolean(hasContent);
             
-            await updatePostQA(selectedPost.id, updateFields);
+            console.log('업데이트할 필드:', updateFields);
+            
+            const result = await updatePostQA(selectedPost.id, updateFields);
+            console.log('QA 데이터 저장 성공:', result);
             
             // 저장된 필드 표시
             setSavedFields(prev => {
@@ -1095,7 +1107,7 @@ export default function Home() {
             
         } catch (error) {
             console.error('QA 데이터 저장 실패:', error);
-            alert('저장에 실패했습니다.');
+            alert(`저장에 실패했습니다: ${error}`);
         } finally {
             setIsSavingQA(false);
         }
