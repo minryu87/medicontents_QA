@@ -1089,8 +1089,27 @@ export default function Home() {
             const result = await updatePostQA(selectedPost.id, updateFields);
             console.log('QA 데이터 저장 성공:', result);
             
-            // 저장 성공 후 포스팅 목록 새로고침
+            // 저장 성공 후 포스팅 목록 새로고침 및 현재 선택된 포스트 데이터 업데이트
             await loadCompletedPosts();
+            
+            // 현재 선택된 포스트의 QA 데이터를 새로고침된 데이터로 업데이트
+            if (selectedPost) {
+                const updatedPosts = await getCompletedPosts();
+                const updatedPost = updatedPosts.find(post => post.id === selectedPost.id);
+                if (updatedPost) {
+                    setSelectedPost(updatedPost);
+                    // QA 데이터도 업데이트
+                    const fields = updatedPost.fields;
+                    setQaData({
+                        reviewer: fields.QA_by || '',
+                        contentReview: fields.QA_content || '',
+                        contentScore: fields.QA_content_score || 1,
+                        legalReview: fields.QA_legal || '',
+                        legalScore: fields.QA_legal_score || 1,
+                        etcReview: fields.QA_etc || ''
+                    });
+                }
+            }
             
             // 저장된 필드 표시
             setSavedFields(prev => {
@@ -1121,11 +1140,7 @@ export default function Home() {
         setSelectedPost(post);
         setSavedFields(new Set()); // 저장 상태 초기화
         
-        // 선택된 포스팅을 상단으로 스크롤
-        const postElement = document.getElementById(`post-${post.id}`);
-        if (postElement) {
-            postElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        // 자동 스크롤 제거 - 사용자가 직접 스크롤하도록 함
     };
 
     // 점수에 따른 색상 반환
@@ -1855,7 +1870,16 @@ const getGradeColor = (grade: string) => {
                                                                         {[1, 2, 3, 4, 5].map((score) => (
                                                                             <button
                                                                                 key={score}
-                                                                                onClick={() => setQaData(prev => ({ ...prev, contentScore: score }))}
+                                                                                onClick={(e) => {
+                                                                                    e.preventDefault();
+                                                                                    e.stopPropagation();
+                                                                                    console.log('점수 버튼 클릭:', score);
+                                                                                    setQaData(prev => {
+                                                                                        const newData = { ...prev, contentScore: score };
+                                                                                        console.log('새 QA 데이터:', newData);
+                                                                                        return newData;
+                                                                                    });
+                                                                                }}
                                                                                 className={`w-8 h-8 rounded border transition-colors ${
                                                                                     qaData.contentScore === score 
                                                                                         ? 'bg-blue-500 text-white border-blue-500' 
@@ -1904,7 +1928,16 @@ const getGradeColor = (grade: string) => {
                                                                         {[1, 2, 3, 4, 5].map((score) => (
                                                                             <button
                                                                                 key={score}
-                                                                                onClick={() => setQaData(prev => ({ ...prev, legalScore: score }))}
+                                                                                onClick={(e) => {
+                                                                                    e.preventDefault();
+                                                                                    e.stopPropagation();
+                                                                                    console.log('의료법 점수 버튼 클릭:', score);
+                                                                                    setQaData(prev => {
+                                                                                        const newData = { ...prev, legalScore: score };
+                                                                                        console.log('새 QA 데이터:', newData);
+                                                                                        return newData;
+                                                                                    });
+                                                                                }}
                                                                                 className={`w-8 h-8 rounded border transition-colors ${
                                                                                     qaData.legalScore === score 
                                                                                         ? 'bg-blue-500 text-white border-blue-500' 
