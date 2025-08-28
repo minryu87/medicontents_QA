@@ -1033,12 +1033,13 @@ export default function Home() {
         }
     };
 
-    // 포스팅 선택 시 QA 데이터 로드
+    // 포스팅 선택 시 QA 데이터 로드 (새로운 포스트 선택 시에만)
     useEffect(() => {
         if (selectedPost) {
+            // 새로운 포스트를 선택했을 때만 QA 데이터를 로드
             loadQAData(selectedPost);
         }
-    }, [selectedPost]);
+    }, [selectedPost?.id]); // selectedPost.id가 변경될 때만 실행
 
     // QA 데이터 로드
     const loadQAData = (post: any) => {
@@ -1046,9 +1047,9 @@ export default function Home() {
         setQaData({
             reviewer: fields.QA_by || '',
             contentReview: fields.QA_content || '',
-            contentScore: fields.QA_content_score || 0,
+            contentScore: fields.QA_content_score || 1,
             legalReview: fields.QA_legal || '',
-            legalScore: fields.QA_legal_score || 0,
+            legalScore: fields.QA_legal_score || 1,
             etcReview: fields.QA_etc || ''
         });
     };
@@ -1097,17 +1098,19 @@ export default function Home() {
                 const updatedPosts = await getCompletedPosts();
                 const updatedPost = updatedPosts.find(post => post.id === selectedPost.id);
                 if (updatedPost) {
+                    // selectedPost를 업데이트하되, ID는 동일하므로 useEffect가 실행되지 않음
                     setSelectedPost(updatedPost);
-                    // QA 데이터도 업데이트
+                    // QA 데이터를 직접 업데이트 (useEffect를 거치지 않음)
                     const fields = updatedPost.fields;
-                    setQaData({
+                    setQaData(prev => ({
+                        ...prev,
                         reviewer: fields.QA_by || '',
                         contentReview: fields.QA_content || '',
                         contentScore: fields.QA_content_score || 1,
                         legalReview: fields.QA_legal || '',
                         legalScore: fields.QA_legal_score || 1,
                         etcReview: fields.QA_etc || ''
-                    });
+                    }));
                 }
             }
             
