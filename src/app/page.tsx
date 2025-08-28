@@ -967,24 +967,34 @@ export default function Home() {
                 if (data.status === 'success' && data.data) {
                     const randomData = data.data;
                     
-                    // 샘플 이미지들을 File 객체로 생성
-                    const createSampleImageFile = (filename: string): File => {
-                        // 간단한 샘플 이미지 데이터 (1x1 픽셀 JPEG)
-                        const sampleImageData = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
-                        const byteCharacters = atob(sampleImageData.split(',')[1]);
-                        const byteNumbers = new Array(byteCharacters.length);
-                        for (let i = 0; i < byteCharacters.length; i++) {
-                            byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    // public 폴더의 실제 이미지 파일들을 File 객체로 생성
+                    const createImageFileFromPublic = async (filename: string): Promise<File> => {
+                        try {
+                            const response = await fetch(`/${filename}`);
+                            if (!response.ok) {
+                                throw new Error(`Failed to fetch ${filename}`);
+                            }
+                            const blob = await response.blob();
+                            return new File([blob], filename, { type: blob.type });
+                        } catch (error) {
+                            console.error(`Error loading ${filename}:`, error);
+                            // 폴백: 간단한 더미 이미지 생성
+                            const dummyImageData = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
+                            const byteCharacters = atob(dummyImageData.split(',')[1]);
+                            const byteNumbers = new Array(byteCharacters.length);
+                            for (let i = 0; i < byteCharacters.length; i++) {
+                                byteNumbers[i] = byteCharacters.charCodeAt(i);
+                            }
+                            const byteArray = new Uint8Array(byteNumbers);
+                            const blob = new Blob([byteArray], { type: 'image/jpeg' });
+                            return new File([blob], filename, { type: 'image/jpeg' });
                         }
-                        const byteArray = new Uint8Array(byteNumbers);
-                        const blob = new Blob([byteArray], { type: 'image/jpeg' });
-                        return new File([blob], filename, { type: 'image/jpeg' });
                     };
                     
-                    // 샘플 이미지 파일들 생성
-                    const beforeImage = createSampleImageFile('sample_before.jpg');
-                    const processImage = createSampleImageFile('sample_process.jpg');
-                    const afterImage = createSampleImageFile('sample_after.jpg');
+                    // public 폴더의 실제 이미지 파일들 로드
+                    const beforeImage = await createImageFileFromPublic('sample_1.JPG');
+                    const processImage = await createImageFileFromPublic('sample_2.JPG');
+                    const afterImage = await createImageFileFromPublic('sample_3.JPG');
                     
                     // 폼 데이터 업데이트
                     setFormData(prev => ({
@@ -2034,7 +2044,14 @@ const getGradeColor = (grade: string) => {
                                     )}
                                 </div>
                                 <button
-                                    onClick={loadRandomData}
+                                    onClick={async () => {
+                                        try {
+                                            await loadRandomData();
+                                        } catch (error) {
+                                            console.error('기존 데이터 불러오기 오류:', error);
+                                            alert('기존 데이터를 불러오는 중 오류가 발생했습니다.');
+                                        }
+                                    }}
                                     className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors text-sm"
                                 >
                                     기존 데이터 불러오기
