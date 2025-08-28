@@ -1851,15 +1851,19 @@ const getGradeColor = (grade: string) => {
                                                             <div className="flex items-center justify-between">
                                                                 <div className="flex items-center gap-2">
                                                                     <span className="text-sm text-gray-600">점수:</span>
-                                                                    <div className="flex">
-                                                                        {[1, 2, 3, 4, 5].map((star) => (
+                                                                    <div className="flex gap-1">
+                                                                        {[1, 2, 3, 4, 5].map((score) => (
                                                                             <button
-                                                                                key={star}
-                                                                                onClick={() => setQaData(prev => ({ ...prev, contentScore: star }))}
-                                                                                className={`text-xl p-1 hover:bg-gray-100 rounded transition-colors ${star <= qaData.contentScore ? 'text-yellow-400' : 'text-gray-300'}`}
+                                                                                key={score}
+                                                                                onClick={() => setQaData(prev => ({ ...prev, contentScore: score }))}
+                                                                                className={`w-8 h-8 rounded border transition-colors ${
+                                                                                    qaData.contentScore === score 
+                                                                                        ? 'bg-blue-500 text-white border-blue-500' 
+                                                                                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                                                                                }`}
                                                                                 type="button"
                                                                             >
-                                                                                ★
+                                                                                {score}
                                                                             </button>
                                                                         ))}
                                                                     </div>
@@ -1896,15 +1900,19 @@ const getGradeColor = (grade: string) => {
                                                             <div className="flex items-center justify-between">
                                                                 <div className="flex items-center gap-2">
                                                                     <span className="text-sm text-gray-600">점수:</span>
-                                                                    <div className="flex">
-                                                                        {[1, 2, 3, 4, 5].map((star) => (
+                                                                    <div className="flex gap-1">
+                                                                        {[1, 2, 3, 4, 5].map((score) => (
                                                                             <button
-                                                                                key={star}
-                                                                                onClick={() => setQaData(prev => ({ ...prev, legalScore: star }))}
-                                                                                className={`text-xl p-1 hover:bg-gray-100 rounded transition-colors ${star <= qaData.legalScore ? 'text-yellow-400' : 'text-gray-300'}`}
+                                                                                key={score}
+                                                                                onClick={() => setQaData(prev => ({ ...prev, legalScore: score }))}
+                                                                                className={`w-8 h-8 rounded border transition-colors ${
+                                                                                    qaData.legalScore === score 
+                                                                                        ? 'bg-blue-500 text-white border-blue-500' 
+                                                                                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                                                                                }`}
                                                                                 type="button"
                                                                             >
-                                                                                ★
+                                                                                {score}
                                                                             </button>
                                                                         ))}
                                                                     </div>
