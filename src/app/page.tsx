@@ -214,9 +214,9 @@ export default function Home() {
     const [qaData, setQaData] = useState<QAData>({
         reviewer: '',
         contentReview: '',
-        contentScore: 0,
+        contentScore: 1,
         legalReview: '',
-        legalScore: 0,
+        legalScore: 1,
         etcReview: ''
     });
     const [isSavingQA, setIsSavingQA] = useState(false);
@@ -1089,6 +1089,9 @@ export default function Home() {
             const result = await updatePostQA(selectedPost.id, updateFields);
             console.log('QA 데이터 저장 성공:', result);
             
+            // 저장 성공 후 포스팅 목록 새로고침
+            await loadCompletedPosts();
+            
             // 저장된 필드 표시
             setSavedFields(prev => {
                 const newSet = new Set(prev);
@@ -1838,41 +1841,43 @@ const getGradeColor = (grade: string) => {
                                                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                                                 내용검토
                                                             </label>
-                                                            <div className="relative">
-                                                                <textarea
-                                                                    value={qaData.contentReview}
-                                                                    onChange={(e) => setQaData(prev => ({ ...prev, contentReview: e.target.value }))}
-                                                                    placeholder="제목이나 본문에 대한 검토 의견을 작성해주세요"
-                                                                    className="w-full p-2 border border-gray-300 rounded-md"
-                                                                    rows={3}
-                                                                />
-                                                                <div className="absolute bottom-2 right-2 flex items-center gap-2">
-                                                                    <div className="flex items-center gap-1">
-                                                                        <span className="text-xs text-gray-500">점수:</span>
-                                                                        <div className="flex">
-                                                                            {[1, 2, 3, 4, 5].map((star) => (
-                                                                                <button
-                                                                                    key={star}
-                                                                                    onClick={() => setQaData(prev => ({ ...prev, contentScore: star }))}
-                                                                                    className={`text-lg ${star <= qaData.contentScore ? 'text-yellow-400' : 'text-gray-300'}`}
-                                                                                >
-                                                                                    ★
-                                                                                </button>
-                                                                            ))}
-                                                                        </div>
+                                                            <textarea
+                                                                value={qaData.contentReview}
+                                                                onChange={(e) => setQaData(prev => ({ ...prev, contentReview: e.target.value }))}
+                                                                placeholder="제목이나 본문에 대한 검토 의견을 작성해주세요"
+                                                                className="w-full p-2 border border-gray-300 rounded-md mb-2"
+                                                                rows={3}
+                                                            />
+                                                            <div className="flex items-center justify-between">
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-sm text-gray-600">점수:</span>
+                                                                    <div className="flex">
+                                                                        {[1, 2, 3, 4, 5].map((star) => (
+                                                                            <button
+                                                                                key={star}
+                                                                                onClick={() => setQaData(prev => ({ ...prev, contentScore: star }))}
+                                                                                className={`text-xl p-1 hover:bg-gray-100 rounded transition-colors ${star <= qaData.contentScore ? 'text-yellow-400' : 'text-gray-300'}`}
+                                                                                type="button"
+                                                                            >
+                                                                                ★
+                                                                            </button>
+                                                                        ))}
                                                                     </div>
-                                                                    <button
-                                                                        onClick={() => saveQAData('content')}
-                                                                        disabled={isSavingQA || (!qaData.contentReview && qaData.contentScore === 0)}
-                                                                        className={`px-3 py-1 text-white text-xs rounded transition-colors ${
-                                                                            savedFields.has('content')
-                                                                                ? 'bg-green-500 hover:bg-green-600'
-                                                                                : 'bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400'
-                                                                        }`}
-                                                                    >
-                                                                        {savedFields.has('content') ? '저장완료' : '저장'}
-                                                                    </button>
+                                                                    <span className="text-sm text-gray-500 ml-2">
+                                                                        {qaData.contentScore}점
+                                                                    </span>
                                                                 </div>
+                                                                <button
+                                                                    onClick={() => saveQAData('content')}
+                                                                    disabled={isSavingQA || (!qaData.contentReview && qaData.contentScore === 1)}
+                                                                    className={`px-3 py-1 text-white text-xs rounded transition-colors ${
+                                                                        savedFields.has('content')
+                                                                            ? 'bg-green-500 hover:bg-green-600'
+                                                                            : 'bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400'
+                                                                    }`}
+                                                                >
+                                                                    {savedFields.has('content') ? '저장완료' : '저장'}
+                                                                </button>
                                                             </div>
                                                         </div>
                                                         
@@ -1881,41 +1886,43 @@ const getGradeColor = (grade: string) => {
                                                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                                                 의료법검토
                                                             </label>
-                                                            <div className="relative">
-                                                                <textarea
-                                                                    value={qaData.legalReview}
-                                                                    onChange={(e) => setQaData(prev => ({ ...prev, legalReview: e.target.value }))}
-                                                                    placeholder="의료법에 대한 검토 의견을 작성해주세요"
-                                                                    className="w-full p-2 border border-gray-300 rounded-md"
-                                                                    rows={3}
-                                                                />
-                                                                <div className="absolute bottom-2 right-2 flex items-center gap-2">
-                                                                    <div className="flex items-center gap-1">
-                                                                        <span className="text-xs text-gray-500">점수:</span>
-                                                                        <div className="flex">
-                                                                            {[1, 2, 3, 4, 5].map((star) => (
-                                                                                <button
-                                                                                    key={star}
-                                                                                    onClick={() => setQaData(prev => ({ ...prev, legalScore: star }))}
-                                                                                    className={`text-lg ${star <= qaData.legalScore ? 'text-yellow-400' : 'text-gray-300'}`}
-                                                                                >
-                                                                                    ★
-                                                                                </button>
-                                                                            ))}
-                                                                        </div>
+                                                            <textarea
+                                                                value={qaData.legalReview}
+                                                                onChange={(e) => setQaData(prev => ({ ...prev, legalReview: e.target.value }))}
+                                                                placeholder="의료법에 대한 검토 의견을 작성해주세요"
+                                                                className="w-full p-2 border border-gray-300 rounded-md mb-2"
+                                                                rows={3}
+                                                            />
+                                                            <div className="flex items-center justify-between">
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-sm text-gray-600">점수:</span>
+                                                                    <div className="flex">
+                                                                        {[1, 2, 3, 4, 5].map((star) => (
+                                                                            <button
+                                                                                key={star}
+                                                                                onClick={() => setQaData(prev => ({ ...prev, legalScore: star }))}
+                                                                                className={`text-xl p-1 hover:bg-gray-100 rounded transition-colors ${star <= qaData.legalScore ? 'text-yellow-400' : 'text-gray-300'}`}
+                                                                                type="button"
+                                                                            >
+                                                                                ★
+                                                                            </button>
+                                                                        ))}
                                                                     </div>
-                                                                    <button
-                                                                        onClick={() => saveQAData('legal')}
-                                                                        disabled={isSavingQA || (!qaData.legalReview && qaData.legalScore === 0)}
-                                                                        className={`px-3 py-1 text-white text-xs rounded transition-colors ${
-                                                                            savedFields.has('legal')
-                                                                                ? 'bg-green-500 hover:bg-green-600'
-                                                                                : 'bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400'
-                                                                        }`}
-                                                                    >
-                                                                        {savedFields.has('legal') ? '저장완료' : '저장'}
-                                                                    </button>
+                                                                    <span className="text-sm text-gray-500 ml-2">
+                                                                        {qaData.legalScore}점
+                                                                    </span>
                                                                 </div>
+                                                                <button
+                                                                    onClick={() => saveQAData('legal')}
+                                                                    disabled={isSavingQA || (!qaData.legalReview && qaData.legalScore === 1)}
+                                                                    className={`px-3 py-1 text-white text-xs rounded transition-colors ${
+                                                                        savedFields.has('legal')
+                                                                            ? 'bg-green-500 hover:bg-green-600'
+                                                                            : 'bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400'
+                                                                    }`}
+                                                                >
+                                                                    {savedFields.has('legal') ? '저장완료' : '저장'}
+                                                                </button>
                                                             </div>
                                                         </div>
                                                         
